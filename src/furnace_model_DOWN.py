@@ -79,6 +79,12 @@ class FurnaceModel_DOWN:
         self.last_bvp_profile_df = df
         # df.to_csv(f'bvp_{H0:.1f}-{HH:.1f}m_loop.csv', index=False)
 
+        last_h = history[-1]
+        rr = getattr(final_sol, "rms_residuals", None)
+        if rr is not None and np.size(rr) > 0:
+            bvp_max_rms = float(np.max(rr))
+        else:
+            bvp_max_rms = None
         self.results = {
             "case_name": self.params.case_name,
             "H0": x_plot[0],
@@ -88,7 +94,12 @@ class FurnaceModel_DOWN:
             "fs_out": y_plot[2,-1],
             "x_out": y_plot[3,0], 
             "rhob_out": y_plot[4,-1],    
-            "p_bottom": y_plot[5,-1]
+            "p_bottom": y_plot[5,-1],
+            "bvp_success": bool(final_sol.success),
+            "bvp_tol_final": float(last_h["tol"]),
+            "bvp_n_nodes_final": int(last_h["n_nodes"]),
+            "bvp_max_rms_residual_final": bvp_max_rms,
+            "bvp_bc_l2_residual_final": None,
         }
 
         return self.results
@@ -1062,7 +1073,8 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         双循环
         """
         logging.info("测试 下半部分模型 hc_6")
-        # params = load_parameters("default_case_DOWN")   # 调用已保存的参数
+        # from save_load import load_parameters_down
+        # params = load_parameters_down("default_case_DOWN")   # config/cases/default_case_DOWN.json
         # params2 = quick_modify(params, 
         #                     case_name="my_design",
         #                     initial_mesh=2000)
@@ -1249,7 +1261,8 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         双循环
         """
         logging.info("测试 下半部分模型 hc_6")
-        # params = load_parameters("default_case_DOWN")   # 调用已保存的参数
+        # from save_load import load_parameters_down
+        # params = load_parameters_down("default_case_DOWN")   # config/cases/default_case_DOWN.json
         # params2 = quick_modify(params, 
         #                     case_name="my_design",
         #                     initial_mesh=2000)

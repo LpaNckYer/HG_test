@@ -83,6 +83,12 @@ class FurnaceModel:
         self.last_bvp_profile_df = df
         # df.to_csv(f'bvp_{H0:.1f}-{HH:.1f}m_loop.csv', index=False)
 
+        last_h = history[-1]
+        rr = getattr(final_sol, "rms_residuals", None)
+        if rr is not None and np.size(rr) > 0:
+            bvp_max_rms = float(np.max(rr))
+        else:
+            bvp_max_rms = None
         self.results = {
             "case_name": self.params.case_name,
             "H0": x_plot[0],
@@ -94,7 +100,12 @@ class FurnaceModel:
             "y_out": y_plot[4,0],
             "w_out": y_plot[5,0],    
             "rhob_out": y_plot[6,-1],    
-            "p_bottom": y_plot[7,-1]
+            "p_bottom": y_plot[7,-1],
+            "bvp_success": bool(final_sol.success),
+            "bvp_tol_final": float(last_h["tol"]),
+            "bvp_n_nodes_final": int(last_h["n_nodes"]),
+            "bvp_max_rms_residual_final": bvp_max_rms,
+            "bvp_bc_l2_residual_final": None,
         }
 
         return self.results
@@ -1528,11 +1539,11 @@ class HCFurnaceModel(FurnaceModel):
             ) and (count_in < HC_MAX_ITER_TEST_NESTED_INNER):
                 
                 count_in += 1
-                print("count_in = ", count_in)
-                print("relative error of w = ", RE_w)
-                print("relative error of fs = ", RE_fs)
-                print("relative error of p = ", RE_p)
-                print("relative error of rhob = ", RE_rhob)
+                # print("count_in = ", count_in)
+                # print("relative error of w = ", RE_w)
+                # print("relative error of fs = ", RE_fs)
+                # print("relative error of p = ", RE_p)
+                # print("relative error of rhob = ", RE_rhob)
                 w = w_new
                 fs = fs_new
                 p = p_new
@@ -1595,11 +1606,11 @@ class HCFurnaceModel(FurnaceModel):
                 RE_x = norm(x_new - x)/norm(x)
                 RE_y = norm(y_new - y)/norm(y)
 
-            print("count_in = ", count_in)
-            print("relative error of T = ", RE_T)
-            print("relative error of t = ", RE_t)
-            print("relative error of x = ", RE_x)
-            print("relative error of y = ", RE_y)
+            # print("count_in = ", count_in)
+            # print("relative error of T = ", RE_T)
+            # print("relative error of t = ", RE_t)
+            # print("relative error of x = ", RE_x)
+            # print("relative error of y = ", RE_y)
 
             w_new = model.w_hc(z_guess, T, t, fs, x, y, w, p)
             fs_new = model.fs_hc(z_guess, T, t, fs, x, y, w, p)
@@ -1657,145 +1668,6 @@ class HCFurnaceModel(FurnaceModel):
             "p_bottom": p_new[-1],
             "hc_converged": hc_converged,
             "hc_max_re_final": hc_max_re_final,
-        }
-
-        return self.results
-    
-
-        """
-        双循环
-        """
-        logging.info("测试 上半部分模型 hc_8")
-        # params = load_parameters("default_case")   # 调用已保存的参数
-        # params2 = quick_modify(params, 
-        #                     case_name="my_design",
-        #                     initial_mesh=2000)
-        model = HCFurnaceModel(self.params)
-
-        # 1. 初值设置（分段线性，由参数类生成）
-        y_init, H_ctrl = model.params.initial_bvp_guess()
-        T, t, fs, x, y, w, rhob, p = y_init
-        H0, HH = H_ctrl[0], H_ctrl[-1]
-        z_guess = np.linspace(H0, HH, model.params.initial_mesh)
-
-        ###
-        ## 读取CSV文件作为初值
-        df = pd.read_csv('test_hc_4n4_1e-3_UP_loop.csv')
-        # 生成均匀分布的索引
-        indices = np.linspace(0, len(df)-1, len(df), dtype=int)    # 测试初值的残差
-        # 按索引取行
-        sampled_df = df.iloc[indices]
-        z_guess = sampled_df['z'].values
-        T = sampled_df['T'].values
-        t = sampled_df['t'].values
-        fs = sampled_df['fs'].values
-        x = sampled_df['x'].values
-        y = sampled_df['y'].values
-        w = sampled_df['w'].values
-        rhob = sampled_df['rhob'].values
-        p = sampled_df['p'].values
-        ###
-
-        T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, y, w, p, rhob)
-        x_new, y_new = model.xy_hc(z_guess, T, t, fs, x, y, w, p)
-        w_new = model.w_hc(z_guess, T, t, fs, x, y, w, p)
-        fs_new = model.fs_hc(z_guess, T, t, fs, x, y, w, p)
-        p_new = model.p_hc(z_guess, T, x, y, w, p)
-        rhob_new = model.rhob_hc(z_guess, T, t, fs, x, y, w, p, rhob)
-
-        RE_T = norm(T_new - T)/norm(T)
-        RE_t = norm(t_new - t)/norm(t)
-        RE_x = norm(x_new - x)/norm(x)
-        RE_y = norm(y_new - y)/norm(y)
-        RE_w = norm(w_new - w)/norm(w)
-        RE_fs = norm(fs_new - fs)/norm(fs)
-        RE_p = norm(p_new - p)/norm(p)
-        RE_rhob = norm(rhob_new - rhob)/norm(rhob)
-
-        count = 0
-        while (
-            RE_T >= HC_REL_TOL_MAIN
-            or RE_t >= HC_REL_TOL_MAIN
-            or RE_x >= HC_REL_TOL_MAIN
-            or RE_y >= HC_REL_TOL_MAIN
-            or RE_w >= HC_REL_TOL_MAIN
-            or RE_fs >= HC_REL_TOL_MAIN
-            or RE_p >= HC_REL_TOL_MAIN
-            or RE_rhob >= HC_REL_TOL_MAIN
-        ) and (count < HC_MAX_ITER_TEST_OUTER_UP):
-            count += 1
-            print("first loop count = ", count)
-            print("relative error of T = ", RE_T)
-            print("relative error of t = ", RE_t)
-            print("relative error of x = ", RE_x)
-            print("relative error of y = ", RE_y)
-            print("relative error of w = ", RE_w)
-            print("relative error of fs = ", RE_fs)
-            print("relative error of p = ", RE_p)
-            print("relative error of rhob = ", RE_rhob)
-
-            T = T_new
-            t = t_new
-            x = x_new
-            y = y_new
-            w = w_new
-            fs = fs_new
-            p = p_new
-            rhob = rhob_new
-
-            T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, y, w, p, rhob)
-            x_new, y_new = model.xy_hc(z_guess, T, t, fs, x, y, w, p)
-            w_new = model.w_hc(z_guess, T, t, fs, x, y, w, p)
-            fs_new = model.fs_hc(z_guess, T, t, fs, x, y, w, p)
-            p_new = model.p_hc(z_guess, T, x, y, w, p)
-            rhob_new = model.rhob_hc(z_guess, T, t, fs, x, y, w, p, rhob)
-
-            RE_T = norm(T_new - T)/norm(T)
-            RE_t = norm(t_new - t)/norm(t)
-            RE_x = norm(x_new - x)/norm(x)
-            RE_y = norm(y_new - y)/norm(y)
-            RE_w = norm(w_new - w)/norm(w)
-            RE_fs = norm(fs_new - fs)/norm(fs)
-            RE_p = norm(p_new - p)/norm(p)
-            RE_rhob = norm(rhob_new - rhob)/norm(rhob)
-
-
-        logging.info("final relative error:")
-        logging.info(f"relative error of T = {RE_T}")
-        logging.info(f"relative error of t = {RE_t}")
-        logging.info(f"relative error of x = {RE_x}")
-        logging.info(f"relative error of y = {RE_y}")
-        logging.info(f"relative error of w = {RE_w}")
-        logging.info(f"relative error of p = {RE_p}")
-        logging.info(f"relative error of fs = {RE_fs}")
-        logging.info(f"relative error of rhob = {RE_rhob}")
-        # 结果绘图
-        y_plot = [T_new, t_new, fs_new, x_new, y_new, w_new, rhob_new, p_new]
-        plt.figure(figsize=(12, 8))
-        variables = ['T', 't', 'fs', 'x', 'y', 'w', 'rhob', 'p']
-        for i in range(8):
-            plt.subplot(3, 3, i+1)
-            plt.plot(z_guess, y_plot[i])
-            plt.ylabel(variables[i])
-            plt.xlabel('z')
-        plt.tight_layout()
-        # plt.show()
-
-        # 剖面 CSV 由测试脚本写出
-        df = pd.DataFrame(np.vstack((z_guess, y_plot)).T, columns=['z'] + variables)
-        self.last_hc_profile_df = df
-        # df.to_csv('test_hc_8_1e-3_UP_loop_debug.csv', index=False)
-
-        self.results = {
-            "case_name": self.params.case_name,
-            "T_out": T_new[0],
-            "t_out": t_new[-1],
-            "fs_out": fs_new[-1],
-            "x_out": x_new[0],
-            "y_out": y_new[0],
-            "w_out": w_new[0],    
-            "rhob_out": rhob_new[-1],    
-            "p_bottom": p_new[-1]
         }
 
         return self.results

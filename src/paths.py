@@ -4,7 +4,7 @@
 - output/   脚本生成的表格、图像等可交付结果
 - logs/     文本运行日志（与终端 logging 配合）
 - tmp/      中间运行产物、调试 CSV、可清空
-- config/cases/  save_load 读写的 JSON 算例（与 parameters 配合）
+- config/cases/  save_load 读写的 JSON 算例（上半 ``load_parameters``、下半 ``load_parameters_down``）
 - data/     参考剖面等只读输入（若不存在则 ensure_dirs 会创建空目录便于放置文件）
 
 脚本请在修改 cwd 之前调用 ``ensure_dirs()``，再用 ``output_path(...)`` / ``logs_path(...)``

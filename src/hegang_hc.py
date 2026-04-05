@@ -1,6 +1,7 @@
 import logging
 from rizhi import setup_logging
 
+from coupling_checks import require_hc_segment_converged
 from parameters import create_standard_case
 from parameters_DOWN import create_standard_case_DOWN
 from furnace_model import HCFurnaceModel
@@ -17,6 +18,7 @@ try:
     model1 = HCFurnaceModel(params_UP)
     logging.info("求解上半部分模型-hc")
     results_UP = model1.test_hc_4n4()
+    require_hc_segment_converged(results_UP, segment="up")
 
     t_up = results_UP['t_out']
     fs_up = results_UP['fs_out']
@@ -33,6 +35,7 @@ try:
     model2 = HCFurnaceModel_DOWN(params_DOWN)
     logging.info("求解下半部分模型-hc")
     results_DOWN = model2.test_hc_6()
+    require_hc_segment_converged(results_DOWN, segment="down")
 
     T_down = results_DOWN['T_out']
     x_down = results_DOWN['x_out']
@@ -53,6 +56,7 @@ try:
         params_UP.y_in = y_new
         logging.info("求解上半部分模型-hc")
         results_UP = model1.test_hc_4n4()
+        require_hc_segment_converged(results_UP, segment="up")
 
         t_up = results_UP['t_out']
         fs_up = results_UP['fs_out']
@@ -66,6 +70,7 @@ try:
         params_DOWN.p_in = p_up
         logging.info("求解下半部分模型-hc")
         results_DOWN = model2.test_hc_6()
+        require_hc_segment_converged(results_DOWN, segment="down")
 
         T_down = results_DOWN['T_out']
         x_down = results_DOWN['x_out']

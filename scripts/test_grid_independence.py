@@ -17,11 +17,14 @@
   python scripts/test_grid_independence.py --region up --mode hc --hc-case default_case
   python scripts/test_grid_independence.py --region down --mode bvp
   python scripts/test_grid_independence.py --region down --mode hc --down-case initial_case_DOWN
+  python scripts/test_grid_independence.py --region down --mode hc --meshes 300,200,100,50
 
-进程日志默认 logs/grid_independence_<region>_<mode>.log；CSV 默认 output/grid_independence_<region>_<mode>.csv。
+进程日志默认 logs/grid_independence_<region>_<mode>.log（时间戳 + level + [grid_independence] 前缀；
+含会话 argv、判据阈值、每网格 begin/end、equation_converged、失败摘要与总耗时 wall_s）。
+CSV 默认 output/grid_independence_<region>_<mode>.csv。
 
 BVP/HC 剖面 CSV（原 furnace_model*.run / test_hc_* 内 to_csv）改在本脚本每次成功求解后写入 --tmp 对应子目录
-（与原先 chdir 工作目录行为一致）。
+（与原先 chdir 工作目录行为一致）；文件名带 `mesh{initial_mesh}` 以区分各轮网格。
 """
 
 from __future__ import annotations
@@ -56,27 +59,50 @@ from parameters_DOWN import create_standard_case_DOWN
 from paths import ensure_dirs, logs_path, output_path
 from save_load import load_parameters
 
+try:
+    from hc_solver_settings import HC_REL_TOL_MAIN
+except Exception:  # pragma: no cover
+    HC_REL_TOL_MAIN = None
+
 # 未指定 --meshes 时使用
-DEFAULT_MESHES = [400, 300, 200, 150, 100]
+DEFAULT_MESHES = [400, 300, 200, 150, 100, 75, 50, 30, 20, 10]
+
+LOG = logging.getLogger("grid_independence")
 
 
-def _save_bvp_profile_if_any(model, workdir: Path) -> None:
+def _fmt_outlet_log(x, nd: int = 5) -> str:
+    """日志用出口数值：有限浮点保留 nd 位小数，否则原样字符串。"""
+    if x is None:
+        return "None"
+    try:
+        xf = float(x)
+    except (TypeError, ValueError):
+        return str(x)
+    if not np.isfinite(xf):
+        return str(x)
+    return f"{xf:.{nd}f}"
+
+
+def _save_bvp_profile_if_any(model, workdir: Path, *, mesh: int) -> None:
     df = getattr(model, "last_bvp_profile_df", None)
     if df is None:
         return
     H0, HH = model.params.H0, model.params.HH
     workdir.mkdir(parents=True, exist_ok=True)
-    df.to_csv(workdir / f"bvp_{H0:.1f}-{HH:.1f}m_loop.csv", index=False)
+    df.to_csv(
+        workdir / f"bvp_{H0:.1f}-{HH:.1f}m_mesh{int(mesh)}_loop.csv",
+        index=False,
+    )
 
 
-def _save_hc_profile_if_any(model, workdir: Path, *, region: str) -> None:
+def _save_hc_profile_if_any(model, workdir: Path, *, region: str, mesh: int) -> None:
     df = getattr(model, "last_hc_profile_df", None)
     if df is None:
         return
     name = (
-        "test_hc_4n4_1e-3_UP_loop_debug.csv"
+        f"test_hc_4n4_1e-3_UP_mesh{int(mesh)}_loop_debug.csv"
         if region == "up"
-        else "test_hc_6_1e-3_DOWN_loop_debug.csv"
+        else f"test_hc_6_1e-3_DOWN_mesh{int(mesh)}_loop_debug.csv"
     )
     workdir.mkdir(parents=True, exist_ok=True)
     df.to_csv(workdir / name, index=False)
@@ -148,12 +174,14 @@ def is_equation_converged(row: dict, c: Criteria) -> bool:
     bc_l2 = row.get("bvp_bc_l2_residual_final")
     if max_rms is None and bc_l2 is None:
         return True
-    max_rms = _safe_float(max_rms)
-    bc_l2 = _safe_float(bc_l2)
-    if not (np.isfinite(max_rms) and max_rms <= c.max_rms_le):
-        return False
-    if not (np.isfinite(bc_l2) and bc_l2 <= c.bc_l2_le):
-        return False
+    if max_rms is not None:
+        max_rms = _safe_float(max_rms)
+        if not (np.isfinite(max_rms) and max_rms <= c.max_rms_le):
+            return False
+    if bc_l2 is not None:
+        bc_l2 = _safe_float(bc_l2)
+        if not (np.isfinite(bc_l2) and bc_l2 <= c.bc_l2_le):
+            return False
     return True
 
 
@@ -205,7 +233,7 @@ def run_one_bvp_up(mesh: int, base: FurnaceParameters, workdir: Path, bvp_verbos
         os.chdir(cwd)
 
     if status == "success":
-        _save_bvp_profile_if_any(model, workdir)
+        _save_bvp_profile_if_any(model, workdir, mesh=mesh)
 
     row = {
         "status": status,
@@ -235,7 +263,7 @@ def run_one_bvp_down(mesh: int, base, workdir: Path) -> dict:
         os.chdir(cwd)
 
     if status == "success":
-        _save_bvp_profile_if_any(model, workdir)
+        _save_bvp_profile_if_any(model, workdir, mesh=mesh)
 
     row = {
         "status": status,
@@ -276,7 +304,7 @@ def run_one_hc_up(mesh: int, hc_case: str | None, workdir: Path) -> dict:
         os.chdir(cwd)
 
     if status == "success" and model is not None:
-        _save_hc_profile_if_any(model, workdir, region="up")
+        _save_hc_profile_if_any(model, workdir, region="up", mesh=mesh)
 
     keys = outlet_keys("up")
     return {
@@ -320,7 +348,7 @@ def run_one_hc_down(mesh: int, down_case: str, workdir: Path) -> dict:
         os.chdir(cwd)
 
     if status == "success" and model is not None:
-        _save_hc_profile_if_any(model, workdir, region="down")
+        _save_hc_profile_if_any(model, workdir, region="down", mesh=mesh)
 
     keys = outlet_keys("down")
     return {
@@ -348,7 +376,11 @@ def parse_meshes(s: str | None) -> list[int]:
 
 def configure_progress_logging(log_file: Path, *, console: bool = True) -> None:
     log_file.parent.mkdir(parents=True, exist_ok=True)
-    fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+    datefmt = "%Y-%m-%d %H:%M:%S"
+    fmt = logging.Formatter(
+        "%(asctime)s | %(levelname)-8s | [grid_independence] %(message)s",
+        datefmt=datefmt,
+    )
     root = logging.getLogger()
     root.setLevel(logging.INFO)
     root.handlers.clear()
@@ -359,6 +391,7 @@ def configure_progress_logging(log_file: Path, *, console: bool = True) -> None:
         sh = logging.StreamHandler(sys.stderr)
         sh.setFormatter(fmt)
         root.addHandler(sh)
+    LOG.setLevel(logging.INFO)
 
 
 def _normalize_mode(s: str) -> str:
@@ -422,36 +455,85 @@ def main():
         abs_le_fractions=3e-4,
     )
 
-    logging.info(
-        "grid_independence start: region=%s mode=%s meshes=%s csv=%s progress_log=%s tmp=%s",
+    t_run0 = time.perf_counter()
+    LOG.info("=" * 72)
+    LOG.info(
+        "start | argv=%s",
+        " ".join(sys.argv),
+    )
+    LOG.info(
+        "config | region=%s mode=%s meshes=%s mesh_count=%d",
         region,
         mode,
         meshes,
-        log_csv,
-        progress_log,
-        tmp_dir,
+        len(meshes),
     )
+    LOG.info(
+        "paths | csv_out=%s | progress_log=%s | tmp_dir=%s",
+        log_csv.resolve(),
+        progress_log.resolve(),
+        tmp_dir.resolve(),
+    )
+    if region == "up" and mode == "hc":
+        LOG.info("hc_case=%s", args.hc_case)
+    if region == "down":
+        LOG.info("down_case=%s", args.down_case)
+    if region == "up" and mode == "bvp":
+        LOG.info("bvp_verbose=%s", args.bvp_verbose)
+    LOG.info(
+        "criteria | BVP require_success=%s max_rms<=%s bc_l2<=%s | "
+        "stability rel_outlet<=%s abs_fractions<=%s",
+        criteria.require_bvp_success,
+        criteria.max_rms_le,
+        criteria.bc_l2_le,
+        criteria.rel_le,
+        criteria.abs_le_fractions,
+    )
+    if mode == "hc" and HC_REL_TOL_MAIN is not None:
+        LOG.info(
+            "criteria | HC test_hc_* outer: per-variable rel err must be < HC_REL_TOL_MAIN=%s",
+            HC_REL_TOL_MAIN,
+        )
+    LOG.info("=" * 72)
 
     rows: list[dict] = []
     keys = outlet_keys(region)
 
+    def _log_fail_detail(tail: dict) -> None:
+        st = str(tail.get("status", ""))
+        if st == "success":
+            return
+        snippet = st if len(st) <= 400 else st[:400] + "…"
+        LOG.warning("run failed | mesh=%s detail=%s", tail.get("initial_mesh"), snippet)
+
     if region == "up" and mode == "bvp":
         base = FurnaceParameters()
-       
+
         for idx, m in enumerate(meshes, start=1):
-            logging.info("[up bvp %d/%d] initial_mesh=%s", idx, len(meshes), m)
-            rows.append(run_one_bvp_up(m, base, tmp_dir, bvp_verbose=args.bvp_verbose))
-            tail = rows[-1]
-            logging.info(
-                "[up bvp %d/%d] mesh=%s status=%s elapsed=%.2fs bvp_success=%s T_out=%s t_out=%s",
+            LOG.info(
+                "mesh %d/%d | begin up BVP | initial_mesh=%d | chdir_tmp=%s",
                 idx,
                 len(meshes),
                 m,
+                tmp_dir.resolve(),
+            )
+            rows.append(run_one_bvp_up(m, base, tmp_dir, bvp_verbose=args.bvp_verbose))
+            tail = rows[-1]
+            eq = is_equation_converged(tail, criteria)
+            _log_fail_detail(tail)
+            LOG.info(
+                "mesh %d/%d | end up BVP | status=%s | equation_converged=%s | elapsed=%.2fs | "
+                "bvp_success=%s bvp_tol=%s bvp_n_nodes=%s | T_out=%s t_out=%s",
+                idx,
+                len(meshes),
                 tail["status"],
+                eq,
                 tail["elapsed_s"],
                 tail.get("bvp_success"),
-                tail.get("T_out"),
-                tail.get("t_out"),
+                tail.get("bvp_tol_final"),
+                tail.get("bvp_n_nodes_final"),
+                _fmt_outlet_log(tail.get("T_out")),
+                _fmt_outlet_log(tail.get("t_out")),
             )
             print(f"mesh={m:4d}  status={tail['status']}  elapsed={tail['elapsed_s']:.1f}s")
             pd.DataFrame(rows).to_csv(log_csv, index=False)
@@ -459,38 +541,60 @@ def main():
     elif region == "down" and mode == "bvp":
         base = create_standard_case_DOWN(args.down_case)
         for idx, m in enumerate(meshes, start=1):
-            logging.info("[down bvp %d/%d] initial_mesh=%s", idx, len(meshes), m)
-            rows.append(run_one_bvp_down(m, base, tmp_dir))
-            tail = rows[-1]
-            logging.info(
-                "[down bvp %d/%d] mesh=%s status=%s elapsed=%.2fs T_out=%s p_bottom=%s",
+            LOG.info(
+                "mesh %d/%d | begin down BVP | initial_mesh=%d | chdir_tmp=%s",
                 idx,
                 len(meshes),
                 m,
+                tmp_dir.resolve(),
+            )
+            rows.append(run_one_bvp_down(m, base, tmp_dir))
+            tail = rows[-1]
+            eq = is_equation_converged(tail, criteria)
+            _log_fail_detail(tail)
+            LOG.info(
+                "mesh %d/%d | end down BVP | status=%s | equation_converged=%s | elapsed=%.2fs | "
+                "bvp_success=%s bvp_tol=%s bvp_n_nodes=%s | T_out=%s p_bottom=%s",
+                idx,
+                len(meshes),
                 tail["status"],
+                eq,
                 tail["elapsed_s"],
-                tail.get("T_out"),
-                tail.get("p_bottom"),
+                tail.get("bvp_success"),
+                tail.get("bvp_tol_final"),
+                tail.get("bvp_n_nodes_final"),
+                _fmt_outlet_log(tail.get("T_out")),
+                _fmt_outlet_log(tail.get("p_bottom")),
             )
             print(f"mesh={m:4d}  status={tail['status']}  elapsed={tail['elapsed_s']:.1f}s")
             pd.DataFrame(rows).to_csv(log_csv, index=False)
 
     elif region == "up" and mode == "hc":
-        logging.info("[up hc] hc_case=%s", args.hc_case)
         for idx, m in enumerate(meshes, start=1):
-            logging.info("[up hc %d/%d] initial_mesh=%s", idx, len(meshes), m)
-            rows.append(run_one_hc_up(m, args.hc_case, tmp_dir))
-            tail = rows[-1]
-            logging.info(
-                "[up hc %d/%d] mesh=%s status=%s elapsed=%.2fs hc_outer=%s hc_max_re=%s T_out=%s",
+            LOG.info(
+                "mesh %d/%d | begin up HC | initial_mesh=%d | chdir_tmp=%s",
                 idx,
                 len(meshes),
                 m,
+                tmp_dir.resolve(),
+            )
+            rows.append(run_one_hc_up(m, args.hc_case, tmp_dir))
+            tail = rows[-1]
+            eq = is_equation_converged(tail, criteria)
+            _log_fail_detail(tail)
+            LOG.info(
+                "mesh %d/%d | end up HC | status=%s | equation_converged=%s | elapsed=%.2fs | "
+                "hc_outer_converged=%s hc_max_re_final=%s | T_out=%s t_out=%s p_bottom=%s",
+                idx,
+                len(meshes),
                 tail["status"],
+                eq,
                 tail["elapsed_s"],
                 tail.get("hc_outer_converged"),
                 tail.get("hc_max_re_final"),
-                tail.get("T_out"),
+                _fmt_outlet_log(tail.get("T_out")),
+                _fmt_outlet_log(tail.get("t_out")),
+                _fmt_outlet_log(tail.get("p_bottom")),
             )
             print(
                 f"mesh={m:4d}  status={tail['status']}  hc_outer={tail.get('hc_outer_converged')}  "
@@ -499,21 +603,30 @@ def main():
             pd.DataFrame(rows).to_csv(log_csv, index=False)
 
     elif region == "down" and mode == "hc":
-        logging.info("[down hc] down_case=%s", args.down_case)
         for idx, m in enumerate(meshes, start=1):
-            logging.info("[down hc %d/%d] initial_mesh=%s", idx, len(meshes), m)
-            rows.append(run_one_hc_down(m, args.down_case, tmp_dir))
-            tail = rows[-1]
-            logging.info(
-                "[down hc %d/%d] mesh=%s status=%s elapsed=%.2fs hc_outer=%s hc_max_re=%s T_out=%s",
+            LOG.info(
+                "mesh %d/%d | begin down HC | initial_mesh=%d | chdir_tmp=%s",
                 idx,
                 len(meshes),
                 m,
+                tmp_dir.resolve(),
+            )
+            rows.append(run_one_hc_down(m, args.down_case, tmp_dir))
+            tail = rows[-1]
+            eq = is_equation_converged(tail, criteria)
+            _log_fail_detail(tail)
+            LOG.info(
+                "mesh %d/%d | end down HC | status=%s | equation_converged=%s | elapsed=%.2fs | "
+                "hc_outer_converged=%s hc_max_re_final=%s | T_out=%s p_bottom=%s",
+                idx,
+                len(meshes),
                 tail["status"],
+                eq,
                 tail["elapsed_s"],
                 tail.get("hc_outer_converged"),
                 tail.get("hc_max_re_final"),
-                tail.get("T_out"),
+                _fmt_outlet_log(tail.get("T_out")),
+                _fmt_outlet_log(tail.get("p_bottom")),
             )
             print(
                 f"mesh={m:4d}  status={tail['status']}  hc_outer={tail.get('hc_outer_converged')}  "
@@ -529,15 +642,16 @@ def main():
 
     if ref_row is None:
         msg = "没有找到满足方程收敛判据的参考网格，请放宽判据、检查算例或调整 meshes 顺序（先大后小）。"
-        logging.warning("%s csv=%s", msg, log_csv)
+        LOG.warning("%s | csv=%s | wall_s=%.1f", msg, log_csv, time.perf_counter() - t_run0)
         print(msg)
         print(f"部分结果已写入 {log_csv}")
         return
 
-    logging.info(
-        "reference row: initial_mesh=%s solver=%s",
+    LOG.info(
+        "reference | initial_mesh=%s solver=%s status=%s",
         ref_row.get("initial_mesh"),
         ref_row.get("solver"),
+        ref_row.get("status"),
     )
 
     enriched = []
@@ -547,8 +661,8 @@ def main():
         rr.update(outlet_error_metrics(rr, ref_row, keys))
         rr["solution_stable_vs_ref"] = is_solution_stable(rr, criteria, region)
         enriched.append(rr)
-        logging.info(
-            "summary mesh=%s eq_conv=%s stable=%s rel_diff_max=%.4e abs_diff_outlet_max=%.4e",
+        LOG.info(
+            "vs_ref | mesh=%s eq_conv=%s stable=%s rel_diff_max=%.4e abs_diff_outlet_max=%.4e",
             rr.get("initial_mesh"),
             rr["equation_converged"],
             rr["solution_stable_vs_ref"],
@@ -562,7 +676,7 @@ def main():
     ok = df[(df["equation_converged"] == True) & (df["solution_stable_vs_ref"] == True)]
     if ok.empty:
         msg = "没有找到同时满足“方程收敛 + 出口稳定”的网格，请放宽稳定性阈值或提高参考 mesh。"
-        logging.warning("%s csv=%s", msg, log_csv)
+        LOG.warning("%s | csv=%s | wall_s=%.1f", msg, log_csv, time.perf_counter() - t_run0)
         print(msg)
         print(f"结果已写入 {log_csv}")
         return
@@ -570,13 +684,14 @@ def main():
     recommended = int(ok.sort_values("initial_mesh").iloc[0]["initial_mesh"])
     ref_mesh = int(ref_row["initial_mesh"])
 
-    logging.info(
-        "done: region=%s mode=%s reference_mesh=%s recommended_min_mesh=%s csv=%s",
+    LOG.info(
+        "done | region=%s mode=%s reference_mesh=%s recommended_min_mesh=%s | csv=%s | wall_s=%.1f",
         region,
         mode,
         ref_mesh,
         recommended,
         log_csv,
+        time.perf_counter() - t_run0,
     )
     print()
     print("=== 网格无关性结论 ===")

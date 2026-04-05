@@ -67,20 +67,41 @@ class FurnaceParameters:
 
         # 初始节点 Initial nodes
         self.H0 = 4.166 # [m] height of the starting point of calculation
-        self.H1 = 5.872 # [m]
+        # self.H1 = 5.872 # [m]
         self.HH = 5.872 # [m] height of the end point of calculation
 
-        # 节点初值 Node initial values = [T, t, fs, x, rhob, p]（与下半部 BVP 状态次序一致）
-        # 4.166 m
-        self.value0 = [1223, 1200, 1, 0.8, 1700, 10200]
-        # 5 m
-        self.value1 = [1253, 1250, 1, 0.9, 1670, 12000]
-        # 5.872 m
-        self.valueH = [1273, 1270, 1, 1.0, 1640, 14000]
+        # --- 原多控制点参考初值（由 CSV 剖面）已停用，改用仅首尾两点的整段线性初值 ---
+        # # 节点初值 Node initial values = [T, t, fs, x, rhob, p]（与下半部 BVP 状态次序一致）
+        # # 在固定控制高度 z=4.166, 5.872, 5.872 m 上，由 data/initial_case_DOWN_bvp_4.2-5.9m_loop.csv 线性插值得到
+        # # 4.166 m
+        # self.value0 = [1223.0154850810222, 1222.5322195493166, 1.0, 1.0, 1565.4571331339614, 7052.175003843975]
+        # # 5.872 m（与 HH 同高，与 valueH 一致）
+        # self.value1 = [1273.0, 1254.8402424685053, 1.0, 1.0, 1565.4571331339614, 7519.838456974016]
+        # # 5.872 m
+        # self.valueH = [1273.0, 1254.8402424685053, 1.0, 1.0, 1565.4571331339614, 7519.838456974016]
+
+        # 首尾控制点 [T, t, fs, x, rhob, p]：与 bc 在两端一致的量取边界；其余为占位，整段线性
+        # z=H0：ya 约束 t,fs,rhob,p；z=HH：yb 约束 T,x
+        self.bvp_guess_at_H0 = [
+            self.T_in - 50.0,
+            self.t_in,
+            self.fs_in,
+            self.x_in,
+            self.rhob_in,
+            self.p_in,
+        ]
+        self.bvp_guess_at_HH = [
+            self.T_in,
+            self.T_in - 20.0,
+            1.0,
+            self.x_in,
+            min(self.rhob_in, 1565.0),
+            self.p_in + (7519.838456974016 - 7052.175003843975),
+        ]
 
 
         # 数值参数 Numerical parameters
-        self.initial_mesh = 100
+        self.initial_mesh = 50
 
     def Diameter_BF(self, z):
         """Diameter of blast furnace
@@ -116,13 +137,19 @@ class FurnaceParameters:
 
     def control_heights_and_node_values(self):
         """控制高度与各点初值；每点为 [T, t, fs, x, rhob, p]。"""
+        # return (
+        #     [self.H0, self.H1, self.HH],
+        #     [self.value0, self.value1, self.valueH],
+        # )
         return (
-            [self.H0, self.H1, self.HH],
-            [self.value0, self.value1, self.valueH],
+            [self.H0, self.HH],
+            [self.bvp_guess_at_H0, self.bvp_guess_at_HH],
         )
 
     def initial_bvp_guess(self, num_points=None):
         """
+        由首尾两控制点沿高度线性插值，得到 BVP 初值。
+
         Returns:
             y_guess: ndarray, shape (6, num_points)，行次序 T,t,fs,x,rhob,p
             H_ctrl: list of control heights
