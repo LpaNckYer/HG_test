@@ -101,7 +101,7 @@ class FurnaceParameters:
 
 
         # 数值参数 Numerical parameters
-        self.initial_mesh = 50
+        self.initial_mesh = 10
 
     def Diameter_BF(self, z):
         """Diameter of blast furnace

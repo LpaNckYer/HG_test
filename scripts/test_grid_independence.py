@@ -21,7 +21,11 @@
 
 进程日志默认 logs/grid_independence_<region>_<mode>.log（时间戳 + level + [grid_independence] 前缀；
 含会话 argv、判据阈值、每网格 begin/end、equation_converged、失败摘要与总耗时 wall_s）。
-CSV 默认 output/grid_independence_<region>_<mode>.csv。
+汇总 CSV 默认 output/grid_independence_<region>_<mode>.csv，**仅含列**：
+region, solver, initial_mesh, bvp_final_nodes, bvp_success, hc_final_max_re, hc_success,
+T_out, t_out, fs_out, x_out, y_out, w_out, rhob_out, p_bottom, solution_stable_vs_ref
+（未参与求解的字段为空；与参考网格比较后的稳定性仅在最终行填入）。
+编码为 **utf-8-sig**，便于 Excel 正确显示中文。
 
 BVP/HC 剖面 CSV（原 furnace_model*.run / test_hc_* 内 to_csv）改在本脚本每次成功求解后写入 --tmp 对应子目录
 （与原先 chdir 工作目录行为一致）；文件名带 `mesh{initial_mesh}` 以区分各轮网格。
@@ -67,7 +71,81 @@ except Exception:  # pragma: no cover
 # 未指定 --meshes 时使用
 DEFAULT_MESHES = [400, 300, 200, 150, 100, 75, 50, 30, 20, 10]
 
+_CSV_ENCODING = "utf-8-sig"
+
+GRID_INDEPENDENCE_SUMMARY_COLUMNS = (
+    "region",
+    "solver",
+    "initial_mesh",
+    "bvp_final_nodes",
+    "bvp_success",
+    "hc_final_max_re",
+    "hc_success",
+    "T_out",
+    "t_out",
+    "fs_out",
+    "x_out",
+    "y_out",
+    "w_out",
+    "rhob_out",
+    "p_bottom",
+    "solution_stable_vs_ref",
+)
+
 LOG = logging.getLogger("grid_independence")
+
+
+def grid_row_to_summary(row: dict, *, solution_stable: bool | str | None = None) -> dict:
+    """将内部宽表行压成写入 CSV 的列集（与 GRID_INDEPENDENCE_SUMMARY_COLUMNS 一致）。"""
+    sol = row.get("solver")
+    if solution_stable is None:
+        stable_cell: bool | str = ""
+    elif isinstance(solution_stable, str):
+        stable_cell = solution_stable
+    else:
+        stable_cell = bool(solution_stable)
+    hc_ok = (
+        row.get("status") == "success" and bool(row.get("hc_outer_converged"))
+        if sol == "hc"
+        else ""
+    )
+    return {
+        "region": row.get("region"),
+        "solver": sol,
+        "initial_mesh": row.get("initial_mesh"),
+        "bvp_final_nodes": row.get("bvp_n_nodes_final") if sol == "bvp" else "",
+        "bvp_success": row.get("bvp_success") if sol == "bvp" else "",
+        "hc_final_max_re": row.get("hc_max_re_final") if sol == "hc" else "",
+        "hc_success": hc_ok,
+        "T_out": row.get("T_out"),
+        "t_out": row.get("t_out"),
+        "fs_out": row.get("fs_out"),
+        "x_out": row.get("x_out"),
+        "y_out": row.get("y_out", ""),
+        "w_out": row.get("w_out", ""),
+        "rhob_out": row.get("rhob_out"),
+        "p_bottom": row.get("p_bottom"),
+        "solution_stable_vs_ref": stable_cell,
+    }
+
+
+def write_grid_independence_summary_csv(path: Path, rows: list[dict]) -> None:
+    recs = [grid_row_to_summary(r, solution_stable=r.get("solution_stable_vs_ref", "")) for r in rows]
+    pd.DataFrame(recs, columns=list(GRID_INDEPENDENCE_SUMMARY_COLUMNS)).to_csv(
+        path,
+        index=False,
+        encoding=_CSV_ENCODING,
+    )
+
+
+def write_grid_independence_progress_csv(path: Path, rows: list[dict]) -> None:
+    """网格扫描过程中写入；尚未相对参考网格判稳时 solution_stable_vs_ref 为空。"""
+    recs = [grid_row_to_summary(r, solution_stable="") for r in rows]
+    pd.DataFrame(recs, columns=list(GRID_INDEPENDENCE_SUMMARY_COLUMNS)).to_csv(
+        path,
+        index=False,
+        encoding=_CSV_ENCODING,
+    )
 
 
 def _fmt_outlet_log(x, nd: int = 5) -> str:
@@ -92,6 +170,7 @@ def _save_bvp_profile_if_any(model, workdir: Path, *, mesh: int) -> None:
     df.to_csv(
         workdir / f"bvp_{H0:.1f}-{HH:.1f}m_mesh{int(mesh)}_loop.csv",
         index=False,
+        encoding=_CSV_ENCODING,
     )
 
 
@@ -105,7 +184,7 @@ def _save_hc_profile_if_any(model, workdir: Path, *, region: str, mesh: int) -> 
         else f"test_hc_6_1e-3_DOWN_mesh{int(mesh)}_loop_debug.csv"
     )
     workdir.mkdir(parents=True, exist_ok=True)
-    df.to_csv(workdir / name, index=False)
+    df.to_csv(workdir / name, index=False, encoding=_CSV_ENCODING)
 
 
 def outlet_keys(region: str) -> list[str]:
@@ -426,7 +505,11 @@ def main():
         default="initial_case_DOWN",
         help="region=down 时 create_standard_case_DOWN(case_type)",
     )
-    parser.add_argument("--log", default=None, help="输出 CSV；默认 output/grid_independence_<region>_<mode>.csv")
+    parser.add_argument(
+        "--log",
+        default=None,
+        help="汇总 CSV（utf-8-sig；列见模块文档）；默认 output/grid_independence_<region>_<mode>.csv",
+    )
     parser.add_argument("--bvp-verbose", type=int, default=0, help="仅 region=up 的 BVP：FurnaceModel.solve_bvp verbose")
     parser.add_argument("--progress-log", default=None, help="过程日志；默认 logs/grid_independence_<region>_<mode>.log")
     parser.add_argument("--no-console-log", action="store_true", help="仅写进度日志文件")
@@ -536,7 +619,7 @@ def main():
                 _fmt_outlet_log(tail.get("t_out")),
             )
             print(f"mesh={m:4d}  status={tail['status']}  elapsed={tail['elapsed_s']:.1f}s")
-            pd.DataFrame(rows).to_csv(log_csv, index=False)
+            write_grid_independence_progress_csv(log_csv, rows)
 
     elif region == "down" and mode == "bvp":
         base = create_standard_case_DOWN(args.down_case)
@@ -567,7 +650,7 @@ def main():
                 _fmt_outlet_log(tail.get("p_bottom")),
             )
             print(f"mesh={m:4d}  status={tail['status']}  elapsed={tail['elapsed_s']:.1f}s")
-            pd.DataFrame(rows).to_csv(log_csv, index=False)
+            write_grid_independence_progress_csv(log_csv, rows)
 
     elif region == "up" and mode == "hc":
         for idx, m in enumerate(meshes, start=1):
@@ -600,7 +683,7 @@ def main():
                 f"mesh={m:4d}  status={tail['status']}  hc_outer={tail.get('hc_outer_converged')}  "
                 f"hc_max_re={tail.get('hc_max_re_final')}  elapsed={tail['elapsed_s']:.1f}s"
             )
-            pd.DataFrame(rows).to_csv(log_csv, index=False)
+            write_grid_independence_progress_csv(log_csv, rows)
 
     elif region == "down" and mode == "hc":
         for idx, m in enumerate(meshes, start=1):
@@ -632,7 +715,7 @@ def main():
                 f"mesh={m:4d}  status={tail['status']}  hc_outer={tail.get('hc_outer_converged')}  "
                 f"hc_max_re={tail.get('hc_max_re_final')}  elapsed={tail['elapsed_s']:.1f}s"
             )
-            pd.DataFrame(rows).to_csv(log_csv, index=False)
+            write_grid_independence_progress_csv(log_csv, rows)
 
     ref_row = None
     for r in rows:
@@ -643,6 +726,7 @@ def main():
     if ref_row is None:
         msg = "没有找到满足方程收敛判据的参考网格，请放宽判据、检查算例或调整 meshes 顺序（先大后小）。"
         LOG.warning("%s | csv=%s | wall_s=%.1f", msg, log_csv, time.perf_counter() - t_run0)
+        write_grid_independence_progress_csv(log_csv, rows)
         print(msg)
         print(f"部分结果已写入 {log_csv}")
         return
@@ -671,7 +755,7 @@ def main():
         )
 
     df = pd.DataFrame(enriched)
-    df.to_csv(log_csv, index=False)
+    write_grid_independence_summary_csv(log_csv, enriched)
 
     ok = df[(df["equation_converged"] == True) & (df["solution_stable_vs_ref"] == True)]
     if ok.empty:

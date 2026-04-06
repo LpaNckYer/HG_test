@@ -2,6 +2,8 @@
 BVP / 热量流子程序共用的状态变量物理限域（单点维护，避免各 ODE 内重复 clip）。"""
 import numpy as np
 
+from constant import eps
+
 # 温度类状态 [K]（气相 T、固相 t 共用同一 envelope）
 BVP_TEMP_MIN = 200.0
 BVP_TEMP_MAX = 2500.0
@@ -31,6 +33,29 @@ def clip_state_up8(T, t, fs, x, y, w, rho_b, p):
         np.clip(rho_b, BVP_RHOB_MIN, BVP_RHOB_MAX),
         np.clip(p, BVP_P_MIN, BVP_P_MAX),
     )
+
+
+def clip_gas_moles_xyw_hc(x, y, w):
+    """与上半部 xy_hc 内层对 x、y 的写法一致，并约束 w 使 x+y+w ≤ 1（惰性气其余量）。"""
+    x = np.clip(x, BVP_FRACTION_MIN, BVP_FRACTION_MAX)
+    y = np.clip(
+        y,
+        BVP_FRACTION_MIN,
+        np.minimum(BVP_FRACTION_MAX, 1.0 - x - eps),
+    )
+    w = np.clip(
+        w,
+        BVP_FRACTION_MIN,
+        np.minimum(BVP_FRACTION_MAX, 1.0 - x - y - eps),
+    )
+    return x, y, w
+
+
+def clip_furnace_state_up8(T, t, fs, x, y, w, rho_b, p):
+    """上半部 BVP（blast_furnace_bvp）与各 *_hc 驱动层共用：包络 + 气体摩尔可行域。"""
+    T, t, fs, x, y, w, rho_b, p = clip_state_up8(T, t, fs, x, y, w, rho_b, p)
+    x, y, w = clip_gas_moles_xyw_hc(x, y, w)
+    return T, t, fs, x, y, w, rho_b, p
 
 
 def clip_state_down6(T, t, fs, x, rho_b, p):

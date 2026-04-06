@@ -21,16 +21,25 @@
     `data/test_hc_6_1e-3_DOWN_loop.csv`（与 `hegang_hc.py` 中 `test_hc_6` 一致）。
     下半 CSV 无 y、w 列时补 y=1-x、w=0，并在 z >= `--z-patch` 上同样强制。
 
-初值扩缩：`--scale` 为整体乘子；在插值到各段 `initial_mesh` 后对状态同乘（fs 等按行 clip）。
+初值扩缩：`--scale` 为离散整体乘子；或 `--scale-min` / `--scale-max` / `--scale-step` 三者同时给出，
+从 min 起等步长至 max（含不超过 max 的最后一点）。二者互斥：指定等差范围时不要传多个 `--scale`。
+在插值到各段 `initial_mesh` 后对状态同乘（fs 等按行 clip）。
 
 用法示例：
   python scripts/test_convergence_ref_profiles.py
-  python scripts/test_convergence_ref_profiles.py --scale 0.95 1.0 1.05
-  python scripts/test_convergence_ref_profiles.py --initial-mesh-up 100 --initial-mesh-down 50
+  python scripts/test_convergence_ref_profiles.py --phase bvp --scale 0.95 1.0 1.05
+  python scripts/test_convergence_ref_profiles.py --phase hc --scale-min 0.95 --scale-max 1.05 --scale-step 0.05
+  python scripts/test_convergence_ref_profiles.py --initial-mesh-up 100 --initial-mesh-down 10
 
-日志 / 汇总：`--log-bvp`、`--log-hc` 在每次会话开头/结尾写入横幅（argv、scale 列表、网格、参考 CSV、合并行数、HC_REL_TOL_MAIN 等）；
-每条试验记录 trial、scale、阶段、耗时、耦合结果与异常摘要；`--output-csv` 为汇总表。BVP/HC 在各自子目录下运行。
-耦合 BVP/HC 结束后的剖面 CSV（原 run/test_hc 内 to_csv）由本脚本写入对应 `tmp/.../case_*` 目录。
+`--phase`：`both`（默认）先 BVP 再 HC；`bvp` 仅耦合 BVP 初值扫参；`hc` 仅 HC。单阶段时不检查另一阶段的参考 CSV 是否存在。
+
+日志 / 汇总：会话横幅与结束摘要仅写入**实际运行阶段**对应的日志（`--log-bvp` / `--log-hc`）。
+`--output-csv` 仅含列：
+`scale_idx`, `scale`, `initial_mesh_up`, `initial_mesh_down`,
+`bvp_loop_success`, `bvp_elapsed_s`, `hc_loop_success`, `hc_elapsed_s`, `note`
+（未运行阶段的成功标志与耗时为空；`note` 为中文失败说明：上半段/下半段/风口 y 耦合等）。
+汇总表使用 UTF-8 BOM（`utf-8-sig`），便于 Excel 正确显示中文。
+耦合 BVP/HC 结束后的剖面 CSV 由本脚本写入对应 `tmp/.../case_*` 目录（同为 utf-8-sig）。
 """
 from __future__ import annotations
 
@@ -196,6 +205,72 @@ def merge_hc_reference(
     return full
 
 
+def _note_detail_from_exception(kind: str, exc: str) -> str:
+    """kind 为 'BVP' 或 'HC'；结合 coupling_checks 文案区分上半段/下半段。"""
+    raw = exc or ""
+    msg = raw.strip().replace("\n", " ")
+    if len(msg) > 420:
+        msg = msg[:420] + "…"
+    if "上半" in raw:
+        head = f"{kind}上半段"
+    elif "下半" in raw:
+        head = f"{kind}下半段"
+    else:
+        head = kind
+    return f"{head}：{msg}"
+
+
+def compose_trial_note(
+    *,
+    run_bvp: bool,
+    run_hc: bool,
+    bvp_ok: bool,
+    bvp_exc: str | None,
+    bvp_final_success: bool | None,
+    hc_ok: bool,
+    hc_exc: str | None,
+    hc_converged: bool | None,
+) -> str:
+    """失败时返回中文说明；全部成功则空字符串。"""
+    parts: list[str] = []
+    if run_bvp:
+        if bvp_final_success is True:
+            pass
+        elif bvp_exc:
+            parts.append(_note_detail_from_exception("BVP", bvp_exc))
+        elif not bvp_ok:
+            parts.append(
+                "BVP风口煤气y耦合迭代未收敛（|y_new-y_in|未达阈值或已达最大外层次数）"
+            )
+        else:
+            parts.append("BVP未成功（原因未知）")
+    if run_hc:
+        if hc_converged is True:
+            pass
+        elif hc_exc:
+            parts.append(_note_detail_from_exception("HC", hc_exc))
+        elif not hc_ok:
+            parts.append(
+                "HC风口煤气y耦合迭代未收敛（|y_new-y_in|未达阈值或已达最大外层次数）"
+            )
+        else:
+            parts.append("HC未成功（原因未知）")
+    return "；".join(parts)
+
+
+SUMMARY_CSV_COLUMNS = (
+    "scale_idx",
+    "scale",
+    "initial_mesh_up",
+    "initial_mesh_down",
+    "bvp_loop_success",
+    "bvp_elapsed_s",
+    "hc_loop_success",
+    "hc_elapsed_s",
+    "note",
+)
+
+
 def _interp_on_uniform(
     df: pd.DataFrame,
     z0: float,
@@ -230,6 +305,27 @@ def apply_scale_bvp_down(y: np.ndarray, scale: float) -> np.ndarray:
     return out.astype(float)
 
 
+def build_scale_list_range(lo: float, hi: float, step: float, *, max_points: int = 50_000) -> list[float]:
+    """从 lo 起步长 step 递增，直至 > hi；step>0，lo<=hi。"""
+    if step <= 0:
+        raise ValueError("scale-step 必须大于 0")
+    if hi < lo:
+        raise ValueError("scale-max 必须不小于 scale-min")
+    out: list[float] = []
+    x = float(lo)
+    tol = max(1e-12, abs(step) * 1e-9)
+    while x <= hi + tol:
+        out.append(float(x))
+        if len(out) > max_points:
+            raise ValueError(
+                f"scale 序列点数超过上限 {max_points}，请增大步长或缩小 [--scale-min, --scale-max] 区间"
+            )
+        x += step
+    if not out:
+        out = [float(lo)]
+    return out
+
+
 def bind_initial_bvp_guess_up(params, y_stack: np.ndarray) -> None:
     H_ctrl = [params.H0, params.HH]
 
@@ -258,6 +354,9 @@ def bind_initial_bvp_guess_down(params, y_stack: np.ndarray) -> None:
     params.initial_bvp_guess = initial_bvp_guess  # type: ignore[method-assign]
 
 
+_CSV_ENCODING = "utf-8-sig"
+
+
 def _save_coupled_bvp_profiles(
     out_dir: Path | None,
     model_up,
@@ -274,12 +373,14 @@ def _save_coupled_bvp_profiles(
         df_u.to_csv(
             out_dir / f"bvp_{params_up.H0:.1f}-{params_up.HH:.1f}m_loop.csv",
             index=False,
+            encoding=_CSV_ENCODING,
         )
     df_d = getattr(model_down, "last_bvp_profile_df", None)
     if df_d is not None:
         df_d.to_csv(
             out_dir / f"bvp_{params_down.H0:.1f}-{params_down.HH:.1f}m_loop.csv",
             index=False,
+            encoding=_CSV_ENCODING,
         )
 
 
@@ -290,10 +391,18 @@ def _save_coupled_hc_profiles(out_dir: Path | None, model_up, model_down) -> Non
     out_dir.mkdir(parents=True, exist_ok=True)
     df_u = getattr(model_up, "last_hc_profile_df", None)
     if df_u is not None:
-        df_u.to_csv(out_dir / "test_hc_4n4_1e-3_UP_loop_debug.csv", index=False)
+        df_u.to_csv(
+            out_dir / "test_hc_4n4_1e-3_UP_loop_debug.csv",
+            index=False,
+            encoding=_CSV_ENCODING,
+        )
     df_d = getattr(model_down, "last_hc_profile_df", None)
     if df_d is not None:
-        df_d.to_csv(out_dir / "test_hc_6_1e-3_DOWN_loop_debug.csv", index=False)
+        df_d.to_csv(
+            out_dir / "test_hc_6_1e-3_DOWN_loop_debug.csv",
+            index=False,
+            encoding=_CSV_ENCODING,
+        )
 
 
 def run_hegang_bvp_coupled(
@@ -462,7 +571,9 @@ def run_hegang_hc_coupled(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="参考剖面初值 BVP/HC 收敛性测试（hegang / hegang_hc 流程）")
+    parser = argparse.ArgumentParser(
+        description="参考剖面初值 BVP/HC 收敛性测试（hegang / hegang_hc 流程；--phase 可选仅跑 BVP 或仅 HC）"
+    )
     parser.add_argument("--bvp-csv-up", type=Path, default=DEFAULT_BVP_UP, help="BVP 上半参考 CSV")
     parser.add_argument("--bvp-csv-down", type=Path, default=DEFAULT_BVP_DOWN, help="BVP 下半参考 CSV")
     parser.add_argument("--hc-csv-up", type=Path, default=DEFAULT_HC_UP, help="HC 上半参考 CSV")
@@ -479,14 +590,46 @@ def main() -> None:
         nargs="+",
         default=[1.0],
         metavar="S",
-        help="初值整体扩缩；多值扫参",
+        help="初值整体扩缩（离散列表）；与 --scale-min/max/step 三件套互斥（见下）",
+    )
+    parser.add_argument(
+        "--scale-min",
+        type=float,
+        default=None,
+        metavar="LO",
+        help="与 --scale-max、--scale-step 同时给出时，按等差生成 scale 序列（起点）",
+    )
+    parser.add_argument(
+        "--scale-max",
+        type=float,
+        default=None,
+        metavar="HI",
+        help="等差 scale 序列上限（末项为不超过此值的步进点）",
+    )
+    parser.add_argument(
+        "--scale-step",
+        type=float,
+        default=None,
+        metavar="D",
+        help="等差步长，须 > 0",
     )
     parser.add_argument("--initial-mesh-up", type=int, default=None, help="上半 initial_mesh（默认与算例一致）")
     parser.add_argument("--initial-mesh-down", type=int, default=None, help="下半 initial_mesh（默认与算例一致）")
     parser.add_argument("--U", type=float, default=None, help="覆盖上半 FurnaceParameters.U（可选）")
     parser.add_argument("--log-bvp", type=Path, default=DEFAULT_LOG_BVP, help="BVP 日志（追加）")
     parser.add_argument("--log-hc", type=Path, default=DEFAULT_LOG_HC, help="HC 日志（追加）")
-    parser.add_argument("--output-csv", type=Path, default=DEFAULT_OUTPUT, help="汇总 CSV")
+    parser.add_argument(
+        "--output-csv",
+        type=Path,
+        default=DEFAULT_OUTPUT,
+        help="汇总 CSV（utf-8-sig；列见模块文档）",
+    )
+    parser.add_argument(
+        "--phase",
+        choices=("both", "bvp", "hc"),
+        default="both",
+        help="both：BVP + HC；bvp：仅 BVP 初值范围；hc：仅 HC 初值范围",
+    )
     parser.add_argument("--case-bvp", type=str, default="convref_bvp", help="BVP 子目录名前缀")
     parser.add_argument("--case-hc", type=str, default="convref_hc", help="HC 子目录名前缀")
     parser.add_argument("--max-outer", type=int, default=100, help="风口 y 耦合最大迭代次数（与 hegang 一致）")
@@ -500,24 +643,58 @@ def main() -> None:
     args = parser.parse_args()
     _ = args.bvp_verbose
 
+    rmin, rmax, rstep = args.scale_min, args.scale_max, args.scale_step
+    n_range = sum(v is not None for v in (rmin, rmax, rstep))
+    if n_range == 3:
+        if len(args.scale) > 1:
+            parser.error(
+                "已指定 --scale-min / --scale-max / --scale-step 时，不要同时使用多个 --scale 值（可省略 --scale）"
+            )
+        try:
+            scale_list = build_scale_list_range(float(rmin), float(rmax), float(rstep))
+        except ValueError as e:
+            parser.error(str(e))
+        scale_mode = f"range[{rmin},{rmax}]step={rstep}"
+    elif n_range == 0:
+        scale_list = [float(s) for s in args.scale]
+        scale_mode = "explicit"
+    else:
+        parser.error(
+            "须同时提供 --scale-min、--scale-max、--scale-step，或三者均省略并使用 --scale"
+        )
+
+    run_bvp = args.phase in ("both", "bvp")
+    run_hc = args.phase in ("both", "hc")
+
     ensure_dirs()
     TMP_RUN.mkdir(parents=True, exist_ok=True)
     args.output_csv.parent.mkdir(parents=True, exist_ok=True)
 
-    for pth, label in (
-        (args.bvp_csv_up, "BVP 上半"),
-        (args.bvp_csv_down, "BVP 下半"),
-        (args.hc_csv_up, "HC 上半"),
-    ):
-        if not pth.is_file():
-            raise FileNotFoundError(f"{label} CSV 不存在: {pth}")
+    if run_bvp:
+        for pth, label in (
+            (args.bvp_csv_up, "BVP 上半"),
+            (args.bvp_csv_down, "BVP 下半"),
+        ):
+            if not pth.is_file():
+                raise FileNotFoundError(f"{label} CSV 不存在: {pth}")
 
-    hc_down_resolved = _resolve_hc_down_csv(args.hc_csv_down)
+    if run_hc:
+        for pth, label in ((args.hc_csv_up, "HC 上半"),):
+            if not pth.is_file():
+                raise FileNotFoundError(f"{label} CSV 不存在: {pth}")
 
-    df_bvp = merge_bvp_reference(args.bvp_csv_up, args.bvp_csv_down, z_patch=args.z_patch)
-    df_hc = merge_hc_reference(args.hc_csv_up, hc_down_resolved, z_patch=args.z_patch)
+    hc_down_resolved: Path | None = None
+    if run_hc:
+        hc_down_resolved = _resolve_hc_down_csv(args.hc_csv_down)
 
-    scale_list = [float(s) for s in args.scale]
+    df_bvp: pd.DataFrame | None = None
+    df_hc: pd.DataFrame | None = None
+    if run_bvp:
+        df_bvp = merge_bvp_reference(args.bvp_csv_up, args.bvp_csv_down, z_patch=args.z_patch)
+    if run_hc:
+        assert hc_down_resolved is not None
+        df_hc = merge_hc_reference(args.hc_csv_up, hc_down_resolved, z_patch=args.z_patch)
+
     cwd = os.getcwd()
     results_rows: list[dict] = []
 
@@ -525,242 +702,287 @@ def main() -> None:
     _pd = create_standard_case_DOWN("initial_case_DOWN")
     _mesh_u = int(args.initial_mesh_up) if args.initial_mesh_up is not None else int(_pu.initial_mesh)
     _mesh_d = int(args.initial_mesh_down) if args.initial_mesh_down is not None else int(_pd.initial_mesh)
+    _u_eff = float(args.U) if args.U is not None else float(_pu.U)
     _banner_common = [
         "",
         "=" * 72,
         f"convergence_ref_profiles | cwd={cwd}",
         f"argv={' '.join(sys.argv)}",
-        f"scales ({len(scale_list)})={scale_list}",
+        f"phase={args.phase} | run_bvp={run_bvp} run_hc={run_hc}",
+        f"scales ({len(scale_list)})={scale_list} | mode={scale_mode}",
         f"z_patch_m={args.z_patch} | max_outer={args.max_outer} | y_tol={args.y_tol}",
         f"initial_mesh_up={_mesh_u} initial_mesh_down={_mesh_d} | U_override={args.U}",
-        f"BVP CSV up={args.bvp_csv_up} down={args.bvp_csv_down}",
-        f"HC  CSV up={args.hc_csv_up} down_resolved={hc_down_resolved}",
-        f"merged BVP rows={len(df_bvp)} z=[{df_bvp['z'].min():.4f},{df_bvp['z'].max():.4f}]",
-        f"merged HC  rows={len(df_hc)} z=[{df_hc['z'].min():.4f},{df_hc['z'].max():.4f}]",
         f"TMP_RUN={TMP_RUN.resolve()} | output_csv={args.output_csv.resolve()}",
     ]
-    if HC_REL_TOL_MAIN is not None:
+    if run_bvp:
+        assert df_bvp is not None
+        _banner_common.extend(
+            [
+                f"BVP CSV up={args.bvp_csv_up} down={args.bvp_csv_down}",
+                f"merged BVP rows={len(df_bvp)} z=[{df_bvp['z'].min():.4f},{df_bvp['z'].max():.4f}]",
+            ]
+        )
+    if run_hc:
+        assert df_hc is not None and hc_down_resolved is not None
+        _banner_common.extend(
+            [
+                f"HC  CSV up={args.hc_csv_up} down_resolved={hc_down_resolved}",
+                f"merged HC  rows={len(df_hc)} z=[{df_hc['z'].min():.4f},{df_hc['z'].max():.4f}]",
+            ]
+        )
+    if run_hc and HC_REL_TOL_MAIN is not None:
         _banner_common.append(
             f"HC_REL_TOL_MAIN={HC_REL_TOL_MAIN} (test_hc_* per-variable relative tolerance)",
         )
     _banner_common.append("=" * 72)
-    for _lp in (args.log_bvp, args.log_hc):
+    _log_targets = []
+    if run_bvp:
+        _log_targets.append(args.log_bvp)
+    if run_hc:
+        _log_targets.append(args.log_hc)
+    for _lp in _log_targets:
         _append_log_banner(_lp, _banner_common)
 
     t_session0 = time.perf_counter()
 
     for i, scale in enumerate(scale_list):
-        case_bvp = f"{args.case_bvp}_i{i}"
-        case_hc = f"{args.case_hc}_i{i}"
-        run_bvp_dir = TMP_RUN / case_bvp
-        run_hc_dir = TMP_RUN / case_hc
-        run_bvp_dir.mkdir(parents=True, exist_ok=True)
-        run_hc_dir.mkdir(parents=True, exist_ok=True)
+        case_bvp = f"{args.case_bvp}_i{i}" if run_bvp else ""
+        case_hc = f"{args.case_hc}_i{i}" if run_hc else ""
+        run_bvp_dir = (TMP_RUN / case_bvp) if run_bvp else None
+        run_hc_dir = (TMP_RUN / case_hc) if run_hc else None
+        if run_bvp_dir is not None:
+            run_bvp_dir.mkdir(parents=True, exist_ok=True)
+        if run_hc_dir is not None:
+            run_hc_dir.mkdir(parents=True, exist_ok=True)
 
-        params_up_b = create_standard_case("initial_case")
-        params_down_b = create_standard_case_DOWN("initial_case_DOWN")
-        if args.initial_mesh_up is not None:
-            params_up_b.initial_mesh = int(args.initial_mesh_up)
-        if args.initial_mesh_down is not None:
-            params_down_b.initial_mesh = int(args.initial_mesh_down)
-        if args.U is not None:
-            params_up_b.U = float(args.U)
-
-        params_up_h = create_standard_case("initial_case")
-        params_down_h = create_standard_case_DOWN("initial_case_DOWN")
-        if args.initial_mesh_up is not None:
-            params_up_h.initial_mesh = int(args.initial_mesh_up)
-        if args.initial_mesh_down is not None:
-            params_down_h.initial_mesh = int(args.initial_mesh_down)
-        if args.U is not None:
-            params_up_h.U = float(args.U)
-
-        y_bvp_u = _interp_on_uniform(
-            df_bvp,
-            params_up_b.H0,
-            params_up_b.HH,
-            params_up_b.initial_mesh,
-            BVP_UP_ROWS,
-        )
-        y_bvp_d = _interp_on_uniform(
-            df_bvp,
-            params_down_b.H0,
-            params_down_b.HH,
-            params_down_b.initial_mesh,
-            BVP_DOWN_ROWS,
-        )
-        y_bvp_u = apply_scale_bvp_up(y_bvp_u, scale)
-        y_bvp_d = apply_scale_bvp_down(y_bvp_d, scale)
-
-        y_hc_u = _interp_on_uniform(
-            df_hc,
-            params_up_h.H0,
-            params_up_h.HH,
-            params_up_h.initial_mesh,
-            HC_UP_ROWS,
-        )
-        y_hc_d = _interp_on_uniform(
-            df_hc,
-            params_down_h.H0,
-            params_down_h.HH,
-            params_down_h.initial_mesh,
-            BVP_DOWN_ROWS,
-        )
-        y_hc_u = apply_scale_bvp_up(y_hc_u, scale)
-        y_hc_d = apply_scale_bvp_down(y_hc_d, scale)
-
-        row: dict = {
-            "scale_idx": i,
-            "bvp_csv_up": str(args.bvp_csv_up),
-            "bvp_csv_down": str(args.bvp_csv_down),
-            "hc_csv_up": str(args.hc_csv_up),
-            "hc_csv_down": str(hc_down_resolved),
-            "z_patch_m": args.z_patch,
-            "scale": scale,
-            "initial_mesh_up": params_up_b.initial_mesh,
-            "initial_mesh_down": params_down_b.initial_mesh,
-            "U": params_up_b.U,
-            "case_bvp": case_bvp,
-            "case_hc": case_hc,
-        }
-
-        # ---------- BVP ----------
-        _configure_hybrid_logging(args.log_bvp, channel="BVP")
-        LOG.info(
-            "trial %d/%d | scale=%s | BVP phase | mesh_up=%s mesh_down=%s | dir=%s",
-            i + 1,
-            len(scale_list),
-            scale,
-            params_up_b.initial_mesh,
-            params_down_b.initial_mesh,
-            run_bvp_dir.resolve(),
-        )
-        t0 = time.perf_counter()
-        bvp_exc: str | None = None
         bvp_ok = False
         bvp_outer = 0
-        try:
-            os.chdir(run_bvp_dir)
-            bvp_ok, bvp_outer, bvp_exc = run_hegang_bvp_coupled(
-                params_up_b,
-                params_down_b,
-                y_bvp_u,
-                y_bvp_d,
-                max_outer=args.max_outer,
-                y_tol=args.y_tol,
-                profile_out_dir=run_bvp_dir,
-            )
-        except Exception as e:
-            bvp_exc = str(e)
-            logging.exception("BVP 未捕获异常: %s", e)
-        finally:
-            os.chdir(cwd)
-
-        elapsed_bvp = time.perf_counter() - t0
-        row["bvp_coupling_ok"] = bvp_ok
-        row["bvp_outer_iters"] = bvp_outer
-        row["bvp_elapsed_s"] = elapsed_bvp
-        row["bvp_log"] = str(args.log_bvp)
-        row["bvp_run_dir"] = str(run_bvp_dir)
-        row["bvp_exception"] = bvp_exc or ""
-        row["bvp_final_success"] = bvp_ok and not bvp_exc
-        LOG.info(
-            "trial %d/%d | scale=%s | BVP end | coupling_ok=%s outer_iters=%d elapsed=%.2fs | final_success=%s",
-            i + 1,
-            len(scale_list),
-            scale,
-            bvp_ok,
-            bvp_outer,
-            elapsed_bvp,
-            row["bvp_final_success"],
-        )
-        if bvp_exc:
-            _ex = bvp_exc if len(bvp_exc) <= 500 else bvp_exc[:500] + "…"
-            LOG.warning("trial %d/%d | scale=%s | BVP exception | %s", i + 1, len(scale_list), scale, _ex)
-
-        # ---------- HC ----------
-        _configure_hybrid_logging(args.log_hc, channel="HC")
-        LOG.info(
-            "trial %d/%d | scale=%s | HC phase | mesh_up=%s mesh_down=%s | dir=%s",
-            i + 1,
-            len(scale_list),
-            scale,
-            params_up_h.initial_mesh,
-            params_down_h.initial_mesh,
-            run_hc_dir.resolve(),
-        )
-        t1 = time.perf_counter()
-        hc_exc: str | None = None
+        bvp_exc: str | None = None
+        elapsed_bvp = 0.0
+        bvp_final_success: bool | None = None
         hc_ok = False
         hc_outer = 0
-        try:
-            os.chdir(run_hc_dir)
-            hc_ok, hc_outer, hc_exc = run_hegang_hc_coupled(
-                params_up_h,
-                params_down_h,
-                y_hc_u,
-                y_hc_d,
-                max_outer=args.max_outer,
-                y_tol=args.y_tol,
-                profile_out_dir=run_hc_dir,
+        hc_exc: str | None = None
+        elapsed_hc = 0.0
+        hc_converged: bool | None = None
+
+        if run_bvp:
+            params_up_b = create_standard_case("initial_case")
+            params_down_b = create_standard_case_DOWN("initial_case_DOWN")
+            if args.initial_mesh_up is not None:
+                params_up_b.initial_mesh = int(args.initial_mesh_up)
+            if args.initial_mesh_down is not None:
+                params_down_b.initial_mesh = int(args.initial_mesh_down)
+            if args.U is not None:
+                params_up_b.U = float(args.U)
+            assert df_bvp is not None and run_bvp_dir is not None
+            y_bvp_u = _interp_on_uniform(
+                df_bvp,
+                params_up_b.H0,
+                params_up_b.HH,
+                params_up_b.initial_mesh,
+                BVP_UP_ROWS,
             )
-        except Exception as e:
-            hc_exc = str(e)
-            logging.exception("HC 未捕获异常: %s", e)
-        finally:
-            os.chdir(cwd)
+            y_bvp_d = _interp_on_uniform(
+                df_bvp,
+                params_down_b.H0,
+                params_down_b.HH,
+                params_down_b.initial_mesh,
+                BVP_DOWN_ROWS,
+            )
+            y_bvp_u = apply_scale_bvp_up(y_bvp_u, scale)
+            y_bvp_d = apply_scale_bvp_down(y_bvp_d, scale)
 
-        elapsed_hc = time.perf_counter() - t1
-        row["hc_coupling_ok"] = hc_ok
-        row["hc_outer_iters"] = hc_outer
-        row["hc_elapsed_s"] = elapsed_hc
-        row["hc_log"] = str(args.log_hc)
-        row["hc_run_dir"] = str(run_hc_dir)
-        row["hc_exception"] = hc_exc or ""
-        row["hc_converged"] = hc_ok and not hc_exc
-        LOG.info(
-            "trial %d/%d | scale=%s | HC end | coupling_ok=%s outer_iters=%d elapsed=%.2fs | final_success=%s",
-            i + 1,
-            len(scale_list),
-            scale,
-            hc_ok,
-            hc_outer,
-            elapsed_hc,
-            row["hc_converged"],
+            _configure_hybrid_logging(args.log_bvp, channel="BVP")
+            LOG.info(
+                "trial %d/%d | scale=%s | BVP phase | mesh_up=%s mesh_down=%s | dir=%s",
+                i + 1,
+                len(scale_list),
+                scale,
+                params_up_b.initial_mesh,
+                params_down_b.initial_mesh,
+                run_bvp_dir.resolve(),
+            )
+            t0 = time.perf_counter()
+            try:
+                os.chdir(run_bvp_dir)
+                bvp_ok, bvp_outer, bvp_exc = run_hegang_bvp_coupled(
+                    params_up_b,
+                    params_down_b,
+                    y_bvp_u,
+                    y_bvp_d,
+                    max_outer=args.max_outer,
+                    y_tol=args.y_tol,
+                    profile_out_dir=run_bvp_dir,
+                )
+            except Exception as e:
+                bvp_exc = str(e)
+                logging.exception("BVP 未捕获异常: %s", e)
+            finally:
+                os.chdir(cwd)
+
+            elapsed_bvp = time.perf_counter() - t0
+            bvp_final_success = bool(bvp_ok and not bvp_exc)
+            LOG.info(
+                "trial %d/%d | scale=%s | BVP end | coupling_ok=%s outer_iters=%d elapsed=%.2fs | final_success=%s",
+                i + 1,
+                len(scale_list),
+                scale,
+                bvp_ok,
+                bvp_outer,
+                elapsed_bvp,
+                bvp_final_success,
+            )
+            if bvp_exc:
+                _ex = bvp_exc if len(bvp_exc) <= 500 else bvp_exc[:500] + "…"
+                LOG.warning("trial %d/%d | scale=%s | BVP exception | %s", i + 1, len(scale_list), scale, _ex)
+
+        if run_hc:
+            params_up_h = create_standard_case("initial_case")
+            params_down_h = create_standard_case_DOWN("initial_case_DOWN")
+            if args.initial_mesh_up is not None:
+                params_up_h.initial_mesh = int(args.initial_mesh_up)
+            if args.initial_mesh_down is not None:
+                params_down_h.initial_mesh = int(args.initial_mesh_down)
+            if args.U is not None:
+                params_up_h.U = float(args.U)
+            assert df_hc is not None and run_hc_dir is not None
+            y_hc_u = _interp_on_uniform(
+                df_hc,
+                params_up_h.H0,
+                params_up_h.HH,
+                params_up_h.initial_mesh,
+                HC_UP_ROWS,
+            )
+            y_hc_d = _interp_on_uniform(
+                df_hc,
+                params_down_h.H0,
+                params_down_h.HH,
+                params_down_h.initial_mesh,
+                BVP_DOWN_ROWS,
+            )
+            y_hc_u = apply_scale_bvp_up(y_hc_u, scale)
+            y_hc_d = apply_scale_bvp_down(y_hc_d, scale)
+
+            _configure_hybrid_logging(args.log_hc, channel="HC")
+            LOG.info(
+                "trial %d/%d | scale=%s | HC phase | mesh_up=%s mesh_down=%s | dir=%s",
+                i + 1,
+                len(scale_list),
+                scale,
+                params_up_h.initial_mesh,
+                params_down_h.initial_mesh,
+                run_hc_dir.resolve(),
+            )
+            t1 = time.perf_counter()
+            try:
+                os.chdir(run_hc_dir)
+                hc_ok, hc_outer, hc_exc = run_hegang_hc_coupled(
+                    params_up_h,
+                    params_down_h,
+                    y_hc_u,
+                    y_hc_d,
+                    max_outer=args.max_outer,
+                    y_tol=args.y_tol,
+                    profile_out_dir=run_hc_dir,
+                )
+            except Exception as e:
+                hc_exc = str(e)
+                logging.exception("HC 未捕获异常: %s", e)
+            finally:
+                os.chdir(cwd)
+
+            elapsed_hc = time.perf_counter() - t1
+            hc_converged = bool(hc_ok and not hc_exc)
+            LOG.info(
+                "trial %d/%d | scale=%s | HC end | coupling_ok=%s outer_iters=%d elapsed=%.2fs | final_success=%s",
+                i + 1,
+                len(scale_list),
+                scale,
+                hc_ok,
+                hc_outer,
+                elapsed_hc,
+                hc_converged,
+            )
+            if hc_exc:
+                _ex = hc_exc if len(hc_exc) <= 500 else hc_exc[:500] + "…"
+                LOG.warning("trial %d/%d | scale=%s | HC exception | %s", i + 1, len(scale_list), scale, _ex)
+
+        note = compose_trial_note(
+            run_bvp=run_bvp,
+            run_hc=run_hc,
+            bvp_ok=bvp_ok,
+            bvp_exc=bvp_exc,
+            bvp_final_success=bvp_final_success,
+            hc_ok=hc_ok,
+            hc_exc=hc_exc,
+            hc_converged=hc_converged,
         )
-        if hc_exc:
-            _ex = hc_exc if len(hc_exc) <= 500 else hc_exc[:500] + "…"
-            LOG.warning("trial %d/%d | scale=%s | HC exception | %s", i + 1, len(scale_list), scale, _ex)
 
-        overall = bool(row["bvp_final_success"] or row["hc_converged"])
-        row["overall_success"] = overall
-        row["note"] = (
-            "BVP/HC 成功：每段 BVP bvp_success、每段 HC hc_converged 为真，"
-            "风口 y 耦合满足阈值且无异常；剖面与参考的 RMSE 未判定"
-        )
-        results_rows.append(row)
+        if args.phase == "bvp":
+            overall = bvp_final_success is True
+        elif args.phase == "hc":
+            overall = hc_converged is True
+        else:
+            overall = (bvp_final_success is True) or (hc_converged is True)
 
-        print(
-            f"[{i+1}/{len(scale_list)}] scale={scale}\n"
-            f"  BVP: coupling_ok={bvp_ok}, outer={bvp_outer}, {elapsed_bvp:.2f}s, success={row['bvp_final_success']}\n"
-            f"  HC: coupling_ok={hc_ok}, outer={hc_outer}, {elapsed_hc:.2f}s, success={row['hc_converged']}\n"
-            f"  overall_success={overall}"
-        )
+        summary_row = {
+            "scale_idx": i,
+            "scale": scale,
+            "initial_mesh_up": _mesh_u,
+            "initial_mesh_down": _mesh_d,
+            "bvp_loop_success": bvp_final_success if run_bvp else "",
+            "bvp_elapsed_s": (round(elapsed_bvp, 4) if run_bvp else ""),
+            "hc_loop_success": hc_converged if run_hc else "",
+            "hc_elapsed_s": (round(elapsed_hc, 4) if run_hc else ""),
+            "note": note,
+        }
+        results_rows.append(summary_row)
 
-    pd.DataFrame(results_rows).to_csv(args.output_csv, index=False)
+        _plines = [f"[{i+1}/{len(scale_list)}] scale={scale} | phase={args.phase}"]
+        if run_bvp:
+            _plines.append(
+                f"  BVP: coupling_ok={bvp_ok}, outer={bvp_outer}, {elapsed_bvp:.2f}s, success={bvp_final_success}"
+            )
+        if run_hc:
+            _plines.append(
+                f"  HC: coupling_ok={hc_ok}, outer={hc_outer}, {elapsed_hc:.2f}s, success={hc_converged}"
+            )
+        _plines.append(f"  overall_success={overall}")
+        print("\n".join(_plines))
+
+    pd.DataFrame(results_rows, columns=list(SUMMARY_CSV_COLUMNS)).to_csv(
+        args.output_csv,
+        index=False,
+        encoding=_CSV_ENCODING,
+    )
     _wall = time.perf_counter() - t_session0
-    _bvp_n = sum(1 for r in results_rows if r.get("bvp_final_success"))
-    _hc_n = sum(1 for r in results_rows if r.get("hc_converged"))
-    _ov_n = sum(1 for r in results_rows if r.get("overall_success"))
+    _bvp_n = sum(1 for r in results_rows if r.get("bvp_loop_success") is True)
+    _hc_n = sum(1 for r in results_rows if r.get("hc_loop_success") is True)
+    _ov_n = sum(
+        1
+        for r in results_rows
+        if (
+            (args.phase == "bvp" and r.get("bvp_loop_success") is True)
+            or (args.phase == "hc" and r.get("hc_loop_success") is True)
+            or (
+                args.phase == "both"
+                and (
+                    (r.get("bvp_loop_success") is True)
+                    or (r.get("hc_loop_success") is True)
+                )
+            )
+        )
+    )
     _summary_tail = [
         "",
         "=" * 72,
         f"convergence_ref_profiles | session_end | wall_s={_wall:.1f}",
-        f"trials={len(results_rows)} | BVP_ok={_bvp_n} HC_ok={_hc_n} overall_ok={_ov_n}",
+        f"phase={args.phase} | trials={len(results_rows)} | BVP_ok={_bvp_n} HC_ok={_hc_n} overall_ok={_ov_n}",
         f"summary_csv={args.output_csv.resolve()}",
         "=" * 72,
     ]
-    for _lp in (args.log_bvp, args.log_hc):
+    for _lp in _log_targets:
         _append_log_banner(_lp, _summary_tail)
     print(
         f"汇总已写入: {args.output_csv} （共 {len(results_rows)} 行）| "

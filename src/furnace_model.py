@@ -14,10 +14,12 @@ from constant import pai, R, R_, g_c, T_std, P_std, eps
 from state_bounds import (
     BVP_FRACTION_MIN,
     BVP_FRACTION_MAX,
-    clip_gas_dp_inputs,
+    BVP_P_MAX,
+    BVP_P_MIN,
+    BVP_TEMP_MAX,
+    BVP_TEMP_MIN,
+    clip_furnace_state_up8,
     clip_iter_temperatures,
-    clip_thermal_moles_pressure_7,
-    clip_state_up8,
 )
 from hc_solver_settings import (
     HC_REL_TOL_MAIN,
@@ -29,6 +31,40 @@ from hc_solver_settings import (
     HC_MAX_ITER_TEST_OUTER_UP,
     HC_MAX_ITER_TEST_FIRST_UP,
 )
+
+
+def _nonneg_sqrt(x):
+    """避免 Re、分数等因浮点噪声略负时 x**(1/2) 触发 RuntimeWarning。"""
+    return np.sqrt(np.maximum(np.asarray(x, dtype=float), 0.0))
+
+
+def _nonneg_cbrt(x):
+    """Pr、Sc 等非负相关量开 1/3 次；略负时截断为 0 再 cbrt。"""
+    return np.cbrt(np.maximum(np.asarray(x, dtype=float), 0.0))
+
+
+def _heme_shell_1_minus_fs(fs):
+    """颗粒扩散项中的 (1-fs+eps)：fs 限到 ≤1、去 NaN/inf，再下限 eps，避免负底数或非有限值进入分数幂。"""
+    fs_a = np.asarray(fs, dtype=float)
+    fs_s = np.nan_to_num(fs_a, nan=0.0, posinf=1.0, neginf=0.0)
+    fs_eff = np.minimum(fs_s, 1.0)
+    raw = 1.0 - fs_eff + eps
+    shell = np.maximum(raw, eps)
+    return shell
+
+
+def _solid_T_for_diffusion_powers(t):
+    """扩散系数 t^1.78：去 NaN/inf 后 clip 到 [BVP_TEMP_MIN, BVP_TEMP_MAX]，避免非有限或越界温度进幂。"""
+    t0 = np.asarray(t, dtype=float)
+    raw = np.nan_to_num(
+        t0,
+        nan=float(BVP_TEMP_MIN),
+        posinf=float(BVP_TEMP_MAX),
+        neginf=float(BVP_TEMP_MIN),
+    )
+    out = np.clip(raw, float(BVP_TEMP_MIN), float(BVP_TEMP_MAX))
+    return out
+
 
 class FurnaceModel:
     """高炉计算模型"""
@@ -178,7 +214,7 @@ class FurnaceModel:
         res = np.empty((m, n))
         for i in range(n):
             z = Z[i]
-            T, t, fs, x, y, w, rho_b, p = clip_state_up8(*Y[:, i])
+            T, t, fs, x, y, w, rho_b, p = clip_furnace_state_up8(*Y[:, i])
             res[:,i] = [self.dTdz(z,T,t,fs,x,y,w,p),
                         self.dtdz(z,T,t,fs,x,y,w,p,rho_b),
                         self.dfsdz(z,T,t,fs,x,y,w,p),
@@ -458,8 +494,6 @@ class FurnaceModel:
         Returns:
             dd (float): [Kg / m2 * m]
         """
-        T, x, y, w, p = clip_gas_dp_inputs(T, x, y, w, p)
-
         Dz = self.params.Diameter_BF(z) # Dz (float): diameter of coke-bed. [m]
         Az = pai * (Dz/2)**2 # Az (float): cross-sectional area of coke-bed. [m2]
         F = self.VolumeRate_Gas(x,y)   # F (float): volume rate of flow of gas. [Nm3 / hr]
@@ -535,7 +569,7 @@ class FurnaceModel:
         Re = self.params.d_p * G / miu
         k = 0.06 # k (float): thermal conductivity of gas. [kcal / m * hr * K]
         Pr = C * miu / k
-        Nu = 2.0 + 0.60*Re**(1/2)*Pr**(1/3)
+        Nu = 2.0 + 0.60 * _nonneg_sqrt(Re) * _nonneg_cbrt(Pr)
         h_p = Nu * k / self.params.d_p # h_p (float): particle-to-fluid heat transfer coefficient. [kcal / m2 * hr * K]
 
         q = 6 * (1-self.params.epsilon) * h_p * (T-t) / self.params.phi_o / self.params.d_p
@@ -663,7 +697,7 @@ class FurnaceModel:
         Re = self.params.d_o * u * rho / miu
 
         Sc = miu / rho / D_CO
-        Sh = 2.0 + 0.55*Re**(1/2)*Sc**(1/3)
+        Sh = 2.0 + 0.55 * _nonneg_sqrt(Re) * _nonneg_cbrt(Sc)
         kf = self.TransferCoefficient_Gas(Sh,D_CO,self.params.d_o) # kf (float): gas-film mass transfer coefficient in reaction. [m / hr]
 
         epsilon_v = 0.53 + 0.47 * self.params.epsilon_o
@@ -676,7 +710,8 @@ class FurnaceModel:
 
         xe = (x+y) / (1+K)
 
-        r = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 * (x-xe) / 22.4 / t / (1/kf + self.params.d_o/2*((1-fs+eps)**(-1/3) - 1)/Ds + ((1-fs+eps)**(2/3)*k*(1+1/K))**(-1))
+        _sh = _heme_shell_1_minus_fs(fs)
+        r = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 * (x-xe) / 22.4 / t / (1/kf + self.params.d_o/2*(np.power(_sh, -1.0/3.0) - 1.0)/Ds + (np.power(_sh, 2.0/3.0)*k*(1+1/K))**(-1))
         fs = np.asarray(fs)
         r = np.where(fs >= 1, 0.0, r)
         return r
@@ -710,7 +745,8 @@ class FurnaceModel:
 
         Raises:
         """
-        D_H2 = 3.960E-6*t**1.78 / (p/P_std)    # D_H2 (float): diffusion coefficient of H2 in blast furnace gas. [m2 / hr]
+        t_d = _solid_T_for_diffusion_powers(t)
+        D_H2 = 3.960E-6 * np.power(t_d, 1.78) / (p/P_std)    # D_H2 (float): diffusion coefficient of H2 in blast furnace gas. [m2 / hr]
         epsilon_v = 0.53 + 0.47 * self.params.epsilon_o
         xi = 0.238 * self.params.epsilon_o + 0.04
         Ds = D_H2 * epsilon_v * xi # Ds (float): intraparticle diffusion coefficient of H2 in reduced iron phase. [m2 / hr]
@@ -724,7 +760,7 @@ class FurnaceModel:
         rho = self.Density_Gas(x,y,w) # rho (float): density of blast furnace gas. [kg / Nm3]
         Re = self.params.d_o * u * rho / miu
         Sc = miu / rho / D_H2
-        Sh = 2.0 + 0.55*Re**(1/2)*Sc**(1/3)
+        Sh = 2.0 + 0.55 * _nonneg_sqrt(Re) * _nonneg_cbrt(Sc)
         kf = self.TransferCoefficient_Gas(Sh,D_H2,self.params.d_o)  # kf (float): gas-film mass transfer coefficient in reaction. [m / hr]
         k,K = self.smooth_R5(t)  # smoothed k,K
 
@@ -733,7 +769,9 @@ class FurnaceModel:
         r = np.zeros_like(z)
 
         with np.errstate(invalid='raise'):  # 将无效值错误转为异常
-            r[~(fs>=1)] = pai * self.params.d_o**(2) * self.params.phi_o**(-1) * self.params.N_o * 273 * (p[~(fs>=1)]/P_std) * (w[~(fs>=1)]-we[~(fs>=1)]) / 22.4 / t[~(fs>=1)] / (1/kf[~(fs>=1)] + self.params.d_o/2*((1-fs[~(fs>=1)]+eps)**(-1/3) - 1)/Ds[~(fs>=1)] + ((1-fs[~(fs>=1)]+eps)**(2/3)*k[~(fs>=1)]*(1+1/K[~(fs>=1)]))**(-1))
+            _m = ~(fs >= 1)
+            _sh5 = _heme_shell_1_minus_fs(fs[_m])
+            r[_m] = pai * self.params.d_o**(2) * self.params.phi_o**(-1) * self.params.N_o * 273 * (p[_m]/P_std) * (w[_m]-we[_m]) / 22.4 / t[_m] / (1/kf[_m] + self.params.d_o/2*(np.power(_sh5, -1.0/3.0) - 1.0)/Ds[_m] + (np.power(_sh5, 2.0/3.0)*k[_m]*(1+1/K[_m]))**(-1))
             r[(fs>=1)] = 0
 
         np.clip(r, 0, None, out=r)
@@ -755,10 +793,35 @@ class FurnaceModel:
 
         Raises:
         """
-        v = self.MolarFaction_H2O(x,y,w) # v: molar fraction of H2O in bulk of gas. [-]
+        T = np.clip(np.asarray(T, dtype=float), BVP_TEMP_MIN, BVP_TEMP_MAX)
+        p = np.clip(np.asarray(p, dtype=float), BVP_P_MIN, BVP_P_MAX)
+        x = np.clip(np.asarray(x, dtype=float), BVP_FRACTION_MIN, BVP_FRACTION_MAX)
+        y = np.clip(np.asarray(y, dtype=float), BVP_FRACTION_MIN, BVP_FRACTION_MAX)
+        w = np.clip(np.asarray(w, dtype=float), BVP_FRACTION_MIN, BVP_FRACTION_MAX)
+        v = self.MolarFaction_H2O(x, y, w)  # v: molar fraction of H2O in bulk of gas. [-]
 
-        r_forward = 7.29e11 * x**(1/2) * v * (p/P_std/T)**(3/2) * self.params.epsilon * np.exp(-67300/R/T) / np.sqrt(1+14.158*w*p/P_std/T)
-        r_backward = 1.386e10 * y * w**(1/2) * (p/P_std/T)**(3/2) * self.params.epsilon *np.exp(-57000/R/T) / (1+4.247*x*p/P_std/T)
+        sqrt_x = _nonneg_sqrt(x)
+        sqrt_w = _nonneg_sqrt(w)
+        rat = np.maximum(p / P_std / T, 0.0)
+        rat_32 = rat * _nonneg_sqrt(rat)
+        r_forward = (
+            7.29e11
+            * sqrt_x
+            * v
+            * rat_32
+            * self.params.epsilon
+            * np.exp(-67300 / R / T)
+            / _nonneg_sqrt(1 + 14.158 * w * p / P_std / T)
+        )
+        r_backward = (
+            1.386e10
+            * y
+            * sqrt_w
+            * rat_32
+            * self.params.epsilon
+            * np.exp(-57000 / R / T)
+            / (1 + 4.247 * x * p / P_std / T)
+        )
         r = r_forward - r_backward
         return r    
 
@@ -865,7 +928,15 @@ class FurnaceModel:
 
         Raises:
         """
-        miu = 4.960e-3 * T**(3/2) / (T+103) # miu (float): viscosity of blast furnace gas. [kg / m * hr]
+        T0 = np.asarray(T, dtype=float)
+        Tn = np.nan_to_num(
+            T0,
+            nan=float(BVP_TEMP_MIN),
+            posinf=float(BVP_TEMP_MAX),
+            neginf=float(BVP_TEMP_MIN),
+        )
+        Ta = np.clip(Tn, float(BVP_TEMP_MIN), float(BVP_TEMP_MAX))
+        miu = 4.960e-3 * np.power(Ta, 1.5) / (Ta + 103)  # miu (float): viscosity of blast furnace gas. [kg / m * hr]
         return miu
     
     def TransferCoefficient_Gas(self,Sh,D,d):
@@ -895,8 +966,9 @@ class FurnaceModel:
         Raises:
         """
         weight = smooth_heaviside(t-848,k=5)
-        D_CO_1 = 2.592e-6 * t**(1.78) / (p/P_std)
-        D_CO_2 = 2.592e-6 * (t)**(2.0) / (p/P_std)
+        t_d = _solid_T_for_diffusion_powers(t)
+        D_CO_1 = 2.592e-6 * np.power(t_d, 1.78) / (p/P_std)
+        D_CO_2 = 2.592e-6 * np.square(t_d) / (p/P_std)
         D_CO = (1-weight) * D_CO_1 + weight * D_CO_2 # D_CO (float): diffusion coefficient of CO. [m2 / hr]
         return D_CO
 
@@ -911,7 +983,8 @@ class FurnaceModel:
 
         Raises:
         """
-        D_CO2 = 2.236E-6 * t**(1.78) / (p/P_std)    # D_CO2 (float): diffusion coefficient of CO2 in blast furnace gas. [m2 / hr]
+        t_d = _solid_T_for_diffusion_powers(t)
+        D_CO2 = 2.236E-6 * np.power(t_d, 1.78) / (p/P_std)    # D_CO2 (float): diffusion coefficient of CO2 in blast furnace gas. [m2 / hr]
         return D_CO2
     
     def HeatCapacity_Gas(self,T,x,y,w):
@@ -959,9 +1032,16 @@ class HCFurnaceModel(FurnaceModel):
     def __init__(self, parameters):
         super().__init__(parameters)
 
+    @staticmethod
+    def clip_profile_for_hc(T, t, fs, x, y, w, rhob, p):
+        """与 BVP blast_furnace_bvp 一致；在驱动层每次调用 *_hc 前对整剖面做一次约束。"""
+        return clip_furnace_state_up8(T, t, fs, x, y, w, rhob, p)
+
     # Heat Current Method
     def Tt_hc(self,z,T,t,fs,x,y,w,p,rhob):
         """[T,t,fs,x,y,w,p,rhob]->[T_new,t_new]
+
+        调用前请由驱动层使用 ``clip_profile_for_hc``（与 BVP 一致）。
 
         Args:
             z (numpy.ndarray): axial position of coke-bed. [m]
@@ -971,8 +1051,6 @@ class HCFurnaceModel(FurnaceModel):
             T_new (numpy.ndarray): temperature profile of gas. [K]
             t_new (numpy.ndarray): temperature profile of coke-bed. [K]
         """
-        T, t, fs, x, y, w, rhob, p = clip_state_up8(T, t, fs, x, y, w, rhob, p)
-
         T1in = self.params.t_in
         T2in = self.params.T_in
 
@@ -990,7 +1068,7 @@ class HCFurnaceModel(FurnaceModel):
         Re = self.params.d_p * G / miu
         k = 0.06 # k (float): thermal conductivity of gas. [kcal / m * hr * K]
         Pr = C * miu / k
-        Nu = 2.0 + 0.60*Re**(1/2)*Pr**(1/3)
+        Nu = 2.0 + 0.60 * _nonneg_sqrt(Re) * _nonneg_cbrt(Pr)
         h_p = Nu * k / self.params.d_p # h_p (float): particle-to-fluid heat transfer coefficient. [kcal / m2 * hr * K]
 
         KA = 6 * (1-self.params.epsilon) * h_p * Az  / self.params.phi_o / self.params.d_p  # KA (float): Heat transfer coefficient. [kcal / m * hr * K]
@@ -1071,7 +1149,7 @@ class HCFurnaceModel(FurnaceModel):
             Re = self.params.d_p * G / miu
             k = 0.06 # k (float): thermal conductivity of gas. [kcal / m * hr * K]
             Pr = C * miu / k
-            Nu = 2.0 + 0.60*Re**(1/2)*Pr**(1/3)
+            Nu = 2.0 + 0.60 * _nonneg_sqrt(Re) * _nonneg_cbrt(Pr)
             h_p = Nu * k / self.params.d_p # h_p (float): particle-to-fluid heat transfer coefficient. [kcal / m2 * hr * K]
 
             KA = 6 * (1-self.params.epsilon) * h_p * Az  / self.params.phi_o / self.params.d_p  # KA (float): Heat transfer coefficient. [kcal / m * hr * K]
@@ -1109,7 +1187,8 @@ class HCFurnaceModel(FurnaceModel):
 
     def xy_hc(self,z,T,t,fs,x,y,w,p):
         """
-        
+        调用前请由驱动层使用 ``clip_profile_for_hc``（与 BVP 一致）。
+
         Args:
             z (numpy.ndarray): axial position of coke-bed. [m]
             T, t, fs, x, y, w, p (numpy.ndarray)
@@ -1117,8 +1196,6 @@ class HCFurnaceModel(FurnaceModel):
             x_new (numpy.ndarray): profile of molar fraction of CO in bulk of gas. [-]
             y_new (numpy.ndarray): profile of molar fraction of CO2 in bulk of gas. [-]
         """
-        T, t, fs, x, y, w, p = clip_thermal_moles_pressure_7(T, t, fs, x, y, w, p)
-
         x_in = self.params.x_in
         y_in = self.params.y_in
 
@@ -1132,7 +1209,7 @@ class HCFurnaceModel(FurnaceModel):
         Re = self.params.d_o * u * rho / miu
 
         Sc = miu / rho / D_CO
-        Sh = 2.0 + 0.55*Re**(1/2)*Sc**(1/3)
+        Sh = 2.0 + 0.55 * _nonneg_sqrt(Re) * _nonneg_cbrt(Sc)
         kf = self.TransferCoefficient_Gas(Sh,D_CO,self.params.d_o)  # kf (float): gas-film mass transfer coefficient in reaction. [m / hr]
 
         epsilon_v = 0.53 + 0.47 * self.params.epsilon_o
@@ -1142,7 +1219,8 @@ class HCFurnaceModel(FurnaceModel):
         k1 = 347 * np.exp(-3460/t) # k (float): rate constant of reaction. [m / hr]
 
         K1 = self.smooth_R1(t,fs) # K (float): equilibrium constant of reaction. [-]
-        kappa_1 = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*((1-fs+eps)**(-1/3) - 1)/Ds + ((1-fs+eps)**(2/3)*k1*(1+1/K1))**(-1))
+        _sh_xy = _heme_shell_1_minus_fs(fs)
+        kappa_1 = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*(np.power(_sh_xy, -1.0/3.0) - 1.0)/Ds + (np.power(_sh_xy, 2.0/3.0)*k1*(1+1/K1))**(-1))
         
         kappa_1[fs>=1] = 0
         
@@ -1193,10 +1271,11 @@ class HCFurnaceModel(FurnaceModel):
             Re = self.params.d_o * u * rho / miu
 
             Sc = miu / rho / D_CO
-            Sh = 2.0 + 0.55*Re**(1/2)*Sc**(1/3)
+            Sh = 2.0 + 0.55 * _nonneg_sqrt(Re) * _nonneg_cbrt(Sc)
             kf = self.TransferCoefficient_Gas(Sh,D_CO,self.params.d_o)  # kf (float): gas-film mass transfer coefficient in reaction. [m / hr]
 
-            kappa_1 = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*((1-fs+eps)**(-1/3) - 1)/Ds + ((1-fs+eps)**(2/3)*k1*(1+1/K1))**(-1))
+            _sh_xy = _heme_shell_1_minus_fs(fs)
+            kappa_1 = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*(np.power(_sh_xy, -1.0/3.0) - 1.0)/Ds + (np.power(_sh_xy, 2.0/3.0)*k1*(1+1/K1))**(-1))
             kappa_1[fs>=1] = 0
 
             KA = Az*kappa_1 # transfer coefficient [Nm3 / m * hr]
@@ -1243,8 +1322,6 @@ class HCFurnaceModel(FurnaceModel):
         Returns:
             w_new (numpy.ndarray): profile of molar fraction of H2 in bulk of gas. [-]
         """
-        T, t, fs, x, y, w, p = clip_thermal_moles_pressure_7(T, t, fs, x, y, w, p)
-
         w_in = self.params.w_in
 
         Dz = self.params.Diameter_BF(z) # Dz (float): diameter of coke-bed. [m]
@@ -1254,16 +1331,18 @@ class HCFurnaceModel(FurnaceModel):
         miu = self.Viscosity_Gas(T) # miu (float): viscosity of blast furnace gas. [kg / m * hr]
         rho = self.Density_Gas(x,y,w) # rho (float): density of blast furnace gas. [kg / Nm3]
         Re = self.params.d_o * u * rho / miu
-        D_H2 = 3.960E-6*t**1.78 / (p/P_std) # D_H2 (float): diffusion coefficient of H2 in blast furnace gas. [m2 / hr]
+        t_d = _solid_T_for_diffusion_powers(t)
+        D_H2 = 3.960E-6 * np.power(t_d, 1.78) / (p/P_std) # D_H2 (float): diffusion coefficient of H2 in blast furnace gas. [m2 / hr]
         Sc = miu / rho / D_H2
-        Sh = 2.0 + 0.55*Re**(1/2)*Sc**(1/3)
+        Sh = 2.0 + 0.55 * _nonneg_sqrt(Re) * _nonneg_cbrt(Sc)
         kf = self.TransferCoefficient_Gas(Sh,D_H2,self.params.d_o)  # kf (float): gas-film mass transfer coefficient in reaction. [m / hr]
         epsilon_v = 0.53 + 0.47 * self.params.epsilon_o
         xi = 0.238 * self.params.epsilon_o + 0.04
         Ds = D_H2 * epsilon_v * xi # Ds (float): intraparticle diffusion coefficient of H2 in reduced iron phase. [m2 / hr]
         k,K = self.smooth_R5(t)  # smoothed k,K
 
-        kappa_5 = pai * self.params.d_o**(2) * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*((1-fs+eps)**(-1/3) - 1)/Ds + ((1-fs+eps)**(2/3)*k*(1+1/K))**(-1))
+        _sh_w = _heme_shell_1_minus_fs(fs)
+        kappa_5 = pai * self.params.d_o**(2) * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*(np.power(_sh_w, -1.0/3.0) - 1.0)/Ds + (np.power(_sh_w, 2.0/3.0)*k*(1+1/K))**(-1))
 
         R7 = self.ReactionRate_7(T,x,y,w,p)
 
@@ -1300,10 +1379,11 @@ class HCFurnaceModel(FurnaceModel):
             rho = self.Density_Gas(x,y,w) # rho (float): density of blast furnace gas. [kg / Nm3]
             Re = self.params.d_o * u * rho / miu
             Sc = miu / rho / D_H2
-            Sh = 2.0 + 0.55*Re**(1/2)*Sc**(1/3)
+            Sh = 2.0 + 0.55 * _nonneg_sqrt(Re) * _nonneg_cbrt(Sc)
             kf = Sh * D_H2 / self.params.d_o  # kf (float): gas-film mass transfer coefficient in reaction. [m / hr]
 
-            kappa_5 = pai * self.params.d_o**(2) * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*((1-fs+eps)**(-1/3) - 1)/Ds + ((1-fs+eps)**(2/3)*k*(1+1/K))**(-1))
+            _sh_w = _heme_shell_1_minus_fs(fs)
+            kappa_5 = pai * self.params.d_o**(2) * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*(np.power(_sh_w, -1.0/3.0) - 1.0)/Ds + (np.power(_sh_w, 2.0/3.0)*k*(1+1/K))**(-1))
 
             R7 = self.ReactionRate_7(T,x,y,w,p)
 
@@ -1336,8 +1416,6 @@ class HCFurnaceModel(FurnaceModel):
         Returns:
             p_new (numpy.ndarray): profile of pressure of gas. [Kg / m2]
         """
-        T, x, y, w, p = clip_gas_dp_inputs(T, x, y, w, p)
-
         p2_in = self.params.p_in**2
 
         Dz = self.params.Diameter_BF(z) # Dz (float): diameter of coke-bed. [m]
@@ -1359,7 +1437,7 @@ class HCFurnaceModel(FurnaceModel):
         X_temp = solve(A_temp, a_temp)
         # print(X_temp.shape)
         p2_new = np.asarray(X_temp).reshape(-1)
-        p_new = np.sqrt(p2_new)
+        p_new = _nonneg_sqrt(p2_new)
 
         return p_new
 
@@ -1372,8 +1450,6 @@ class HCFurnaceModel(FurnaceModel):
         Returns:
             fs_new (numpy.ndarray): profile of fraction of reduction of iron ore. [-]
         """
-        T, t, fs, x, y, w, p = clip_thermal_moles_pressure_7(T, t, fs, x, y, w, p)
-
         fs_in = self.params.fs_in
 
         Dz = self.params.Diameter_BF(z) # Dz (float): diameter of coke-bed. [m]
@@ -1435,8 +1511,6 @@ class HCFurnaceModel(FurnaceModel):
         Returns:
             rhob_new (numpy.ndarray): profile of . [kg / m3]
         """
-        T, t, fs, x, y, w, rhob, p = clip_state_up8(T, t, fs, x, y, w, rhob, p)
-
         rhob_in = self.params.rhob_in
 
         Dz = self.params.Diameter_BF(z) # Dz (float): diameter of coke-bed. [m]
@@ -1476,6 +1550,9 @@ class HCFurnaceModel(FurnaceModel):
         H0, HH = H_ctrl[0], H_ctrl[-1]
         z_guess = np.linspace(H0, HH, model.params.initial_mesh)
 
+        T, t, fs, x, y, w, rhob, p = HCFurnaceModel.clip_profile_for_hc(
+            T, t, fs, x, y, w, rhob, p
+        )
         T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, y, w, p, rhob)
         x_new, y_new = model.xy_hc(z_guess, T, t, fs, x, y, w, p)
 
@@ -1502,6 +1579,9 @@ class HCFurnaceModel(FurnaceModel):
             x = x_new
             y = y_new
 
+            T, t, fs, x, y, w, rhob, p = HCFurnaceModel.clip_profile_for_hc(
+                T, t, fs, x, y, w, rhob, p
+            )
             T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, y, w, p, rhob)
             x_new, y_new = model.xy_hc(z_guess, T, t, fs, x, y, w, p)
 
@@ -1511,6 +1591,9 @@ class HCFurnaceModel(FurnaceModel):
             RE_y = norm(y_new - y)/norm(y)
 
         # 外层循环：wfsprhob
+        T, t, fs, x, y, w, rhob, p = HCFurnaceModel.clip_profile_for_hc(
+            T, t, fs, x, y, w, rhob, p
+        )
         w_new = model.w_hc(z_guess, T, t, fs, x, y, w, p)
         fs_new = model.fs_hc(z_guess, T, t, fs, x, y, w, p)
         p_new = model.p_hc(z_guess, T, x, y, w, p)
@@ -1548,6 +1631,9 @@ class HCFurnaceModel(FurnaceModel):
                 fs = fs_new
                 p = p_new
                 rhob = rhob_new
+                T, t, fs, x, y, w, rhob, p = HCFurnaceModel.clip_profile_for_hc(
+                    T, t, fs, x, y, w, rhob, p
+                )
                 w_new = model.w_hc(z_guess, T, t, fs, x, y, w, p)
                 fs_new = model.fs_hc(z_guess, T, t, fs, x, y, w, p)
                 p_new = model.p_hc(z_guess, T, x, y, w, p)
@@ -1563,6 +1649,9 @@ class HCFurnaceModel(FurnaceModel):
             # print("relative error of rhob = ", RE_rhob)
 
             # 内层循环：Ttxyfs
+            T, t, fs, x, y, w, rhob, p = HCFurnaceModel.clip_profile_for_hc(
+                T, t, fs, x, y, w, rhob, p
+            )
             T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, y, w, p, rhob)
             x_new, y_new = model.xy_hc(z_guess, T, t, fs, x, y, w, p)
 
@@ -1599,6 +1688,9 @@ class HCFurnaceModel(FurnaceModel):
                 x = x_new
                 y = y_new
 
+                T, t, fs, x, y, w, rhob, p = HCFurnaceModel.clip_profile_for_hc(
+                    T, t, fs, x, y, w, rhob, p
+                )
                 T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, y, w, p, rhob)
                 x_new, y_new = model.xy_hc(z_guess, T, t, fs, x, y, w, p)
                 RE_T = norm(T_new - T)/norm(T)
@@ -1612,6 +1704,9 @@ class HCFurnaceModel(FurnaceModel):
             # print("relative error of x = ", RE_x)
             # print("relative error of y = ", RE_y)
 
+            T, t, fs, x, y, w, rhob, p = HCFurnaceModel.clip_profile_for_hc(
+                T, t, fs, x, y, w, rhob, p
+            )
             w_new = model.w_hc(z_guess, T, t, fs, x, y, w, p)
             fs_new = model.fs_hc(z_guess, T, t, fs, x, y, w, p)
             p_new = model.p_hc(z_guess, T, x, y, w, p)

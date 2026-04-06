@@ -14,17 +14,50 @@ from constant import pai, R, R_, g_c, T_std, P_std, eps
 from state_bounds import (
     BVP_FRACTION_MIN,
     BVP_FRACTION_MAX,
-    clip_down_core_5,
-    clip_down_gas_p_inputs,
+    BVP_TEMP_MIN,
+    BVP_TEMP_MAX,
+    clip_iter_temperatures,
     clip_state_down6,
 )
 from hc_solver_settings import (
     HC_REL_TOL_MAIN,
+    HC_MAX_ITER_TT_XY_FS,
+    HC_RELAXATION,
     HC_MAX_ITER_TEST_NESTED_INNER,
     HC_MAX_ITER_TEST_OUTER_DOWN_DEEP,
     HC_MAX_ITER_TEST_MONOLITHIC,
     HC_MAX_ITER_TEST_FIRST_DOWN,
 )
+
+
+def _nonneg_sqrt(x):
+    return np.sqrt(np.maximum(np.asarray(x, dtype=float), 0.0))
+
+
+def _nonneg_cbrt(x):
+    return np.cbrt(np.maximum(np.asarray(x, dtype=float), 0.0))
+
+
+def _heme_shell_1_minus_fs(fs):
+    fs_a = np.asarray(fs, dtype=float)
+    fs_s = np.nan_to_num(fs_a, nan=0.0, posinf=1.0, neginf=0.0)
+    fs_eff = np.minimum(fs_s, 1.0)
+    raw = 1.0 - fs_eff + eps
+    shell = np.maximum(raw, eps)
+    return shell
+
+
+def _solid_T_for_diffusion_powers(t):
+    t0 = np.asarray(t, dtype=float)
+    raw = np.nan_to_num(
+        t0,
+        nan=float(BVP_TEMP_MIN),
+        posinf=float(BVP_TEMP_MAX),
+        neginf=float(BVP_TEMP_MIN),
+    )
+    out = np.clip(raw, float(BVP_TEMP_MIN), float(BVP_TEMP_MAX))
+    return out
+
 
 class FurnaceModel_DOWN:
     """高炉计算模型"""
@@ -437,7 +470,7 @@ class FurnaceModel_DOWN:
         Re = self.params.d_p * G / miu
         k = 0.06 # k (float): thermal conductivity of gas. [kcal / m * hr * K]
         Pr = C * miu / k
-        Nu = 2.0 + 0.60*Re**(1/2)*Pr**(1/3)
+        Nu = 2.0 + 0.60 * _nonneg_sqrt(Re) * _nonneg_cbrt(Pr)
         h_p = Nu * k / self.params.d_p # h_p (float): particle-to-fluid heat transfer coefficient. [kcal / m2 * hr * K]
         h_p = h_p / 10  # specially for DOWN
         q = 6 * (1-self.params.epsilon) * h_p * (T-t) / self.params.phi_o / self.params.d_p
@@ -540,7 +573,7 @@ class FurnaceModel_DOWN:
         Re = self.params.d_o * u * rho / miu
 
         Sc = miu / rho / D_CO
-        Sh = 2.0 + 0.55*Re**(1/2)*Sc**(1/3)
+        Sh = 2.0 + 0.55 * _nonneg_sqrt(Re) * _nonneg_cbrt(Sc)
         kf = self.TransferCoefficient_Gas(Sh,D_CO,self.params.d_o) # kf (float): gas-film mass transfer coefficient in reaction. [m / hr]
 
         epsilon_v = 0.53 + 0.47 * self.params.epsilon_o
@@ -553,7 +586,8 @@ class FurnaceModel_DOWN:
 
         xe = 1 / (1+K)
 
-        r = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 * (x-xe) / 22.4 / t / (1/kf + self.params.d_o/2*((1-fs+eps)**(-1/3) - 1)/Ds + ((1-fs+eps)**(2/3)*k*(1+1/K))**(-1))
+        _sh = _heme_shell_1_minus_fs(fs)
+        r = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 * (x-xe) / 22.4 / t / (1/kf + self.params.d_o/2*(np.power(_sh, -1.0/3.0) - 1.0)/Ds + (np.power(_sh, 2.0/3.0)*k*(1+1/K))**(-1))
         
         fs = np.asarray(fs)
         r = np.where(fs >= 1, 0.0, r)
@@ -628,7 +662,15 @@ class FurnaceModel_DOWN:
 
         Raises:
         """
-        miu = 4.960e-3 * T**(3/2) / (T+103) # miu (float): viscosity of blast furnace gas. [kg / m * hr]
+        T0 = np.asarray(T, dtype=float)
+        Tn = np.nan_to_num(
+            T0,
+            nan=float(BVP_TEMP_MIN),
+            posinf=float(BVP_TEMP_MAX),
+            neginf=float(BVP_TEMP_MIN),
+        )
+        Ta = np.clip(Tn, float(BVP_TEMP_MIN), float(BVP_TEMP_MAX))
+        miu = 4.960e-3 * np.power(Ta, 1.5) / (Ta + 103)  # miu (float): viscosity of blast furnace gas. [kg / m * hr]
         return miu
     
     def TransferCoefficient_Gas(self,Sh,D,d):
@@ -658,8 +700,9 @@ class FurnaceModel_DOWN:
         Raises:
         """
         weight = smooth_heaviside(t-848,k=5)
-        D_CO_1 = 2.592e-6 * t**(1.78) / (p/P_std)
-        D_CO_2 = 2.592e-6 * (t)**(2.0) / (p/P_std)
+        t_d = _solid_T_for_diffusion_powers(t)
+        D_CO_1 = 2.592e-6 * np.power(t_d, 1.78) / (p/P_std)
+        D_CO_2 = 2.592e-6 * np.square(t_d) / (p/P_std)
         D_CO = (1-weight) * D_CO_1 + weight * D_CO_2 # D_CO (float): diffusion coefficient of CO. [m2 / hr]
         return D_CO
 
@@ -674,7 +717,8 @@ class FurnaceModel_DOWN:
 
         Raises:
         """
-        D_CO2 = 2.236E-6 * t**(1.78) / (p/P_std)    # D_CO2 (float): diffusion coefficient of CO2 in blast furnace gas. [m2 / hr]
+        t_d = _solid_T_for_diffusion_powers(t)
+        D_CO2 = 2.236E-6 * np.power(t_d, 1.78) / (p/P_std)    # D_CO2 (float): diffusion coefficient of CO2 in blast furnace gas. [m2 / hr]
         return D_CO2
     
     def HeatCapacity_Gas(self,T,x):
@@ -719,9 +763,16 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
     def __init__(self, parameters):
         super().__init__(parameters)
 
+    @staticmethod
+    def clip_profile_for_hc(T, t, fs, x, rhob, p):
+        """与 BVP blast_furnace_bvp 一致；在驱动层每次调用 *_hc 前对整剖面做一次约束。"""
+        return clip_state_down6(T, t, fs, x, rhob, p)
+
     # Heat Current Method
     def Tt_hc(self,z,T,t,fs,x,p,rhob):
         """[T,t,fs,x,p,rhob]->[T_new,t_new]
+
+        调用前请由驱动层使用 ``clip_profile_for_hc``（与 BVP 一致）。
 
         Args:
             z (numpy.ndarray): axial position of coke-bed. [m]
@@ -731,8 +782,6 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             T_new (numpy.ndarray): temperature profile of gas. [K]
             t_new (numpy.ndarray): temperature profile of coke-bed. [K]
         """
-        T, t, fs, x, rhob, p = clip_state_down6(T, t, fs, x, rhob, p)
-
         T1in = self.params.t_in
         T2in = self.params.T_in
 
@@ -750,7 +799,7 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         Re = self.params.d_p * G / miu
         k = 0.06 # k (float): thermal conductivity of gas. [kcal / m * hr * K]
         Pr = C * miu / k
-        Nu = 2.0 + 0.60*Re**(1/2)*Pr**(1/3)
+        Nu = 2.0 + 0.60 * _nonneg_sqrt(Re) * _nonneg_cbrt(Pr)
         h_p = Nu * k / self.params.d_p # h_p (float): particle-to-fluid heat transfer coefficient. [kcal / m2 * hr * K]
 
         KA = 6 * (1-self.params.epsilon) * h_p * Az  / self.params.phi_o / self.params.d_p  # KA (float): Heat transfer coefficient. [kcal / m * hr * K]
@@ -799,74 +848,74 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         # plt.legend()
         # plt.show()
 
-        # count = 0
-        # limit = 1000
-        # s = 0.5
-        # while(norm(T_new-T)/norm(T) >= 1e-3 or norm(t_new-t)/norm(t) >= 1e-3) and (count < limit):
-        #     count += 1
-        #     # print("Tt_hc, count = ", count)
-        #     T = s*T_new + (1-s)*T
-        #     t = s*t_new + (1-s)*t
+        count = 0
+        limit = HC_MAX_ITER_TT_XY_FS
+        s = HC_RELAXATION
+        while (
+            norm(T_new - T) / norm(T) >= HC_REL_TOL_MAIN
+            or norm(t_new - t) / norm(t) >= HC_REL_TOL_MAIN
+        ) and (count < limit):
+            count += 1
+            # print("Tt_hc, count = ", count)
+            T = s * T_new + (1 - s) * T
+            t = s * t_new + (1 - s) * t
+            T, t = clip_iter_temperatures(T, t)
 
-        #     T = np.clip(T, 500, 2500)
-        #     t = np.clip(t, 400, 2500)
-
-        #     miu = self.Viscosity_Gas(T) # miu (float): viscosity of blast furnace gas. [kg / m * hr]
-        #     F = self.VolumeRate_Gas()   # F (float): volume rate of flow of gas. [Nm3 / hr]
+            miu = self.Viscosity_Gas(T) # miu (float): viscosity of blast furnace gas. [kg / m * hr]
+            F = self.VolumeRate_Gas(fs)   # F (float): volume rate of flow of gas. [Nm3 / hr]
             
-        #     rho = self.Density_Gas(x) # rho (float): density of blast furnace gas. [kg / Nm3]
-        #     C,dCdT = self.HeatCapacity_Gas(T,x) # C (float): heat capacity of gas. [kcal / kg * K] ; dCdT (float): differential of C with T. [kcal / kg * K**2]
-        #     Cs,dCsdt = self.HeatCapacity_Solid(t) # Cs (float): specific heat of solid particles. [kcal / kg * K] ; dCsdt (float): specific heat of solid particles differential T. [kcal / kg * K**2]
+            rho = self.Density_Gas(x) # rho (float): density of blast furnace gas. [kg / Nm3]
+            C,dCdT = self.HeatCapacity_Gas(T,x) # C (float): heat capacity of gas. [kcal / kg * K] ; dCdT (float): differential of C with T. [kcal / kg * K**2]
+            Cs,dCsdt = self.HeatCapacity_Solid(t) # Cs (float): specific heat of solid particles. [kcal / kg * K] ; dCsdt (float): specific heat of solid particles differential T. [kcal / kg * K**2]
 
-        #     G = rho * F / Az # G (float): mass velocity of gas. [kg / m2 * hr]
-        #     Re = self.params.d_p * G / miu
-        #     k = 0.06 # k (float): thermal conductivity of gas. [kcal / m * hr * K]
-        #     Pr = C * miu / k
-        #     Nu = 2.0 + 0.60*Re**(1/2)*Pr**(1/3)
-        #     h_p = Nu * k / self.params.d_p # h_p (float): particle-to-fluid heat transfer coefficient. [kcal / m2 * hr * K]
+            G = rho * F / Az # G (float): mass velocity of gas. [kg / m2 * hr]
+            Re = self.params.d_p * G / miu
+            k = 0.06 # k (float): thermal conductivity of gas. [kcal / m * hr * K]
+            Pr = C * miu / k
+            Nu = 2.0 + 0.60 * _nonneg_sqrt(Re) * _nonneg_cbrt(Pr)
+            h_p = Nu * k / self.params.d_p # h_p (float): particle-to-fluid heat transfer coefficient. [kcal / m2 * hr * K]
 
-        #     KA = 6 * (1-self.params.epsilon) * h_p * Az  / self.params.phi_o / self.params.d_p  # KA (float): Heat transfer coefficient. [kcal / m * hr * K]
+            KA = 6 * (1-self.params.epsilon) * h_p * Az  / self.params.phi_o / self.params.d_p  # KA (float): Heat transfer coefficient. [kcal / m * hr * K]
 
-        #     R1 = self.ReactionRate_1(z,T,t,fs,x,p) # R1 (float): 1/3 Fe2O3 + CO = 2/3 Fe + CO2 reaction rate per unit volume of bed. [kmol CO / m3 bed * hr]
+            R1 = self.ReactionRate_1(z,T,t,fs,x,p) # R1 (float): 1/3 Fe2O3 + CO = 2/3 Fe + CO2 reaction rate per unit volume of bed. [kmol CO / m3 bed * hr]
             
-        #     # t<1673K
-        #     q2 = (1.2507*0 + 0.7261*1)*R1
-        #     q4 = -H1*R1
-        #     q5 = 16*R1
+            # t<1673K
+            q2 = (1.2507*0 + 0.7261*1)*R1
+            q4 = -H1*R1
+            q5 = 16*R1
 
-        #     G1 = rhob * self.params.Fs * (Cs + t*dCsdt) # solid   [kcal / hr * K]
-        #     G2 = rho * F * (C + T*dCdT)    # gas     [kcal / hr * K]
-        #     Q1 = Az*q4 + Az*Cs*t*q5                 # solid
-        #     Q2 = 22.4*Az*C*q2*T + pai*Dz*self.params.U*(T-self.params.T_we) # gas       [kcal / m * hr]
+            G1 = rhob * self.params.Fs * (Cs + t*dCsdt) # solid   [kcal / hr * K]
+            G2 = rho * F * (C + T*dCdT)    # gas     [kcal / hr * K]
+            Q1 = Az*q4 + Az*Cs*t*q5                 # solid
+            Q2 = 22.4*Az*C*q2*T + pai*Dz*self.params.U*(T-self.params.T_we) # gas       [kcal / m * hr]
 
-        #     G1 = (G1[:-1] + G1[1:]) / 2
-        #     G2 = (G2[:-1] + G2[1:]) / 2
-        #     Q1 = (Q1[:-1] + Q1[1:]) / 2
-        #     Q2 = (Q2[:-1] + Q2[1:]) / 2
-        #     KA = (KA[:-1] + KA[1:]) / 2
+            G1 = (G1[:-1] + G1[1:]) / 2
+            G2 = (G2[:-1] + G2[1:]) / 2
+            Q1 = (Q1[:-1] + Q1[1:]) / 2
+            Q2 = (Q2[:-1] + Q2[1:]) / 2
+            KA = (KA[:-1] + KA[1:]) / 2
 
-        #     z_diff = np.diff(z)
-        #     N = len(z_diff)
-        #     A_temp,a_temp = setAa_n(N, z_diff, KA, G1, G2, T1in, T2in, Q1, Q2)
-        #     X_temp = solve(A_temp, a_temp)
+            z_diff = np.diff(z)
+            N = len(z_diff)
+            A_temp,a_temp = setAa_n(N, z_diff, KA, G1, G2, T1in, T2in, Q1, Q2)
+            X_temp = solve(A_temp, a_temp)
 
-        #     t_new = np.asarray(X_temp[0:N+1]).reshape(-1)
-        #     T_new = np.asarray(X_temp[(N+1):(2*N+2)]).reshape(-1)
+            t_new = np.asarray(X_temp[0:N+1]).reshape(-1)
+            T_new = np.asarray(X_temp[(N+1):(2*N+2)]).reshape(-1)
 
         # print("Tt_hc, total count = ", count_out)
         return T_new, t_new
 
     def x_hc(self,z,T,t,fs,x,p):
         """
-        
+        调用前请由驱动层使用 ``clip_profile_for_hc``（与 BVP 一致）。
+
         Args:
             z (numpy.ndarray): axial position of coke-bed. [m]
             T, t, fs, x, p (numpy.ndarray)
         Returns:
             x_new (numpy.ndarray): profile of molar fraction of CO in bulk of gas. [-]
         """
-        T, t, fs, x, p = clip_down_core_5(T, t, fs, x, p)
-
         x_in = self.params.x_in
 
         Dz = self.params.Diameter_BF(z) # Dz (float): Diameter of blast furnace. [m]
@@ -879,7 +928,7 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         Re = self.params.d_o * u * rho / miu
 
         Sc = miu / rho / D_CO
-        Sh = 2.0 + 0.55*Re**(1/2)*Sc**(1/3)
+        Sh = 2.0 + 0.55 * _nonneg_sqrt(Re) * _nonneg_cbrt(Sc)
         kf = self.TransferCoefficient_Gas(Sh,D_CO,self.params.d_o)  # kf (float): gas-film mass transfer coefficient in reaction. [m / hr]
 
         epsilon_v = 0.53 + 0.47 * self.params.epsilon_o
@@ -889,7 +938,8 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         k1 = 347 * np.exp(-3460/t) # k (float): rate constant of reaction. [m / hr]
 
         K1 = self.smooth_R1(t,fs) # K (float): equilibrium constant of reaction. [-]
-        kappa_1 = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*((1-fs+eps)**(-1/3) - 1)/Ds + ((1-fs+eps)**(2/3)*k1*(1+1/K1))**(-1))
+        _sh_xy = _heme_shell_1_minus_fs(fs)
+        kappa_1 = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*(np.power(_sh_xy, -1.0/3.0) - 1.0)/Ds + (np.power(_sh_xy, 2.0/3.0)*k1*(1+1/K1))**(-1))
         kappa_1[fs>=1] = 0 
 
         a_list = 22.4*Az*kappa_1/F
@@ -908,39 +958,38 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         # plt.legend()
         # plt.show()
 
-        # count = 0
-        # limit = 100
-        # s = 0.5
-        # while(norm(x_new-x)/norm(x) >= 1e-3) and (count < limit):
-        #     count += 1
-        #     # print("x_hc, count = ", count)
-        #     # print("norm(x_new-x)/norm(x) = ", norm(x_new-x)/norm(x))
-       
-        #     x = s*x_new + (1-s)*x
+        count = 0
+        limit = HC_MAX_ITER_TT_XY_FS
+        s = HC_RELAXATION
+        while (norm(x_new - x) / norm(x) >= HC_REL_TOL_MAIN) and (count < limit):
+            count += 1
+            # print("x_hc, count = ", count)
+            # print("norm(x_new-x)/norm(x) = ", norm(x_new-x)/norm(x))
+            x = s * x_new + (1 - s) * x
+            x = np.clip(x, BVP_FRACTION_MIN, BVP_FRACTION_MAX)
 
-        #     x = np.clip(x, 0, 1)
+            F = self.VolumeRate_Gas(fs)   # F (float): volume rate of flow of gas. [Nm3 / hr]
+            u = F/Az * T/T_std * P_std/p # u (float): superficial velocity of gas. [m / hr]
+            rho = self.Density_Gas(x) # rho (float): density of blast furnace gas. [kg / Nm3]
+            Re = self.params.d_o * u * rho / miu
 
-        #     F = self.VolumeRate_Gas()   # F (float): volume rate of flow of gas. [Nm3 / hr]
-        #     u = F/Az * T/T_std * P_std/p # u (float): superficial velocity of gas. [m / hr]
-        #     rho = self.Density_Gas(x) # rho (float): density of blast furnace gas. [kg / Nm3]
-        #     Re = self.params.d_o * u * rho / miu
+            Sc = miu / rho / D_CO
+            Sh = 2.0 + 0.55 * _nonneg_sqrt(Re) * _nonneg_cbrt(Sc)
+            kf = self.TransferCoefficient_Gas(Sh,D_CO,self.params.d_o)  # kf (float): gas-film mass transfer coefficient in reaction. [m / hr]
 
-        #     Sc = miu / rho / D_CO
-        #     Sh = 2.0 + 0.55*Re**(1/2)*Sc**(1/3)
-        #     kf = self.TransferCoefficient_Gas(Sh,D_CO,self.params.d_o)  # kf (float): gas-film mass transfer coefficient in reaction. [m / hr]
+            _sh_xy = _heme_shell_1_minus_fs(fs)
+            kappa_1 = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*(np.power(_sh_xy, -1.0/3.0) - 1.0)/Ds + (np.power(_sh_xy, 2.0/3.0)*k1*(1+1/K1))**(-1))
+            kappa_1[fs>=1] = 0
 
-        #     kappa_1 = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 / 22.4 / t / (1/kf + self.params.d_o/2*((1-fs+eps)**(-1/3) - 1)/Ds + ((1-fs+eps)**(2/3)*k1*(1+1/K1))**(-1))
-        #     kappa_1[fs>=1] = 0
+            a_list = 22.4*Az*kappa_1/F
+            b_list = 22.4*Az*kappa_1/F/(1+K1)
 
-        #     a_list = 22.4*Az*kappa_1/F
-        #     b_list = 22.4*Az*kappa_1/F/(1+K1)
+            a_list = (a_list[1:] + a_list[:-1]) / 2
+            b_list = (b_list[1:] + b_list[:-1]) / 2
 
-        #     a_list = (a_list[1:] + a_list[:-1]) / 2
-        #     b_list = (b_list[1:] + b_list[:-1]) / 2
-
-        #     A_temp,a_temp = setAa_linear_n(N, z_diff, x_in, a_list, b_list)
-        #     X_temp = solve(A_temp, a_temp)
-        #     x_new = np.asarray(X_temp).reshape(-1)
+            A_temp,a_temp = setAa_linear_n(N, z_diff, x_in, a_list, b_list)
+            X_temp = solve(A_temp, a_temp)
+            x_new = np.asarray(X_temp).reshape(-1)
         
         x_new = np.clip(x_new, BVP_FRACTION_MIN, BVP_FRACTION_MAX)
         return x_new
@@ -954,8 +1003,6 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         Returns:
             p_new (numpy.ndarray): profile of pressure of gas. [Kg / m2]
         """
-        T, fs, x, p = clip_down_gas_p_inputs(T, fs, x, p)
-
         p2_in = self.params.p_in**2
 
         Dz = self.params.Diameter_BF(z) # Dz (float): diameter of coke-bed. [m]
@@ -977,7 +1024,7 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         X_temp = solve(A_temp, a_temp)
         # print(X_temp.shape)
         p2_new = np.asarray(X_temp).reshape(-1)
-        p_new = np.sqrt(p2_new)
+        p_new = _nonneg_sqrt(p2_new)
 
         return p_new
 
@@ -990,8 +1037,6 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         Returns:
             fs_new (numpy.ndarray): profile of fraction of reduction of iron ore. [-]
         """
-        T, t, fs, x, p = clip_down_core_5(T, t, fs, x, p)
-
         fs_in = self.params.fs_in
 
         Dz = self.params.Diameter_BF(z) # Dz (float): diameter of coke-bed. [m]
@@ -1046,7 +1091,6 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         Returns:
             rhob_new (numpy.ndarray): profile of . [kg / m3]
         """
-        T, t, fs, x, rhob, p = clip_state_down6(T, t, fs, x, rhob, p)
         rhob_in = self.params.rhob_in
 
         Dz = self.params.Diameter_BF(z) # Dz (float): diameter of coke-bed. [m]
@@ -1086,6 +1130,9 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         H0, HH = H_ctrl[0], H_ctrl[-1]
         z_guess = np.linspace(H0, HH, model.params.initial_mesh)
 
+        T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
+            T, t, fs, x, rhob, p
+        )
         T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, p, rhob)
         x_new = model.x_hc(z_guess, T, t, fs, x, p)
 
@@ -1108,6 +1155,9 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             t = t_new
             x = x_new
 
+            T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
+                T, t, fs, x, rhob, p
+            )
             T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, p, rhob)
             x_new = model.x_hc(z_guess, T, t, fs, x, p)
 
@@ -1124,6 +1174,9 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             # plt.show()
 
         # 外层循环：fsprhob
+        T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
+            T, t, fs, x, rhob, p
+        )
         fs_new = model.fs_hc(z_guess, T, t, fs, x, p)
         p_new = model.p_hc(z_guess, T, fs, x, p)
         rhob_new = model.rhob_hc(z_guess, T, t, fs, x, p, rhob)
@@ -1165,6 +1218,9 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
                 fs = fs_new
                 p = p_new
                 rhob = rhob_new
+                T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
+                    T, t, fs, x, rhob, p
+                )
                 fs_new = model.fs_hc(z_guess, T, t, fs, x, p)
                 p_new = model.p_hc(z_guess, T, fs, x, p)
                 rhob_new = model.rhob_hc(z_guess, T, t, fs, x, p, rhob)
@@ -1178,6 +1234,9 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             print("relative error of rhob = ", RE_rhob)
 
             # 内层循环：Ttxyfs
+            T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
+                T, t, fs, x, rhob, p
+            )
             T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x,p, rhob)
             x_new = model.x_hc(z_guess, T, t, fs, x, p)
 
@@ -1201,6 +1260,9 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
                 t = t_new
                 x = x_new
 
+                T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
+                    T, t, fs, x, rhob, p
+                )
                 T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, p, rhob)
                 x_new = model.x_hc(z_guess, T, t, fs, x, p)
                 RE_T = norm(T_new - T)/norm(T)
@@ -1212,6 +1274,9 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             print("relative error of t = ", RE_t)
             print("relative error of x = ", RE_x)
 
+            T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
+                T, t, fs, x, rhob, p
+            )
             fs_new = model.fs_hc(z_guess, T, t, fs, x, p)
             p_new = model.p_hc(z_guess, T, fs, x, p)
             rhob_new = model.rhob_hc(z_guess, T, t, fs, x, p, rhob)
@@ -1274,6 +1339,9 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         H0, HH = H_ctrl[0], H_ctrl[-1]
         z_guess = np.linspace(H0, HH, model.params.initial_mesh)
 
+        T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
+            T, t, fs, x, rhob, p
+        )
         T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, p, rhob)
         x_new = model.x_hc(z_guess, T, t, fs, x, p)
         fs_new = model.fs_hc(z_guess, T, t, fs, x, p)
@@ -1309,8 +1377,11 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             x = x_new
             fs = fs_new
             p = p_new
-            rhob = rhob_new            
+            rhob = rhob_new
 
+            T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
+                T, t, fs, x, rhob, p
+            )
             T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, p, rhob)
             x_new = model.x_hc(z_guess, T, t, fs, x, p)
             fs_new = model.fs_hc(z_guess, T, t, fs, x, p)
