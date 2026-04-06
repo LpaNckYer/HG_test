@@ -1,0 +1,426 @@
+2026-04-05 12:18:43 | INFO     | [grid_independence] ========================================================================
+2026-04-05 12:18:43 | INFO     | [grid_independence] start | argv=scripts/test_grid_independence.py --region up --mode hc --meshes 20,10
+2026-04-05 12:18:43 | INFO     | [grid_independence] config | region=up mode=hc meshes=[20, 10] mesh_count=2
+2026-04-05 12:18:43 | INFO     | [grid_independence] paths | csv_out=D:\Group\HyOCR\HG_test_202604\output\grid_independence_up_hc.csv | progress_log=D:\Group\HyOCR\HG_test_202604\logs\grid_independence_up_hc.log | tmp_dir=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 12:18:43 | INFO     | [grid_independence] hc_case=default_case
+2026-04-05 12:18:43 | INFO     | [grid_independence] criteria | BVP require_success=True max_rms<=0.001 bc_l2<=1e-06 | stability rel_outlet<=0.001 abs_fractions<=0.0003
+2026-04-05 12:18:43 | INFO     | [grid_independence] criteria | HC test_hc_* outer: per-variable rel err must be < HC_REL_TOL_MAIN=0.001
+2026-04-05 12:18:43 | INFO     | [grid_independence] ========================================================================
+2026-04-05 12:18:43 | INFO     | [grid_independence] mesh 1/2 | begin up HC | initial_mesh=20 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 12:18:43 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 12:18:44 | INFO     | [grid_independence] final relative error:
+2026-04-05 12:18:44 | INFO     | [grid_independence] relative error of T = 0.0007674702899262921
+2026-04-05 12:18:44 | INFO     | [grid_independence] relative error of t = 0.0007665315609934575
+2026-04-05 12:18:44 | INFO     | [grid_independence] relative error of x = 0.00047902932668330303
+2026-04-05 12:18:44 | INFO     | [grid_independence] relative error of y = 0.0007926082732358777
+2026-04-05 12:18:44 | INFO     | [grid_independence] relative error of w = 0.0005421759495259313
+2026-04-05 12:18:44 | INFO     | [grid_independence] relative error of p = 6.59307464332395e-17
+2026-04-05 12:18:44 | INFO     | [grid_independence] relative error of fs = 0.0007172055739973036
+2026-04-05 12:18:44 | INFO     | [grid_independence] relative error of rhob = 0.0005975235929778121
+2026-04-05 12:18:44 | INFO     | [grid_independence] mesh 1/2 | end up HC | status=success | equation_converged=True | elapsed=0.63s | hc_outer_converged=True hc_max_re_final=0.0007926082732358777 | T_out=559.64775 t_out=1221.85505 p_bottom=7250.04491
+2026-04-05 12:18:44 | INFO     | [grid_independence] mesh 2/2 | begin up HC | initial_mesh=10 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 12:18:44 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 12:19:19 | INFO     | [grid_independence] final relative error:
+2026-04-05 12:19:19 | INFO     | [grid_independence] relative error of T = 0.00015576518141850181
+2026-04-05 12:19:19 | INFO     | [grid_independence] relative error of t = 0.00014460836102042935
+2026-04-05 12:19:19 | INFO     | [grid_independence] relative error of x = 3.250751756473552e-05
+2026-04-05 12:19:19 | INFO     | [grid_independence] relative error of y = 5.258671201845072e-05
+2026-04-05 12:19:19 | INFO     | [grid_independence] relative error of w = 0.018144648563108313
+2026-04-05 12:19:19 | INFO     | [grid_independence] relative error of p = 0.019085716759936172
+2026-04-05 12:19:19 | INFO     | [grid_independence] relative error of fs = 0.029953088815690202
+2026-04-05 12:19:19 | INFO     | [grid_independence] relative error of rhob = 0.010690628437938285
+2026-04-05 12:19:19 | WARNING  | [grid_independence] test_hc_4n4 未达 HC_REL_TOL_MAIN=0.001：max(RE)=0.029953088815690202
+2026-04-05 12:19:19 | INFO     | [grid_independence] mesh 2/2 | end up HC | status=success | equation_converged=False | elapsed=35.11s | hc_outer_converged=False hc_max_re_final=0.029953088815690202 | T_out=551.50185 t_out=1221.25016 p_bottom=7108.80665
+2026-04-05 12:19:19 | INFO     | [grid_independence] reference | initial_mesh=20 solver=hc status=success
+2026-04-05 12:19:19 | INFO     | [grid_independence] vs_ref | mesh=20 eq_conv=True stable=True rel_diff_max=0.0000e+00 abs_diff_outlet_max=0.0000e+00
+2026-04-05 12:19:19 | INFO     | [grid_independence] vs_ref | mesh=10 eq_conv=False stable=False rel_diff_max=2.6954e-02 abs_diff_outlet_max=1.4124e+02
+2026-04-05 12:19:19 | INFO     | [grid_independence] done | region=up mode=hc reference_mesh=20 recommended_min_mesh=20 | csv=D:\Group\HyOCR\HG_test_202604\output\grid_independence_up_hc.csv | wall_s=35.7
+2026-04-05 12:19:38 | INFO     | [grid_independence] ========================================================================
+2026-04-05 12:19:38 | INFO     | [grid_independence] start | argv=scripts/test_grid_independence.py --region up --mode hc --meshes 15
+2026-04-05 12:19:38 | INFO     | [grid_independence] config | region=up mode=hc meshes=[15] mesh_count=1
+2026-04-05 12:19:38 | INFO     | [grid_independence] paths | csv_out=D:\Group\HyOCR\HG_test_202604\output\grid_independence_up_hc.csv | progress_log=D:\Group\HyOCR\HG_test_202604\logs\grid_independence_up_hc.log | tmp_dir=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 12:19:38 | INFO     | [grid_independence] hc_case=default_case
+2026-04-05 12:19:38 | INFO     | [grid_independence] criteria | BVP require_success=True max_rms<=0.001 bc_l2<=1e-06 | stability rel_outlet<=0.001 abs_fractions<=0.0003
+2026-04-05 12:19:38 | INFO     | [grid_independence] criteria | HC test_hc_* outer: per-variable rel err must be < HC_REL_TOL_MAIN=0.001
+2026-04-05 12:19:38 | INFO     | [grid_independence] ========================================================================
+2026-04-05 12:19:38 | INFO     | [grid_independence] mesh 1/1 | begin up HC | initial_mesh=15 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 12:19:38 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 12:20:13 | INFO     | [grid_independence] final relative error:
+2026-04-05 12:20:13 | INFO     | [grid_independence] relative error of T = 0.0002523634559525507
+2026-04-05 12:20:13 | INFO     | [grid_independence] relative error of t = 0.0002435955871673534
+2026-04-05 12:20:13 | INFO     | [grid_independence] relative error of x = 0.0001260133407601156
+2026-04-05 12:20:13 | INFO     | [grid_independence] relative error of y = 0.00020345714297374988
+2026-04-05 12:20:13 | INFO     | [grid_independence] relative error of w = 0.0030429055257913677
+2026-04-05 12:20:13 | INFO     | [grid_independence] relative error of p = 0.004881707313570616
+2026-04-05 12:20:13 | INFO     | [grid_independence] relative error of fs = 0.011272068918110651
+2026-04-05 12:20:13 | INFO     | [grid_independence] relative error of rhob = 0.002822281942073263
+2026-04-05 12:20:13 | WARNING  | [grid_independence] test_hc_4n4 未达 HC_REL_TOL_MAIN=0.001：max(RE)=0.011272068918110651
+2026-04-05 12:20:13 | INFO     | [grid_independence] mesh 1/1 | end up HC | status=success | equation_converged=False | elapsed=35.65s | hc_outer_converged=False hc_max_re_final=0.011272068918110651 | T_out=557.17486 t_out=1221.30762 p_bottom=7183.45680
+2026-04-05 12:20:13 | WARNING  | [grid_independence] 没有找到满足方程收敛判据的参考网格，请放宽判据、检查算例或调整 meshes 顺序（先大后小）。 | csv=D:\Group\HyOCR\HG_test_202604\output\grid_independence_up_hc.csv | wall_s=35.7
+2026-04-05 15:50:22 | INFO     | [grid_independence] ========================================================================
+2026-04-05 15:50:22 | INFO     | [grid_independence] start | argv=scripts/test_grid_independence.py --region up --mode hc --meshes 400,300,200,100,50,40,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10
+2026-04-05 15:50:22 | INFO     | [grid_independence] config | region=up mode=hc meshes=[400, 300, 200, 100, 50, 40, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10] mesh_count=27
+2026-04-05 15:50:22 | INFO     | [grid_independence] paths | csv_out=D:\Group\HyOCR\HG_test_202604\output\grid_independence_up_hc.csv | progress_log=D:\Group\HyOCR\HG_test_202604\logs\grid_independence_up_hc.log | tmp_dir=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:22 | INFO     | [grid_independence] hc_case=default_case
+2026-04-05 15:50:22 | INFO     | [grid_independence] criteria | BVP require_success=True max_rms<=0.001 bc_l2<=1e-06 | stability rel_outlet<=0.001 abs_fractions<=0.0003
+2026-04-05 15:50:22 | INFO     | [grid_independence] criteria | HC test_hc_* outer: per-variable rel err must be < HC_REL_TOL_MAIN=0.001
+2026-04-05 15:50:22 | INFO     | [grid_independence] ========================================================================
+2026-04-05 15:50:22 | INFO     | [grid_independence] mesh 1/27 | begin up HC | initial_mesh=400 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:22 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:28 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:28 | INFO     | [grid_independence] relative error of T = 0.000647942112671945
+2026-04-05 15:50:28 | INFO     | [grid_independence] relative error of t = 0.0006473798700401739
+2026-04-05 15:50:28 | INFO     | [grid_independence] relative error of x = 0.0001920383416294881
+2026-04-05 15:50:28 | INFO     | [grid_independence] relative error of y = 0.0003149829643408822
+2026-04-05 15:50:28 | INFO     | [grid_independence] relative error of w = 0.00023121826797061363
+2026-04-05 15:50:28 | INFO     | [grid_independence] relative error of p = 0.00040123871202879
+2026-04-05 15:50:28 | INFO     | [grid_independence] relative error of fs = 0.0007786132582121503
+2026-04-05 15:50:28 | INFO     | [grid_independence] relative error of rhob = 0.00022007204257756355
+2026-04-05 15:50:28 | INFO     | [grid_independence] mesh 1/27 | end up HC | status=success | equation_converged=True | elapsed=6.28s | hc_outer_converged=True hc_max_re_final=0.0007786132582121503 | T_out=556.28151 t_out=1222.57538 p_bottom=7255.85609
+2026-04-05 15:50:28 | INFO     | [grid_independence] mesh 2/27 | begin up HC | initial_mesh=300 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:28 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:32 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:32 | INFO     | [grid_independence] relative error of T = 0.0006093007002910419
+2026-04-05 15:50:32 | INFO     | [grid_independence] relative error of t = 0.0006086528034063332
+2026-04-05 15:50:32 | INFO     | [grid_independence] relative error of x = 0.00018430886433012738
+2026-04-05 15:50:32 | INFO     | [grid_independence] relative error of y = 0.00030240127989251297
+2026-04-05 15:50:32 | INFO     | [grid_independence] relative error of w = 0.00022204340788580304
+2026-04-05 15:50:32 | INFO     | [grid_independence] relative error of p = 0.0003797140712989246
+2026-04-05 15:50:32 | INFO     | [grid_independence] relative error of fs = 0.0007335515266059513
+2026-04-05 15:50:32 | INFO     | [grid_independence] relative error of rhob = 0.00021134068906473314
+2026-04-05 15:50:32 | INFO     | [grid_independence] mesh 2/27 | end up HC | status=success | equation_converged=True | elapsed=3.59s | hc_outer_converged=True hc_max_re_final=0.0007335515266059513 | T_out=556.31996 t_out=1222.57453 p_bottom=7256.02648
+2026-04-05 15:50:32 | INFO     | [grid_independence] mesh 3/27 | begin up HC | initial_mesh=200 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:32 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:34 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:34 | INFO     | [grid_independence] relative error of T = 0.00032858281344643673
+2026-04-05 15:50:34 | INFO     | [grid_independence] relative error of t = 0.00032784500929414293
+2026-04-05 15:50:34 | INFO     | [grid_independence] relative error of x = 0.00015873441139615992
+2026-04-05 15:50:34 | INFO     | [grid_independence] relative error of y = 0.0002605309442377299
+2026-04-05 15:50:34 | INFO     | [grid_independence] relative error of w = 0.00013668518734563626
+2026-04-05 15:50:34 | INFO     | [grid_independence] relative error of p = 0.0002814251131535152
+2026-04-05 15:50:34 | INFO     | [grid_independence] relative error of fs = 0.0008610736397547074
+2026-04-05 15:50:34 | INFO     | [grid_independence] relative error of rhob = 0.00013725109928390487
+2026-04-05 15:50:34 | INFO     | [grid_independence] mesh 3/27 | end up HC | status=success | equation_converged=True | elapsed=1.83s | hc_outer_converged=True hc_max_re_final=0.0008610736397547074 | T_out=556.21903 t_out=1222.56849 p_bottom=7252.75323
+2026-04-05 15:50:34 | INFO     | [grid_independence] mesh 4/27 | begin up HC | initial_mesh=100 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:34 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:35 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:35 | INFO     | [grid_independence] relative error of T = 0.0005535525950116998
+2026-04-05 15:50:35 | INFO     | [grid_independence] relative error of t = 0.0005533599989363591
+2026-04-05 15:50:35 | INFO     | [grid_independence] relative error of x = 0.0005168071545913908
+2026-04-05 15:50:35 | INFO     | [grid_independence] relative error of y = 0.0008481674476223577
+2026-04-05 15:50:35 | INFO     | [grid_independence] relative error of w = 7.514094595761503e-05
+2026-04-05 15:50:35 | INFO     | [grid_independence] relative error of p = 0.0
+2026-04-05 15:50:35 | INFO     | [grid_independence] relative error of fs = 0.0005618934140811839
+2026-04-05 15:50:35 | INFO     | [grid_independence] relative error of rhob = 0.00028256073692761345
+2026-04-05 15:50:35 | INFO     | [grid_independence] mesh 4/27 | end up HC | status=success | equation_converged=True | elapsed=1.11s | hc_outer_converged=True hc_max_re_final=0.0008481674476223577 | T_out=556.77629 t_out=1222.50649 p_bottom=7255.68381
+2026-04-05 15:50:35 | INFO     | [grid_independence] mesh 5/27 | begin up HC | initial_mesh=50 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:35 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:36 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of T = 0.0006965926520476035
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of t = 0.0006962534419876159
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of x = 0.0002535196108826512
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of y = 0.00041666726508350025
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of w = 0.0003251703513917998
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of p = 1.0746139026533165e-16
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of fs = 0.00012440576658405167
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of rhob = 0.00019916322220045091
+2026-04-05 15:50:36 | INFO     | [grid_independence] mesh 5/27 | end up HC | status=success | equation_converged=True | elapsed=0.83s | hc_outer_converged=True hc_max_re_final=0.0006965926520476035 | T_out=556.43358 t_out=1222.27047 p_bottom=7245.35271
+2026-04-05 15:50:36 | INFO     | [grid_independence] mesh 6/27 | begin up HC | initial_mesh=40 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:36 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:36 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of T = 0.00014331806094602156
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of t = 0.00014234492083710395
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of x = 0.000342644773296057
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of y = 0.0005629631843016569
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of w = 0.00010159474440657171
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of p = 3.8029513110635336e-17
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of fs = 0.0004377989948462386
+2026-04-05 15:50:36 | INFO     | [grid_independence] relative error of rhob = 0.0003410329744583315
+2026-04-05 15:50:37 | INFO     | [grid_independence] mesh 6/27 | end up HC | status=success | equation_converged=True | elapsed=0.76s | hc_outer_converged=True hc_max_re_final=0.0005629631843016569 | T_out=556.79071 t_out=1222.18453 p_bottom=7241.91951
+2026-04-05 15:50:37 | INFO     | [grid_independence] mesh 7/27 | begin up HC | initial_mesh=30 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:37 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:37 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:37 | INFO     | [grid_independence] relative error of T = 0.0007395167956955499
+2026-04-05 15:50:37 | INFO     | [grid_independence] relative error of t = 0.0007394783005195169
+2026-04-05 15:50:37 | INFO     | [grid_independence] relative error of x = 0.0005802429153639019
+2026-04-05 15:50:37 | INFO     | [grid_independence] relative error of y = 0.000951678564627786
+2026-04-05 15:50:37 | INFO     | [grid_independence] relative error of w = 0.00011520279657980783
+2026-04-05 15:50:37 | INFO     | [grid_independence] relative error of p = 2.6960198817179422e-17
+2026-04-05 15:50:37 | INFO     | [grid_independence] relative error of fs = 0.0006060664033879073
+2026-04-05 15:50:37 | INFO     | [grid_independence] relative error of rhob = 0.00022475404726359288
+2026-04-05 15:50:37 | INFO     | [grid_independence] mesh 7/27 | end up HC | status=success | equation_converged=True | elapsed=0.78s | hc_outer_converged=True hc_max_re_final=0.000951678564627786 | T_out=556.83948 t_out=1222.04299 p_bottom=7229.34509
+2026-04-05 15:50:37 | INFO     | [grid_independence] mesh 8/27 | begin up HC | initial_mesh=29 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:37 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:38 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:38 | INFO     | [grid_independence] relative error of T = 0.00023190862737425413
+2026-04-05 15:50:38 | INFO     | [grid_independence] relative error of t = 0.00023257061027795144
+2026-04-05 15:50:38 | INFO     | [grid_independence] relative error of x = 0.00036798697893415373
+2026-04-05 15:50:38 | INFO     | [grid_independence] relative error of y = 0.000605024628595889
+2026-04-05 15:50:38 | INFO     | [grid_independence] relative error of w = 0.0003936036566677459
+2026-04-05 15:50:38 | INFO     | [grid_independence] relative error of p = 3.16576354285809e-17
+2026-04-05 15:50:38 | INFO     | [grid_independence] relative error of fs = 0.00036480463818262387
+2026-04-05 15:50:38 | INFO     | [grid_independence] relative error of rhob = 0.00017002783367558563
+2026-04-05 15:50:38 | INFO     | [grid_independence] mesh 8/27 | end up HC | status=success | equation_converged=True | elapsed=0.73s | hc_outer_converged=True hc_max_re_final=0.000605024628595889 | T_out=556.73193 t_out=1222.02230 p_bottom=7230.98777
+2026-04-05 15:50:38 | INFO     | [grid_independence] mesh 9/27 | begin up HC | initial_mesh=28 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:38 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:39 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of T = 0.0007856677129231467
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of t = 0.0007825636398821333
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of x = 0.000598455924006292
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of y = 0.0009844034349030895
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of w = 0.00041103045403021566
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of p = 2.7858035122578354e-17
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of fs = 0.00041233347552914137
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of rhob = 0.00019475630028234692
+2026-04-05 15:50:39 | INFO     | [grid_independence] mesh 9/27 | end up HC | status=success | equation_converged=True | elapsed=0.66s | hc_outer_converged=True hc_max_re_final=0.0009844034349030895 | T_out=557.45796 t_out=1222.01513 p_bottom=7241.94947
+2026-04-05 15:50:39 | INFO     | [grid_independence] mesh 10/27 | begin up HC | initial_mesh=27 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:39 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:39 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of T = 0.0003400065484282084
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of t = 0.00034001916125002234
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of x = 0.0005258117296325415
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of y = 0.0008637330336958235
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of w = 0.00017193029120101896
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of p = 0.0
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of fs = 0.00046129526358041473
+2026-04-05 15:50:39 | INFO     | [grid_independence] relative error of rhob = 0.00021547802805167138
+2026-04-05 15:50:39 | INFO     | [grid_independence] mesh 10/27 | end up HC | status=success | equation_converged=True | elapsed=0.63s | hc_outer_converged=True hc_max_re_final=0.0008637330336958235 | T_out=557.99798 t_out=1222.00276 p_bottom=7242.90697
+2026-04-05 15:50:39 | INFO     | [grid_independence] mesh 11/27 | begin up HC | initial_mesh=26 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:39 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:40 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:40 | INFO     | [grid_independence] relative error of T = 0.00034557005915672613
+2026-04-05 15:50:40 | INFO     | [grid_independence] relative error of t = 0.0003473504800455582
+2026-04-05 15:50:40 | INFO     | [grid_independence] relative error of x = 0.0004906216341412105
+2026-04-05 15:50:40 | INFO     | [grid_independence] relative error of y = 0.0008058911144222191
+2026-04-05 15:50:40 | INFO     | [grid_independence] relative error of w = 0.00043899853550129306
+2026-04-05 15:50:40 | INFO     | [grid_independence] relative error of p = 3.34842122592925e-17
+2026-04-05 15:50:40 | INFO     | [grid_independence] relative error of fs = 0.0003728903061420615
+2026-04-05 15:50:40 | INFO     | [grid_independence] relative error of rhob = 0.0002492168888083795
+2026-04-05 15:50:40 | INFO     | [grid_independence] mesh 11/27 | end up HC | status=success | equation_converged=True | elapsed=0.72s | hc_outer_converged=True hc_max_re_final=0.0008058911144222191 | T_out=556.24897 t_out=1221.97263 p_bottom=7224.55711
+2026-04-05 15:50:40 | INFO     | [grid_independence] mesh 12/27 | begin up HC | initial_mesh=25 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:40 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:41 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of T = 0.0006810068198729068
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of t = 0.0006776762728544584
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of x = 0.0005921097860541742
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of y = 0.0009727578130525461
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of w = 0.0004023014847811509
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of p = 1.264401536254933e-16
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of fs = 0.0003794986082422958
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of rhob = 0.0001820114622960756
+2026-04-05 15:50:41 | INFO     | [grid_independence] mesh 12/27 | end up HC | status=success | equation_converged=True | elapsed=0.65s | hc_outer_converged=True hc_max_re_final=0.0009727578130525461 | T_out=557.10775 t_out=1221.95423 p_bottom=7234.28664
+2026-04-05 15:50:41 | INFO     | [grid_independence] mesh 13/27 | begin up HC | initial_mesh=24 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:41 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:41 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of T = 0.00041065870785339786
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of t = 0.0004120041583426541
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of x = 0.0004766212283984446
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of y = 0.0007877274419771551
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of w = 0.0005530958731405915
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of p = 0.0
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of fs = 0.0003921103701126839
+2026-04-05 15:50:41 | INFO     | [grid_independence] relative error of rhob = 0.00031136226608640874
+2026-04-05 15:50:42 | INFO     | [grid_independence] mesh 13/27 | end up HC | status=success | equation_converged=True | elapsed=0.77s | hc_outer_converged=True hc_max_re_final=0.0007877274419771551 | T_out=557.97644 t_out=1221.92940 p_bottom=7239.21927
+2026-04-05 15:50:42 | INFO     | [grid_independence] mesh 14/27 | begin up HC | initial_mesh=23 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:42 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:42 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:42 | INFO     | [grid_independence] relative error of T = 0.0007638772867488408
+2026-04-05 15:50:42 | INFO     | [grid_independence] relative error of t = 0.0007668479239464963
+2026-04-05 15:50:42 | INFO     | [grid_independence] relative error of x = 0.00046012429112793774
+2026-04-05 15:50:42 | INFO     | [grid_independence] relative error of y = 0.0007570367425143703
+2026-04-05 15:50:42 | INFO     | [grid_independence] relative error of w = 0.0002367369262267285
+2026-04-05 15:50:42 | INFO     | [grid_independence] relative error of p = 7.329199087891537e-17
+2026-04-05 15:50:42 | INFO     | [grid_independence] relative error of fs = 0.0004994123856631161
+2026-04-05 15:50:42 | INFO     | [grid_independence] relative error of rhob = 0.00011727317970325965
+2026-04-05 15:50:42 | INFO     | [grid_independence] mesh 14/27 | end up HC | status=success | equation_converged=True | elapsed=0.60s | hc_outer_converged=True hc_max_re_final=0.0007668479239464963 | T_out=557.64505 t_out=1221.92042 p_bottom=7236.33864
+2026-04-05 15:50:42 | INFO     | [grid_independence] mesh 15/27 | begin up HC | initial_mesh=22 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:42 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:43 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of T = 0.00022407274774989902
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of t = 0.00022454925648728155
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of x = 0.00034924473048995885
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of y = 0.0005731649020172115
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of w = 0.00034398399718908105
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of p = 1.0931015996326859e-16
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of fs = 0.000388805168584978
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of rhob = 0.00012355932316703624
+2026-04-05 15:50:43 | INFO     | [grid_independence] mesh 15/27 | end up HC | status=success | equation_converged=True | elapsed=0.68s | hc_outer_converged=True hc_max_re_final=0.0005731649020172115 | T_out=556.90092 t_out=1221.88230 p_bottom=7221.67516
+2026-04-05 15:50:43 | INFO     | [grid_independence] mesh 16/27 | begin up HC | initial_mesh=21 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:43 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:43 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of T = 0.0009382095156201389
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of t = 0.0009312340627667571
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of x = 0.0003758145338601521
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of y = 0.0006219717008409103
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of w = 0.00026992649935060235
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of p = 1.2342322817364654e-16
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of fs = 0.000608547414315845
+2026-04-05 15:50:43 | INFO     | [grid_independence] relative error of rhob = 0.00023935264766021275
+2026-04-05 15:50:43 | INFO     | [grid_independence] mesh 16/27 | end up HC | status=success | equation_converged=True | elapsed=0.60s | hc_outer_converged=True hc_max_re_final=0.0009382095156201389 | T_out=557.57883 t_out=1221.87466 p_bottom=7237.23951
+2026-04-05 15:50:43 | INFO     | [grid_independence] mesh 17/27 | begin up HC | initial_mesh=20 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:43 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:44 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:44 | INFO     | [grid_independence] relative error of T = 0.0007674702899262921
+2026-04-05 15:50:44 | INFO     | [grid_independence] relative error of t = 0.0007665315609934575
+2026-04-05 15:50:44 | INFO     | [grid_independence] relative error of x = 0.00047902932668330303
+2026-04-05 15:50:44 | INFO     | [grid_independence] relative error of y = 0.0007926082732358777
+2026-04-05 15:50:44 | INFO     | [grid_independence] relative error of w = 0.0005421759495259313
+2026-04-05 15:50:44 | INFO     | [grid_independence] relative error of p = 6.59307464332395e-17
+2026-04-05 15:50:44 | INFO     | [grid_independence] relative error of fs = 0.0007172055739973036
+2026-04-05 15:50:44 | INFO     | [grid_independence] relative error of rhob = 0.0005975235929778121
+2026-04-05 15:50:44 | INFO     | [grid_independence] mesh 17/27 | end up HC | status=success | equation_converged=True | elapsed=0.63s | hc_outer_converged=True hc_max_re_final=0.0007926082732358777 | T_out=559.64775 t_out=1221.85505 p_bottom=7250.04491
+2026-04-05 15:50:44 | INFO     | [grid_independence] mesh 18/27 | begin up HC | initial_mesh=19 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:44 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:47 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:47 | INFO     | [grid_independence] relative error of T = 0.0007905814376164839
+2026-04-05 15:50:47 | INFO     | [grid_independence] relative error of t = 0.0007846449039960664
+2026-04-05 15:50:47 | INFO     | [grid_independence] relative error of x = 0.0004244602114235729
+2026-04-05 15:50:47 | INFO     | [grid_independence] relative error of y = 0.0006960082164935307
+2026-04-05 15:50:47 | INFO     | [grid_independence] relative error of w = 0.0001269832474916983
+2026-04-05 15:50:47 | INFO     | [grid_independence] relative error of p = 0.0
+2026-04-05 15:50:47 | INFO     | [grid_independence] relative error of fs = 0.00029607077231032133
+2026-04-05 15:50:47 | INFO     | [grid_independence] relative error of rhob = 0.0002518047492739963
+2026-04-05 15:50:47 | INFO     | [grid_independence] mesh 18/27 | end up HC | status=success | equation_converged=True | elapsed=2.92s | hc_outer_converged=True hc_max_re_final=0.0007905814376164839 | T_out=557.37786 t_out=1221.81235 p_bottom=7216.35658
+2026-04-05 15:50:47 | INFO     | [grid_independence] mesh 19/27 | begin up HC | initial_mesh=18 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:47 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:50 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:50 | INFO     | [grid_independence] relative error of T = 0.0005938251145403435
+2026-04-05 15:50:50 | INFO     | [grid_independence] relative error of t = 0.000586906698727495
+2026-04-05 15:50:50 | INFO     | [grid_independence] relative error of x = 0.00048771218161558147
+2026-04-05 15:50:50 | INFO     | [grid_independence] relative error of y = 0.0008081270631969962
+2026-04-05 15:50:50 | INFO     | [grid_independence] relative error of w = 0.000238823958481582
+2026-04-05 15:50:50 | INFO     | [grid_independence] relative error of p = 4.0303776768683386e-17
+2026-04-05 15:50:50 | INFO     | [grid_independence] relative error of fs = 0.00030935441751840024
+2026-04-05 15:50:50 | INFO     | [grid_independence] relative error of rhob = 0.00013000164195485747
+2026-04-05 15:50:50 | INFO     | [grid_independence] mesh 19/27 | end up HC | status=success | equation_converged=True | elapsed=2.81s | hc_outer_converged=True hc_max_re_final=0.0008081270631969962 | T_out=557.13396 t_out=1221.79893 p_bottom=7226.19180
+2026-04-05 15:50:50 | INFO     | [grid_independence] mesh 20/27 | begin up HC | initial_mesh=17 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:50 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:50:52 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:50:52 | INFO     | [grid_independence] relative error of T = 0.0005237839052598313
+2026-04-05 15:50:52 | INFO     | [grid_independence] relative error of t = 0.0005150713793146156
+2026-04-05 15:50:52 | INFO     | [grid_independence] relative error of x = 0.0005601625299948125
+2026-04-05 15:50:52 | INFO     | [grid_independence] relative error of y = 0.0009294809578229192
+2026-04-05 15:50:52 | INFO     | [grid_independence] relative error of w = 0.0002105012527885535
+2026-04-05 15:50:52 | INFO     | [grid_independence] relative error of p = 0.0
+2026-04-05 15:50:52 | INFO     | [grid_independence] relative error of fs = 0.0002723229286596375
+2026-04-05 15:50:52 | INFO     | [grid_independence] relative error of rhob = 0.00020858108278621045
+2026-04-05 15:50:52 | INFO     | [grid_independence] mesh 20/27 | end up HC | status=success | equation_converged=True | elapsed=2.70s | hc_outer_converged=True hc_max_re_final=0.0009294809578229192 | T_out=558.88475 t_out=1221.78683 p_bottom=7241.07169
+2026-04-05 15:50:52 | INFO     | [grid_independence] mesh 21/27 | begin up HC | initial_mesh=16 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:50:52 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:51:02 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:51:02 | INFO     | [grid_independence] relative error of T = 0.000554781606407644
+2026-04-05 15:51:02 | INFO     | [grid_independence] relative error of t = 0.0005594187886111492
+2026-04-05 15:51:02 | INFO     | [grid_independence] relative error of x = 0.00047024940854089697
+2026-04-05 15:51:02 | INFO     | [grid_independence] relative error of y = 0.0007633425805926376
+2026-04-05 15:51:02 | INFO     | [grid_independence] relative error of w = 0.0005929664006946507
+2026-04-05 15:51:02 | INFO     | [grid_independence] relative error of p = 8.307684421811774e-17
+2026-04-05 15:51:02 | INFO     | [grid_independence] relative error of fs = 0.0004476915263268757
+2026-04-05 15:51:02 | INFO     | [grid_independence] relative error of rhob = 0.00044728662171867364
+2026-04-05 15:51:02 | INFO     | [grid_independence] mesh 21/27 | end up HC | status=success | equation_converged=True | elapsed=9.17s | hc_outer_converged=True hc_max_re_final=0.0007633425805926376 | T_out=557.48496 t_out=1221.44481 p_bottom=7195.14281
+2026-04-05 15:51:02 | INFO     | [grid_independence] mesh 22/27 | begin up HC | initial_mesh=15 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:51:02 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:51:38 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:51:38 | INFO     | [grid_independence] relative error of T = 0.0002523634559525507
+2026-04-05 15:51:38 | INFO     | [grid_independence] relative error of t = 0.0002435955871673534
+2026-04-05 15:51:38 | INFO     | [grid_independence] relative error of x = 0.0001260133407601156
+2026-04-05 15:51:38 | INFO     | [grid_independence] relative error of y = 0.00020345714297374988
+2026-04-05 15:51:38 | INFO     | [grid_independence] relative error of w = 0.0030429055257913677
+2026-04-05 15:51:38 | INFO     | [grid_independence] relative error of p = 0.004881707313570616
+2026-04-05 15:51:38 | INFO     | [grid_independence] relative error of fs = 0.011272068918110651
+2026-04-05 15:51:38 | INFO     | [grid_independence] relative error of rhob = 0.002822281942073263
+2026-04-05 15:51:38 | WARNING  | [grid_independence] test_hc_4n4 未达 HC_REL_TOL_MAIN=0.001：max(RE)=0.011272068918110651
+2026-04-05 15:51:38 | INFO     | [grid_independence] mesh 22/27 | end up HC | status=success | equation_converged=False | elapsed=36.55s | hc_outer_converged=False hc_max_re_final=0.011272068918110651 | T_out=557.17486 t_out=1221.30762 p_bottom=7183.45680
+2026-04-05 15:51:38 | INFO     | [grid_independence] mesh 23/27 | begin up HC | initial_mesh=14 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:51:38 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:52:57 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:52:57 | INFO     | [grid_independence] relative error of T = 0.0007225435778661564
+2026-04-05 15:52:57 | INFO     | [grid_independence] relative error of t = 0.0007272414661440588
+2026-04-05 15:52:57 | INFO     | [grid_independence] relative error of x = 0.0005247042688856446
+2026-04-05 15:52:57 | INFO     | [grid_independence] relative error of y = 0.0008524257821043203
+2026-04-05 15:52:57 | INFO     | [grid_independence] relative error of w = 0.014080536342432677
+2026-04-05 15:52:57 | INFO     | [grid_independence] relative error of p = 8.423200698893079e-17
+2026-04-05 15:52:57 | INFO     | [grid_independence] relative error of fs = 0.03440542099924278
+2026-04-05 15:52:57 | INFO     | [grid_independence] relative error of rhob = 0.014875608028508399
+2026-04-05 15:52:57 | WARNING  | [grid_independence] test_hc_4n4 未达 HC_REL_TOL_MAIN=0.001：max(RE)=0.03440542099924278
+2026-04-05 15:52:57 | INFO     | [grid_independence] mesh 23/27 | end up HC | status=success | equation_converged=False | elapsed=78.64s | hc_outer_converged=False hc_max_re_final=0.03440542099924278 | T_out=546.14462 t_out=1220.96070 p_bottom=7069.85704
+2026-04-05 15:52:57 | INFO     | [grid_independence] mesh 24/27 | begin up HC | initial_mesh=13 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:52:57 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:53:35 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:53:35 | INFO     | [grid_independence] relative error of T = 0.0009551551120068737
+2026-04-05 15:53:35 | INFO     | [grid_independence] relative error of t = 0.0009376485917605565
+2026-04-05 15:53:35 | INFO     | [grid_independence] relative error of x = 0.0003971359780759956
+2026-04-05 15:53:35 | INFO     | [grid_independence] relative error of y = 0.0006445213599736584
+2026-04-05 15:53:35 | INFO     | [grid_independence] relative error of w = 0.011565070855953615
+2026-04-05 15:53:35 | INFO     | [grid_independence] relative error of p = 0.009156414326286668
+2026-04-05 15:53:35 | INFO     | [grid_independence] relative error of fs = 0.01856630727764894
+2026-04-05 15:53:35 | INFO     | [grid_independence] relative error of rhob = 0.006250205085573897
+2026-04-05 15:53:35 | WARNING  | [grid_independence] test_hc_4n4 未达 HC_REL_TOL_MAIN=0.001：max(RE)=0.01856630727764894
+2026-04-05 15:53:35 | INFO     | [grid_independence] mesh 24/27 | end up HC | status=success | equation_converged=False | elapsed=37.88s | hc_outer_converged=False hc_max_re_final=0.01856630727764894 | T_out=554.48414 t_out=1221.22197 p_bottom=7151.52473
+2026-04-05 15:53:35 | INFO     | [grid_independence] mesh 25/27 | begin up HC | initial_mesh=12 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:53:35 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:54:13 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:54:13 | INFO     | [grid_independence] relative error of T = 0.0004106800453517972
+2026-04-05 15:54:13 | INFO     | [grid_independence] relative error of t = 0.00038740681082627404
+2026-04-05 15:54:13 | INFO     | [grid_independence] relative error of x = 0.00023237407708445585
+2026-04-05 15:54:13 | INFO     | [grid_independence] relative error of y = 0.0003848095260581157
+2026-04-05 15:54:13 | INFO     | [grid_independence] relative error of w = 0.013868485735148978
+2026-04-05 15:54:13 | INFO     | [grid_independence] relative error of p = 0.013688254003873544
+2026-04-05 15:54:13 | INFO     | [grid_independence] relative error of fs = 0.03467815599007698
+2026-04-05 15:54:13 | INFO     | [grid_independence] relative error of rhob = 0.013653835185106732
+2026-04-05 15:54:13 | WARNING  | [grid_independence] test_hc_4n4 未达 HC_REL_TOL_MAIN=0.001：max(RE)=0.03467815599007698
+2026-04-05 15:54:13 | INFO     | [grid_independence] mesh 25/27 | end up HC | status=success | equation_converged=False | elapsed=38.74s | hc_outer_converged=False hc_max_re_final=0.03467815599007698 | T_out=549.26575 t_out=1221.05299 p_bottom=7093.07178
+2026-04-05 15:54:13 | INFO     | [grid_independence] mesh 26/27 | begin up HC | initial_mesh=11 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:54:13 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:55:27 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:55:27 | INFO     | [grid_independence] relative error of T = 0.0001902745245688737
+2026-04-05 15:55:27 | INFO     | [grid_independence] relative error of t = 0.00017595831613978496
+2026-04-05 15:55:27 | INFO     | [grid_independence] relative error of x = 4.123110549126184e-05
+2026-04-05 15:55:27 | INFO     | [grid_independence] relative error of y = 6.578636525630012e-05
+2026-04-05 15:55:27 | INFO     | [grid_independence] relative error of w = 0.017635647209673408
+2026-04-05 15:55:27 | INFO     | [grid_independence] relative error of p = 0.018611875258336127
+2026-04-05 15:55:27 | INFO     | [grid_independence] relative error of fs = 0.040108658695676445
+2026-04-05 15:55:27 | INFO     | [grid_independence] relative error of rhob = 0.011486738586366414
+2026-04-05 15:55:27 | WARNING  | [grid_independence] test_hc_4n4 未达 HC_REL_TOL_MAIN=0.001：max(RE)=0.040108658695676445
+2026-04-05 15:55:28 | INFO     | [grid_independence] mesh 26/27 | end up HC | status=success | equation_converged=False | elapsed=74.12s | hc_outer_converged=False hc_max_re_final=0.040108658695676445 | T_out=548.80563 t_out=1221.20064 p_bottom=7083.26941
+2026-04-05 15:55:28 | INFO     | [grid_independence] mesh 27/27 | begin up HC | initial_mesh=10 | chdir_tmp=D:\Group\HyOCR\HG_test_202604\tmp\grid_independence_up_hc
+2026-04-05 15:55:28 | INFO     | [grid_independence] 测试 上半部分模型 hc_4n4
+2026-04-05 15:56:03 | INFO     | [grid_independence] final relative error:
+2026-04-05 15:56:03 | INFO     | [grid_independence] relative error of T = 0.00015576518141850181
+2026-04-05 15:56:03 | INFO     | [grid_independence] relative error of t = 0.00014460836102042935
+2026-04-05 15:56:03 | INFO     | [grid_independence] relative error of x = 3.250751756473552e-05
+2026-04-05 15:56:03 | INFO     | [grid_independence] relative error of y = 5.258671201845072e-05
+2026-04-05 15:56:03 | INFO     | [grid_independence] relative error of w = 0.018144648563108313
+2026-04-05 15:56:03 | INFO     | [grid_independence] relative error of p = 0.019085716759936172
+2026-04-05 15:56:03 | INFO     | [grid_independence] relative error of fs = 0.029953088815690202
+2026-04-05 15:56:03 | INFO     | [grid_independence] relative error of rhob = 0.010690628437938285
+2026-04-05 15:56:03 | WARNING  | [grid_independence] test_hc_4n4 未达 HC_REL_TOL_MAIN=0.001：max(RE)=0.029953088815690202
+2026-04-05 15:56:03 | INFO     | [grid_independence] mesh 27/27 | end up HC | status=success | equation_converged=False | elapsed=35.07s | hc_outer_converged=False hc_max_re_final=0.029953088815690202 | T_out=551.50185 t_out=1221.25016 p_bottom=7108.80665
+2026-04-05 15:56:03 | INFO     | [grid_independence] reference | initial_mesh=400 solver=hc status=success
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=400 eq_conv=True stable=True rel_diff_max=0.0000e+00 abs_diff_outlet_max=0.0000e+00
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=300 eq_conv=True stable=True rel_diff_max=8.2573e-05 abs_diff_outlet_max=1.7038e-01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=200 eq_conv=True stable=True rel_diff_max=5.7218e-04 abs_diff_outlet_max=3.1029e+00
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=100 eq_conv=True stable=True rel_diff_max=8.8943e-04 abs_diff_outlet_max=4.9477e-01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=50 eq_conv=True stable=False rel_diff_max=2.8898e-03 abs_diff_outlet_max=1.0503e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=40 eq_conv=True stable=False rel_diff_max=3.1483e-03 abs_diff_outlet_max=1.3937e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=30 eq_conv=True stable=False rel_diff_max=3.6537e-03 abs_diff_outlet_max=2.6511e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=29 eq_conv=True stable=False rel_diff_max=5.6603e-03 abs_diff_outlet_max=2.4868e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=28 eq_conv=True stable=False rel_diff_max=5.0378e-03 abs_diff_outlet_max=1.3907e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=27 eq_conv=True stable=False rel_diff_max=3.7495e-03 abs_diff_outlet_max=1.2949e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=26 eq_conv=True stable=False rel_diff_max=5.2244e-03 abs_diff_outlet_max=3.1299e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=25 eq_conv=True stable=False rel_diff_max=4.6510e-03 abs_diff_outlet_max=2.1569e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=24 eq_conv=True stable=False rel_diff_max=1.0440e-02 abs_diff_outlet_max=1.6637e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=23 eq_conv=True stable=False rel_diff_max=5.7526e-03 abs_diff_outlet_max=1.9517e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=22 eq_conv=True stable=False rel_diff_max=4.7548e-03 abs_diff_outlet_max=3.4181e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=21 eq_conv=True stable=False rel_diff_max=1.0590e-02 abs_diff_outlet_max=1.8617e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=20 eq_conv=True stable=False rel_diff_max=8.9460e-03 abs_diff_outlet_max=5.8112e+00
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=19 eq_conv=True stable=False rel_diff_max=5.4438e-03 abs_diff_outlet_max=3.9500e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=18 eq_conv=True stable=False rel_diff_max=1.1830e-02 abs_diff_outlet_max=2.9664e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=17 eq_conv=True stable=False rel_diff_max=1.0413e-02 abs_diff_outlet_max=1.4784e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=16 eq_conv=True stable=False rel_diff_max=8.3943e-03 abs_diff_outlet_max=6.0713e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=15 eq_conv=False stable=False rel_diff_max=9.9781e-03 abs_diff_outlet_max=7.2399e+01
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=14 eq_conv=False stable=False rel_diff_max=2.5634e-02 abs_diff_outlet_max=1.8600e+02
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=13 eq_conv=False stable=False rel_diff_max=1.4379e-02 abs_diff_outlet_max=1.0433e+02
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=12 eq_conv=False stable=False rel_diff_max=3.5530e-02 abs_diff_outlet_max=1.6278e+02
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=11 eq_conv=False stable=False rel_diff_max=2.3786e-02 abs_diff_outlet_max=1.7259e+02
+2026-04-05 15:56:03 | INFO     | [grid_independence] vs_ref | mesh=10 eq_conv=False stable=False rel_diff_max=2.3890e-02 abs_diff_outlet_max=1.4705e+02
+2026-04-05 15:56:03 | INFO     | [grid_independence] done | region=up mode=hc reference_mesh=400 recommended_min_mesh=100 | csv=D:\Group\HyOCR\HG_test_202604\output\grid_independence_up_hc.csv | wall_s=340.5

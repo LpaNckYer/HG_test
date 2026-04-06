@@ -140,7 +140,7 @@ class FurnaceModel:
             print(f"第 {i+1} 轮迭代，容差: {tol}")
             
             # 求解BVP
-            sol = solve_bvp(ode, bc, x, y_init, tol=tol, max_nodes=len(x)*20, verbose=2)
+            sol = solve_bvp(ode, bc, x, y_init, tol=tol, max_nodes=len(x)*50, verbose=2)
             
             if not sol.success:
                 print(f"警告: 第 {i+1} 轮迭代未收敛")

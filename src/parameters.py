@@ -89,7 +89,7 @@ class FurnaceParameters:
         # 首尾控制点 [T, t, fs, x, y, w, rhob, p]：与 bc 在两端一致的量直接取边界；其余为简单物理占位，整段线性
         # z=H0：ya 约束 t,fs,rhob,p；z=HH：yb 约束 T,x,y,w
         self.bvp_guess_at_H0 = [
-            self.t_in,
+            300,
             self.t_in,
             self.fs_in,
             self.x_in,
@@ -100,13 +100,15 @@ class FurnaceParameters:
         ]
         self.bvp_guess_at_HH = [
             self.T_in,
-            self.T_in,
+            1200,
             1.0,
             self.x_in,
             self.y_in,
             self.w_in,
-            min(self.rhob_in, 1600.0),
-            self.p_in + (7052.0 - 2040.0),
+            # min(self.rhob_in, 1600.0),
+            1600,
+            # self.p_in + (7052.0 - 2040.0),
+            7000,
         ]
 
 

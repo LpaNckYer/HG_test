@@ -92,11 +92,11 @@ class FurnaceParameters:
         ]
         self.bvp_guess_at_HH = [
             self.T_in,
-            self.T_in - 20.0,
+            self.T_in,
             1.0,
             self.x_in,
-            min(self.rhob_in, 1565.0),
-            self.p_in + (7519.838456974016 - 7052.175003843975),
+            self.rhob_in,
+            self.p_in,
         ]
 
 
