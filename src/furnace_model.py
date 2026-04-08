@@ -66,6 +66,11 @@ def _solid_T_for_diffusion_powers(t):
     return out
 
 
+# fs→1 附近的平滑关断带：避免 fs==1 硬置零导致 hc 固定点迭代不光滑/抖动
+FS_SHUTDOWN_DELTA = 1e-3
+FS_SHUTDOWN_K = 100
+
+
 class FurnaceModel:
     """高炉计算模型"""
 
@@ -713,7 +718,8 @@ class FurnaceModel:
         _sh = _heme_shell_1_minus_fs(fs)
         r = pai * self.params.d_o**2 * self.params.phi_o**(-1) * self.params.N_o * (p/P_std) * 273 * (x-xe) / 22.4 / t / (1/kf + self.params.d_o/2*(np.power(_sh, -1.0/3.0) - 1.0)/Ds + (np.power(_sh, 2.0/3.0)*k*(1+1/K))**(-1))
         fs = np.asarray(fs)
-        r = np.where(fs >= 1, 0.0, r)
+        g = smooth_heaviside((1.0 - fs) - FS_SHUTDOWN_DELTA, k=FS_SHUTDOWN_K)
+        r = r * g
         return r
 
 
@@ -769,10 +775,10 @@ class FurnaceModel:
         r = np.zeros_like(z)
 
         with np.errstate(invalid='raise'):  # 将无效值错误转为异常
-            _m = ~(fs >= 1)
-            _sh5 = _heme_shell_1_minus_fs(fs[_m])
-            r[_m] = pai * self.params.d_o**(2) * self.params.phi_o**(-1) * self.params.N_o * 273 * (p[_m]/P_std) * (w[_m]-we[_m]) / 22.4 / t[_m] / (1/kf[_m] + self.params.d_o/2*(np.power(_sh5, -1.0/3.0) - 1.0)/Ds[_m] + (np.power(_sh5, 2.0/3.0)*k[_m]*(1+1/K[_m]))**(-1))
-            r[(fs>=1)] = 0
+            _sh5 = _heme_shell_1_minus_fs(fs)
+            r = pai * self.params.d_o**(2) * self.params.phi_o**(-1) * self.params.N_o * 273 * (p/P_std) * (w-we) / 22.4 / t / (1/kf + self.params.d_o/2*(np.power(_sh5, -1.0/3.0) - 1.0)/Ds + (np.power(_sh5, 2.0/3.0)*k*(1+1/K))**(-1))
+            g = smooth_heaviside((1.0 - np.asarray(fs)) - FS_SHUTDOWN_DELTA, k=FS_SHUTDOWN_K)
+            r = r * g
 
         np.clip(r, 0, None, out=r)
         return r
@@ -1451,6 +1457,7 @@ class HCFurnaceModel(FurnaceModel):
             fs_new (numpy.ndarray): profile of fraction of reduction of iron ore. [-]
         """
         fs_in = self.params.fs_in
+        fs0 = np.asarray(fs)
 
         Dz = self.params.Diameter_BF(z) # Dz (float): diameter of coke-bed. [m]
         Az = pai * (Dz/2)**2 # Az (float): cross-sectional area of coke-bed. [m2]
@@ -1478,10 +1485,18 @@ class HCFurnaceModel(FurnaceModel):
         count = 0
         limit = HC_MAX_ITER_TT_XY_FS
         s = HC_RELAXATION
+        s_min = 0.05
+        re_prev = float("inf")
         while (norm(fs_new - fs) / norm(fs) >= HC_REL_TOL_TIGHT) and (count < limit):
             count += 1
             # print("norm(b-Ax)/norm(b) = ", norm(a_temp - A_temp@X_previous) / norm(a_temp))
-            fs = s*fs_new + (1-s)*fs
+            re_now = norm(fs_new - fs) / norm(fs)
+            # 自适应松弛：若 RE 不再下降（或反弹），减小 s 以抑制 fs==1 贴边抖动
+            if not np.isfinite(re_now) or (re_now >= re_prev * 0.999):
+                s = max(s * 0.5, s_min)
+            re_prev = float(re_now)
+
+            fs = s * fs_new + (1 - s) * fs
             fs = np.clip(fs, BVP_FRACTION_MIN, BVP_FRACTION_MAX)
 
             R1 = self.ReactionRate_1(z,T,t,fs,x,y,w,p)
@@ -1501,7 +1516,10 @@ class HCFurnaceModel(FurnaceModel):
             fs_new = np.asarray(X_temp).reshape(-1)
         # print("norm(b-Ax)/norm(b) = ", norm(a_temp - A_temp@X_previous) / norm(a_temp))
         # print("fs_hc total count = ", count)
-        return fs_new
+        # 返回时也做一次同样的松弛，避免外层耦合迭代在 fs≈1 贴边时来回抖动
+        fs_out = s * fs_new + (1 - s) * fs0
+        fs_out = np.clip(fs_out, BVP_FRACTION_MIN, BVP_FRACTION_MAX)
+        return fs_out
 
     def rhob_hc(self,z,T,t,fs,x,y,w,p,rhob):
         """
@@ -1642,27 +1660,15 @@ class HCFurnaceModel(FurnaceModel):
                 RE_fs = norm(fs_new - fs)/norm(fs)
                 RE_p = norm(p_new - p)/norm(p)
                 RE_rhob = norm(rhob_new - rhob)/norm(rhob)
-            # print("count_in = ", count_in)
-            # print("relative error of w = ", RE_w)
-            # print("relative error of fs = ", RE_fs)
-            # print("relative error of p = ", RE_p)
-            # print("relative error of rhob = ", RE_rhob)
+ 
 
-            # 内层循环：Ttxyfs
+            # 内层循环：Ttxy
             T, t, fs, x, y, w, rhob, p = HCFurnaceModel.clip_profile_for_hc(
                 T, t, fs, x, y, w, rhob, p
             )
             T_new, t_new = model.Tt_hc(z_guess, T, t, fs, x, y, w, p, rhob)
             x_new, y_new = model.xy_hc(z_guess, T, t, fs, x, y, w, p)
 
-            # plt.plot(z_guess, T_new, label='T_new')
-            # plt.plot(z_guess, t_new, label='t_new')
-            # plt.legend()
-            # plt.show()
-            # plt.plot(z_guess, x_new, label='x_new')
-            # plt.plot(z_guess, y_new, label='y_new')
-            # plt.legend()
-            # plt.show()
 
             RE_T = norm(T_new - T)/norm(T)
             RE_t = norm(t_new - t)/norm(t)
@@ -1677,11 +1683,6 @@ class HCFurnaceModel(FurnaceModel):
                 or RE_y >= HC_REL_TOL_MAIN
             ) and (count_in < HC_MAX_ITER_TEST_NESTED_INNER):
                 count_in += 1
-                # print("count_in = ", count_in)
-                # print("relative error of T = ", RE_T)
-                # print("relative error of t = ", RE_t)
-                # print("relative error of x = ", RE_x)
-                # print("relative error of y = ", RE_y)
 
                 T = T_new
                 t = t_new
@@ -1697,12 +1698,6 @@ class HCFurnaceModel(FurnaceModel):
                 RE_t = norm(t_new - t)/norm(t)
                 RE_x = norm(x_new - x)/norm(x)
                 RE_y = norm(y_new - y)/norm(y)
-
-            # print("count_in = ", count_in)
-            # print("relative error of T = ", RE_T)
-            # print("relative error of t = ", RE_t)
-            # print("relative error of x = ", RE_x)
-            # print("relative error of y = ", RE_y)
 
             T, t, fs, x, y, w, rhob, p = HCFurnaceModel.clip_profile_for_hc(
                 T, t, fs, x, y, w, rhob, p

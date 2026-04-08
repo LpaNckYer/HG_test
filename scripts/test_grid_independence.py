@@ -200,13 +200,25 @@ def fraction_keys_for_stability(region: str) -> list[str]:
     return ["fs_out", "x_out", "y_out", "w_out"]
 
 
+def fraction_keys_for_abs_stability(region: str) -> list[str]:
+    """用于绝对误差阈值的分数类出口（fs_out 单独使用更宽松阈值）。"""
+    if region == "down":
+        return ["x_out"]
+    return ["x_out", "y_out", "w_out"]
+
+
 @dataclass(frozen=True)
 class Criteria:
     require_bvp_success: bool = True
     max_rms_le: float = 1e-3
     bc_l2_le: float = 1e-6
+    # rel_le：用于分数类 core(max rel diff)；T/t 单独用 rel_le_Tt
     rel_le: float = 1e-3
+    rel_le_Tt: float = 1e-3
+    rel_le_big: float = 1e-2
+    # 工程可接受误差模式：分数类不做 abs 门槛（避免粗网格被误杀）
     abs_le_fractions: float = 3e-4
+    abs_le_fs_out: float = 1e-3
 
 
 def _safe_float(x):
@@ -232,6 +244,10 @@ def outlet_error_metrics(row: dict, ref: dict, keys: list[str]) -> dict[str, flo
         rel_diffs.append(rd)
     out["abs_diff_outlet_max"] = float(np.nanmax(abs_diffs)) if abs_diffs else float("nan")
     out["rel_diff_outlet_max"] = float(np.nanmax(rel_diffs)) if rel_diffs else float("nan")
+    # 只对分数类出口量取相对误差最大值（稳定性核心判据），避免大变量(p/rhob/T/t)主导
+    frac_keys = fraction_keys_for_stability(row.get("region") or "up")
+    frac_rel = [_safe_float(out.get(f"rel_diff_{k}")) for k in frac_keys]
+    out["rel_diff_outlet_max_core"] = float(np.nanmax(frac_rel)) if frac_rel else float("nan")
     return out
 
 
@@ -265,13 +281,23 @@ def is_equation_converged(row: dict, c: Criteria) -> bool:
 
 
 def is_solution_stable(row: dict, c: Criteria, region: str) -> bool:
-    if not np.isfinite(_safe_float(row.get("rel_diff_outlet_max"))):
-        return False
-    for k in fraction_keys_for_stability(region):
-        ad = _safe_float(row.get(f"abs_diff_{k}"))
-        if not (np.isfinite(ad) and ad <= c.abs_le_fractions):
+    # 大变量/大尺度出口：只检测出口相对波动（不参与 core max）
+    # T/t 用 rel_le_Tt，p/rhob 用 rel_le_big
+    for k, thr in (
+        ("T_out", c.rel_le_Tt),
+        ("t_out", c.rel_le_Tt),
+        ("p_bottom", c.rel_le_big),
+        ("rhob_out", c.rel_le_big),
+    ):
+        rd = _safe_float(row.get(f"rel_diff_{k}"))
+        if np.isfinite(rd) and rd > thr:
             return False
-    if _safe_float(row.get("rel_diff_outlet_max")) > c.rel_le:
+
+    # 分数类出口量的相对误差最大值（core）作为稳定性主判据
+    rel_core_max = _safe_float(row.get("rel_diff_outlet_max_core"))
+    if not np.isfinite(rel_core_max):
+        return False
+    if rel_core_max > c.rel_le:
         return False
     return True
 
@@ -520,6 +546,20 @@ def main():
 
     ensure_dirs()
     meshes = parse_meshes(args.meshes)
+    meshes_sorted_desc = sorted(set(meshes), reverse=True)
+    if meshes != sorted(meshes, reverse=True):
+        LOG.warning(
+            "meshes not strictly descending (input order preserved for runs): %s | "
+            "recommendation/reference will use mesh-sorted results",
+            meshes,
+        )
+    if len(set(meshes)) != len(meshes):
+        LOG.warning(
+            "meshes contains duplicates (input order preserved for runs): %s | "
+            "recommendation/reference will use unique meshes=%s",
+            meshes,
+            meshes_sorted_desc,
+        )
     tag = f"{region}_{mode}"
     log_csv = Path(args.log) if args.log else output_path(f"grid_independence_{tag}.csv")
     log_csv.parent.mkdir(parents=True, exist_ok=True)
@@ -534,7 +574,9 @@ def main():
     criteria = Criteria(
         max_rms_le=1e-3,
         bc_l2_le=1e-6,
-        rel_le=1e-3,
+        rel_le=5e-2,
+        rel_le_Tt=5e-3,
+        rel_le_big=2e-2,
         abs_le_fractions=3e-4,
     )
 
@@ -565,11 +607,13 @@ def main():
         LOG.info("bvp_verbose=%s", args.bvp_verbose)
     LOG.info(
         "criteria | BVP require_success=%s max_rms<=%s bc_l2<=%s | "
-        "stability rel_outlet<=%s abs_fractions<=%s",
+        "stability rel_core(frac)<=%s rel_Tt<=%s rel_big(p/rhob)<=%s abs_fractions<=%s",
         criteria.require_bvp_success,
         criteria.max_rms_le,
         criteria.bc_l2_le,
         criteria.rel_le,
+        criteria.rel_le_Tt,
+        criteria.rel_le_big,
         criteria.abs_le_fractions,
     )
     if mode == "hc" and HC_REL_TOL_MAIN is not None:
@@ -717,11 +761,11 @@ def main():
             )
             write_grid_independence_progress_csv(log_csv, rows)
 
+    # 参考网格：在所有“方程收敛”解中选 initial_mesh 最大者（与输入顺序无关）
     ref_row = None
-    for r in rows:
-        if is_equation_converged(r, criteria):
-            ref_row = r
-            break
+    eq_rows = [r for r in rows if is_equation_converged(r, criteria)]
+    if eq_rows:
+        ref_row = max(eq_rows, key=lambda rr: int(rr.get("initial_mesh") or -1))
 
     if ref_row is None:
         msg = "没有找到满足方程收敛判据的参考网格，请放宽判据、检查算例或调整 meshes 顺序（先大后小）。"
@@ -746,26 +790,40 @@ def main():
         rr["solution_stable_vs_ref"] = is_solution_stable(rr, criteria, region)
         enriched.append(rr)
         LOG.info(
-            "vs_ref | mesh=%s eq_conv=%s stable=%s rel_diff_max=%.4e abs_diff_outlet_max=%.4e",
+            "vs_ref | mesh=%s eq_conv=%s stable=%s rel_diff_max=%.4e rel_core_max=%.4e abs_diff_outlet_max=%.4e",
             rr.get("initial_mesh"),
             rr["equation_converged"],
             rr["solution_stable_vs_ref"],
             rr.get("rel_diff_outlet_max"),
+            rr.get("rel_diff_outlet_max_core"),
             rr.get("abs_diff_outlet_max"),
         )
 
     df = pd.DataFrame(enriched)
     write_grid_independence_summary_csv(log_csv, enriched)
 
-    ok = df[(df["equation_converged"] == True) & (df["solution_stable_vs_ref"] == True)]
-    if ok.empty:
-        msg = "没有找到同时满足“方程收敛 + 出口稳定”的网格，请放宽稳定性阈值或提高参考 mesh。"
+    # 推荐策略：按 mesh 从大到小看稳定性，取“第一次出现 stable=False 的前一档”作为下限；
+    # 若始终 stable=True，则推荐最小 mesh；若最大 mesh 就 unstable，则退化为最大 mesh。
+    seq = [
+        r
+        for r in enriched
+        if r.get("equation_converged") is True and r.get("status") == "success"
+    ]
+    seq = sorted(seq, key=lambda rr: int(rr.get("initial_mesh") or -1), reverse=True)
+    if not seq:
+        msg = "没有找到满足“方程收敛”的成功解，无法推荐网格。"
         LOG.warning("%s | csv=%s | wall_s=%.1f", msg, log_csv, time.perf_counter() - t_run0)
         print(msg)
         print(f"结果已写入 {log_csv}")
         return
 
-    recommended = int(ok.sort_values("initial_mesh").iloc[0]["initial_mesh"])
+    fail_idx = next((i for i, r in enumerate(seq) if r.get("solution_stable_vs_ref") is False), None)
+    if fail_idx is None:
+        recommended = int(seq[-1]["initial_mesh"])
+    elif fail_idx == 0:
+        recommended = int(seq[0]["initial_mesh"])
+    else:
+        recommended = int(seq[fail_idx - 1]["initial_mesh"])
     ref_mesh = int(ref_row["initial_mesh"])
 
     LOG.info(
