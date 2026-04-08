@@ -780,7 +780,9 @@ class FurnaceModel:
             g = smooth_heaviside((1.0 - np.asarray(fs)) - FS_SHUTDOWN_DELTA, k=FS_SHUTDOWN_K)
             r = r * g
 
-        np.clip(r, 0, None, out=r)
+        # NOTE: r may be a scalar (numpy.float64) when called pointwise from BVP;
+        # np.clip(..., out=r) requires an ndarray. Use functional form to support both scalars and arrays.
+        r = np.clip(r, 0, None)
         return r
 
     def ReactionRate_7(self,T,x,y,w,p):
