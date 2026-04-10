@@ -1378,7 +1378,7 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             or RE_x >= HC_REL_TOL_MAIN
         ) and (count < HC_MAX_ITER_TEST_MONOLITHIC):
             count += 1
-            print("count = ", count)
+            # print("count = ", count)
             # print("relative error of T = ", RE_T)
             # print("relative error of t = ", RE_t)
             # print("relative error of x = ", RE_x)

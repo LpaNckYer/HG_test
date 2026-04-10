@@ -507,7 +507,14 @@ def run_hegang_hc_coupled(
     model1 = HCFurnaceModel(params_up)
     outer = 0
 
-    def _solve_down_with_fallback() -> tuple[HCFurnaceModel_DOWN, dict]:
+
+    def _resample_down_guess(target_mesh: int) -> np.ndarray:
+        z_old = np.linspace(params_down.H0, params_down.HH, y_down.shape[1])
+        z_new = np.linspace(params_down.H0, params_down.HH, int(target_mesh))
+        rows = [np.interp(z_new, z_old, y_down[i]) for i in range(y_down.shape[0])]
+        return np.vstack(rows).astype(float)
+
+    def _run_down_once() -> tuple[HCFurnaceModel_DOWN, dict]:
         # 1) 先尝试 6
         model_down = HCFurnaceModel_DOWN(params_down)
         primary_exc: Exception | None = None
@@ -518,16 +525,47 @@ def run_hegang_hc_coupled(
             results_down = {"hc_converged": False}
             logging.warning("下半 test_hc_6 异常，将回退 test_hc_3n3: %s", e)
 
-        # 2) 6 不收敛时回退 3n3（重新实例化，避免状态污染）
-        if results_down.get("hc_converged") is not True:
+        # 2) 6 不收敛时回退 3n3
+        if not bool(results_down.get("hc_converged", False)):
             if primary_exc is None:
                 logging.warning("下半 test_hc_6 未收敛，将回退 test_hc_3n3")
             model_down = HCFurnaceModel_DOWN(params_down)
             results_down = model_down.test_hc_3n3()
 
-        # 3) 统一校验（若回退后仍不收敛，这里抛错）
-        require_hc_segment_converged(results_down, segment="down")
         return model_down, results_down
+
+    def _solve_down_with_fallback() -> tuple[HCFurnaceModel_DOWN, dict]:
+        # 程序内固定上限（不走 CLI）
+        MAX_MESH_DOWN = 80
+
+        # 若外部初始网格已高于上限，则以当前网格为上限（避免倒退）
+        mesh_cap = max(int(MAX_MESH_DOWN), int(params_down.initial_mesh))
+
+        while True:
+            # 当前网格先跑一轮（6 -> 3n3 fallback）
+            model_down, results_down = _run_down_once()
+
+            if bool(results_down.get("hc_converged", False)):
+                require_hc_segment_converged(results_down, segment="down")
+                return model_down, results_down
+
+            cur_mesh = int(params_down.initial_mesh)
+            next_mesh = min(cur_mesh * 2, mesh_cap)
+
+            # 不能再加密了，按原逻辑抛错
+            if next_mesh <= cur_mesh:
+                require_hc_segment_converged(results_down, segment="down")
+                return model_down, results_down
+
+            logging.warning(
+                "下半当前网格(%s)不收敛，当前轮加密到 %s 重算",
+                cur_mesh,
+                next_mesh,
+            )
+
+            params_down.initial_mesh = next_mesh
+            y_down_refined = _resample_down_guess(next_mesh)
+            bind_initial_bvp_guess_down(params_down, y_down_refined)
 
     try:
         results_UP = model1.test_hc_4n4()
