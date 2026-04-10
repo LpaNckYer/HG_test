@@ -17,8 +17,8 @@
     `data/initial_case_DOWN_bvp_4.2-5.9m_loop.csv` 按 z 排序拼接。
     对 z >= `--z-patch`（默认 4.2 m）的节点强制 w=0、y=1-x（与下半 CSV 缺列时一致）。
   - HC：默认 `data/test_hc_4n4_1e-3_UP_loop.csv` 与下半
-    `data/test_hc_4n4_1e-3_DOWN_loop.csv`；若后者不存在则回退为
-    `data/test_hc_6_1e-3_DOWN_loop.csv`（与 `hegang_hc.py` 中 `test_hc_6` 一致）。
+    `data/test_hc_4n4_1e-3_loop.csv`；若后者不存在则回退为
+    `data/test_hc_6_1e-3_loop.csv`（与 `hegang_hc.py` 中 `test_hc_6` 一致）。
     下半 CSV 无 y、w 列时补 y=1-x、w=0，并在 z >= `--z-patch` 上同样强制。
 
 初值扩缩：`--scale` 为离散整体乘子；或 `--scale-min` / `--scale-max` / `--scale-step` 三者同时给出，
@@ -29,7 +29,7 @@
   python scripts/test_convergence_ref_profiles.py
   python scripts/test_convergence_ref_profiles.py --phase bvp --scale 0.95 1.0 1.05
   python scripts/test_convergence_ref_profiles.py --phase hc --scale-min 0.95 --scale-max 1.05 --scale-step 0.05
-  python scripts/test_convergence_ref_profiles.py --initial-mesh-up 100 --initial-mesh-down 10
+  python scripts/test_convergence_ref_profiles.py --initial-mesh-up 200 --initial-mesh-down 20
 
 `--phase`：`both`（默认）先 BVP 再 HC；`bvp` 仅耦合 BVP 初值扫参；`hc` 仅 HC。单阶段时不检查另一阶段的参考 CSV 是否存在。
 
@@ -84,7 +84,7 @@ LOG = logging.getLogger("conv_ref")
 DEFAULT_BVP_UP = ROOT / "data" / "bvp_0.0-4.2m_loop.csv"
 DEFAULT_BVP_DOWN = ROOT / "data" / "bvp_4.2-5.9m_loop.csv"
 DEFAULT_HC_UP = ROOT / "data" / "hc_4n4_0.0-4.2m_loop.csv"
-DEFAULT_HC_DOWN_PRIMARY = ROOT / "data" / "hc_4n4_0.0-4.2m_loop.csv"
+DEFAULT_HC_DOWN_PRIMARY = ROOT / "data" / "hc_6_4.2-5.9m_loop.csv"
 DEFAULT_HC_DOWN_FALLBACK = ROOT / "data" / "hc_6_4.2-5.9m_loop.csv"
 
 DEFAULT_LOG_BVP = ROOT / "logs" / "convergence_ref_profiles_bvp.log"
@@ -501,11 +501,34 @@ def run_hegang_hc_coupled(
     y_tol: float,
     profile_out_dir: Path | None = None,
 ) -> tuple[bool, int, str | None]:
-    """与 hegang_hc.py 相同：test_hc_4n4 + test_hc_6 + 风口迭代；每次半段 hc_converged 须为 True。成功时写出 HC 剖面 CSV。"""
+    """与 hegang_hc.py 相同：test_hc_4n4 + 下半优先 test_hc_6(失败回退 test_hc_3n3) + 风口迭代。"""
     bind_initial_bvp_guess_up(params_up, y_up)
     bind_initial_bvp_guess_down(params_down, y_down)
     model1 = HCFurnaceModel(params_up)
     outer = 0
+
+    def _solve_down_with_fallback() -> tuple[HCFurnaceModel_DOWN, dict]:
+        # 1) 先尝试 6
+        model_down = HCFurnaceModel_DOWN(params_down)
+        primary_exc: Exception | None = None
+        try:
+            results_down = model_down.test_hc_6()
+        except Exception as e:
+            primary_exc = e
+            results_down = {"hc_converged": False}
+            logging.warning("下半 test_hc_6 异常，将回退 test_hc_3n3: %s", e)
+
+        # 2) 6 不收敛时回退 3n3（重新实例化，避免状态污染）
+        if results_down.get("hc_converged") is not True:
+            if primary_exc is None:
+                logging.warning("下半 test_hc_6 未收敛，将回退 test_hc_3n3")
+            model_down = HCFurnaceModel_DOWN(params_down)
+            results_down = model_down.test_hc_3n3()
+
+        # 3) 统一校验（若回退后仍不收敛，这里抛错）
+        require_hc_segment_converged(results_down, segment="down")
+        return model_down, results_down
+
     try:
         results_UP = model1.test_hc_4n4()
         require_hc_segment_converged(results_UP, segment="up")
@@ -513,16 +536,17 @@ def run_hegang_hc_coupled(
         fs_up = results_UP["fs_out"]
         rhob_up = results_UP["rhob_out"]
         p_up = results_UP["p_bottom"]
+
         params_down.t_in = t_up
         params_down.fs_in = fs_up
         params_down.rhob_in = rhob_up
         params_down.p0 = p_up
         params_down.p_in = p_up
-        model2 = HCFurnaceModel_DOWN(params_down)
-        results_DOWN = model2.test_hc_6()
-        require_hc_segment_converged(results_DOWN, segment="down")
+
+        model2, results_DOWN = _solve_down_with_fallback()
         T_down = results_DOWN["T_out"]
         x_down = results_DOWN["x_out"]
+
         F_b_DOWN = (
             2 * params_down.HI_O2 * params_down.Prod / 24
             + (1 - fs_up) * params_down.W_o / params_down.rho_po * params_down.c_H0 * 3 * 22.414
@@ -531,28 +555,31 @@ def run_hegang_hc_coupled(
         T_new = (F_b_DOWN * T_down + (params_up.H2_input + params_up.CO_input) * 1223) / F_b_UP
         x_new = (F_b_DOWN * x_down + params_up.CO_input) / F_b_UP
         y_new = F_b_DOWN * (1 - x_down) / F_b_UP
+
         count = 0
         while (abs(y_new - params_up.y_in) > y_tol) and (count < max_outer):
             count += 1
             params_up.T_in = T_new
             params_up.x_in = x_new
             params_up.y_in = y_new
+
             results_UP = model1.test_hc_4n4()
             require_hc_segment_converged(results_UP, segment="up")
             t_up = results_UP["t_out"]
             fs_up = results_UP["fs_out"]
             rhob_up = results_UP["rhob_out"]
             p_up = results_UP["p_bottom"]
+
             params_down.t_in = t_up
             params_down.fs_in = fs_up
             params_down.rhob_in = rhob_up
             params_down.p0 = p_up
             params_down.p_in = p_up
-            model2 = HCFurnaceModel_DOWN(params_down)
-            results_DOWN = model2.test_hc_6()
-            require_hc_segment_converged(results_DOWN, segment="down")
+
+            model2, results_DOWN = _solve_down_with_fallback()
             T_down = results_DOWN["T_out"]
             x_down = results_DOWN["x_out"]
+
             F_b_DOWN = (
                 2 * params_down.HI_O2 * params_down.Prod / 24
                 + (1 - fs_up) * params_down.W_o / params_down.rho_po * params_down.c_H0 * 3 * 22.414
@@ -561,6 +588,7 @@ def run_hegang_hc_coupled(
             T_new = (F_b_DOWN * T_down + (params_up.H2_input + params_up.CO_input) * 1223) / F_b_UP
             x_new = (F_b_DOWN * x_down + params_up.CO_input) / F_b_UP
             y_new = F_b_DOWN * (1 - x_down) / F_b_UP
+
         outer = count
         coupling_ok = abs(y_new - params_up.y_in) <= y_tol
         _save_coupled_hc_profiles(profile_out_dir, model1, model2)

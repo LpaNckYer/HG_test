@@ -1,0 +1,1473 @@
+
+========================================================================
+convergence_ref_profiles | cwd=D:\Group\HyOCR\HG_test_cloned
+argv=scripts/test_convergence_ref_profiles.py --scale-min 0.435 --scale-max 0.62 --scale-step 0.005 --log-bvp logs/bvp_0.435-0.62.log --log-hc logs/hc_0.435-0.62.log --output-csv output/summary_0.435-0.62.csv --phase hc
+phase=hc | run_bvp=False run_hc=True
+scales (38)=[0.435, 0.44, 0.445, 0.45, 0.455, 0.46, 0.465, 0.47000000000000003, 0.47500000000000003, 0.48000000000000004, 0.48500000000000004, 0.49000000000000005, 0.49500000000000005, 0.5, 0.505, 0.51, 0.515, 0.52, 0.525, 0.53, 0.535, 0.54, 0.545, 0.55, 0.555, 0.56, 0.5650000000000001, 0.5700000000000001, 0.5750000000000001, 0.5800000000000001, 0.5850000000000001, 0.5900000000000001, 0.5950000000000001, 0.6000000000000001, 0.6050000000000001, 0.6100000000000001, 0.6150000000000001, 0.6200000000000001] | mode=range[0.435,0.62]step=0.005
+z_patch_m=4.2 | max_outer=100 | y_tol=0.01
+initial_mesh_up=200 initial_mesh_down=10 | U_override=None
+TMP_RUN=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs | output_csv=D:\Group\HyOCR\HG_test_cloned\output\summary_0.435-0.62.csv
+HC  CSV up=D:\Group\HyOCR\HG_test_cloned\data\hc_4n4_0.0-4.2m_loop.csv down_resolved=D:\Group\HyOCR\HG_test_cloned\data\hc_6_4.2-5.9m_loop.csv
+merged HC  rows=499 z=[0.0000,5.8720]
+HC_REL_TOL_MAIN=0.001 (test_hc_* per-variable relative tolerance)
+========================================================================
+2026-04-10 23:43:29 | INFO     | [conv_ref:HC] trial 1/38 | scale=0.435 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i0
+2026-04-10 23:43:29 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:43:35 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:43:35 | INFO     | [conv_ref:HC] relative error of T = 0.0006689978900562211
+2026-04-10 23:43:35 | INFO     | [conv_ref:HC] relative error of t = 0.0006707986976434997
+2026-04-10 23:43:35 | INFO     | [conv_ref:HC] relative error of x = 0.00032767229194763007
+2026-04-10 23:43:35 | INFO     | [conv_ref:HC] relative error of y = 0.0005396597239279214
+2026-04-10 23:43:35 | INFO     | [conv_ref:HC] relative error of w = 0.0004519363641942853
+2026-04-10 23:43:35 | INFO     | [conv_ref:HC] relative error of p = 1.1403792969916486e-16
+2026-04-10 23:43:35 | INFO     | [conv_ref:HC] relative error of fs = 0.0007551104695649961
+2026-04-10 23:43:35 | INFO     | [conv_ref:HC] relative error of rhob = 0.0003712530164393661
+2026-04-10 23:43:35 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:43:40 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:43:40 | INFO     | [conv_ref:HC] relative error of T = 0.023923641789220053
+2026-04-10 23:43:40 | INFO     | [conv_ref:HC] relative error of t = 0.024735318669272963
+2026-04-10 23:43:40 | INFO     | [conv_ref:HC] relative error of x = 0.8305303453024546
+2026-04-10 23:43:40 | INFO     | [conv_ref:HC] relative error of p = 0.0009310230221578375
+2026-04-10 23:43:40 | INFO     | [conv_ref:HC] relative error of fs = 0.0026592460450600283
+2026-04-10 23:43:40 | INFO     | [conv_ref:HC] relative error of rhob = 0.03214975432828772
+2026-04-10 23:43:40 | WARNING  | [conv_ref:HC] test_hc_6 未达 HC_REL_TOL_MAIN=0.001：max(RE)=0.8305303453024546
+2026-04-10 23:43:40 | WARNING  | [conv_ref:HC] 下半 test_hc_6 未收敛，将回退 test_hc_3n3
+2026-04-10 23:43:40 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_3n3
+2026-04-10 23:43:44 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:43:44 | INFO     | [conv_ref:HC] relative error of T = 2.4601169275097585e-05
+2026-04-10 23:43:44 | INFO     | [conv_ref:HC] relative error of t = 2.8981918427357524e-05
+2026-04-10 23:43:44 | INFO     | [conv_ref:HC] relative error of x = 2.738154457484415e-11
+2026-04-10 23:43:44 | INFO     | [conv_ref:HC] relative error of p = 4.419250328018604e-05
+2026-04-10 23:43:44 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:43:44 | INFO     | [conv_ref:HC] relative error of rhob = 9.501486889504818e-05
+2026-04-10 23:43:44 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of T = 0.00038350477006418495
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of t = 0.0003835310398071072
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of x = 0.00029304900462770846
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of y = 0.0005602074567253864
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of w = 7.577290633307729e-05
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of p = 5.155508883976703e-17
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of fs = 0.0008113349382362496
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of rhob = 0.00011296112316324622
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of T = 6.048048971153296e-05
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of t = 6.198609160173272e-05
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of p = 0.0002023017720769584
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] trial 1/38 | scale=0.435 | HC end | coupling_ok=True outer_iters=1 elapsed=18.99s | final_success=True
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] trial 2/38 | scale=0.44 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i1
+2026-04-10 23:43:48 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of T = 0.0007805624994002404
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of t = 0.0007835867339870384
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of x = 0.0003223920013768461
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of y = 0.0005313881089890542
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of w = 0.0005047206530205831
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of p = 5.976548135372262e-18
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of fs = 0.0007147403352680196
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of rhob = 0.000441744210001583
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of T = 0.0002997896887300251
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of t = 0.0003611961923252599
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of x = 8.106188315157571e-12
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of p = 0.00026350751299731586
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] relative error of rhob = 0.0003576067362300749
+2026-04-10 23:43:54 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of T = 0.0005209697560072537
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of t = 0.000521397169918197
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of x = 0.0003423927346266898
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of y = 0.0006566069195845945
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of w = 8.750237904584302e-05
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of p = 3.5119983505941955e-17
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of fs = 0.0008171194079780431
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of rhob = 0.0001050081176902578
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of T = 5.954228455097649e-05
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of t = 6.101638867663111e-05
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of p = 0.00019885615027116828
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] trial 2/38 | scale=0.44 | HC end | coupling_ok=True outer_iters=1 elapsed=10.91s | final_success=True
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] trial 3/38 | scale=0.445 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i2
+2026-04-10 23:43:59 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of T = 0.0008377387640843703
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of t = 0.0008411226163722009
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of x = 0.00035946613625641703
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of y = 0.0005937967495863954
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of w = 0.0005585478445051204
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of p = 0.0
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of fs = 0.000778366669994712
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004773720778126211
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of T = 0.0005035930353123559
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of t = 0.0005602220615606525
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of x = 2.2873046760539925e-12
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of p = 0.0002756333619450437
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] relative error of rhob = 0.0001944222399140381
+2026-04-10 23:44:05 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of T = 0.0006991840051277018
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of t = 0.0006981515115051012
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of x = 0.0004374806165489301
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of y = 0.0008422225461088879
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of w = 0.0002681753176124845
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of p = 0.0007205163718121024
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of fs = 0.0005369688748198985
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of rhob = 0.0005144241833346633
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of T = 5.8298549216852325e-05
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of t = 5.9726661950753756e-05
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of p = 0.0001937264541103309
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] trial 3/38 | scale=0.445 | HC end | coupling_ok=True outer_iters=1 elapsed=10.50s | final_success=True
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] trial 4/38 | scale=0.45 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i3
+2026-04-10 23:44:10 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of T = 0.0008417709460464556
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of t = 0.0008452119999030537
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of x = 0.0003658215685133843
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of y = 0.0006044989970294773
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of w = 0.0005676461176706893
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of p = 0.0
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of fs = 0.0007884739265838911
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004817086065003456
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of T = 0.0004066277799279607
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of t = 0.00045241819192677716
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of x = 1.5212667411428575e-12
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of p = 0.00022235277187215488
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] relative error of rhob = 0.00014320440540690555
+2026-04-10 23:44:16 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of T = 0.00025235113377739985
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of t = 0.00025561184423618486
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of x = 0.00030693904468145856
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of y = 0.0005909597597577206
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of w = 0.00021355757164901094
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of p = 1.2368617851921282e-16
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of fs = 0.000750902803283735
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of rhob = 0.00026362377006592546
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of T = 5.4499200499058424e-05
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of t = 5.5835785919246386e-05
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of p = 0.00018132587280562986
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] trial 4/38 | scale=0.45 | HC end | coupling_ok=True outer_iters=1 elapsed=11.22s | final_success=True
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] trial 5/38 | scale=0.455 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i4
+2026-04-10 23:44:21 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of T = 0.00082931835918457
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of t = 0.0008326112770849865
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of x = 0.00034653735884815465
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of y = 0.0005721586743843436
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of w = 0.0005475059045409201
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of p = 5.700777861663611e-17
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of fs = 0.0007616337744706729
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004677837598051528
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of T = 0.0001781215955548661
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of t = 0.00020595275885846987
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of x = 3.3269643792067606e-12
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of p = 0.00013124055274369145
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:44:27 | INFO     | [conv_ref:HC] relative error of rhob = 0.00011028473422444812
+2026-04-10 23:44:28 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of T = 0.00015553965915964318
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of t = 0.0001567984557747375
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of x = 0.0003218154468568741
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of y = 0.0006187408090737982
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of w = 0.00015228171828756223
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of p = 2.1698775644901921e-16
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of fs = 0.0007340758310685765
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of rhob = 0.00022529816282428487
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of T = 5.001307420391368e-05
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of t = 5.123690964389672e-05
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of p = 0.00016631876283476168
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] trial 5/38 | scale=0.455 | HC end | coupling_ok=True outer_iters=1 elapsed=11.50s | final_success=True
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] trial 6/38 | scale=0.46 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i5
+2026-04-10 23:44:32 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of T = 0.0008531802410762155
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of t = 0.0008567176195969458
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of x = 0.0003768972521039879
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of y = 0.0006231185804083941
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of w = 0.0005877403774387174
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of p = 0.0
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of fs = 0.0007987132539509403
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004891188760957862
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of T = 0.00018720363615801056
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of t = 0.00021009745600420395
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of x = 1.0951401501382838e-12
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of p = 0.0001134173894094228
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] relative error of rhob = 5.9186516629287445e-05
+2026-04-10 23:44:39 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of T = 0.0003430190142354353
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of t = 0.00034703312822379753
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of x = 0.00027216477765567594
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of y = 0.0005244353371304365
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of w = 0.00024950432517827054
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of p = 5.376495127164999e-17
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of fs = 0.000739603166170398
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of rhob = 0.00027230693280793126
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of T = 4.4447653847669865e-05
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of t = 4.5524859262620474e-05
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of p = 0.00014745702919610393
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] trial 6/38 | scale=0.46 | HC end | coupling_ok=True outer_iters=1 elapsed=11.56s | final_success=True
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] trial 7/38 | scale=0.465 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i6
+2026-04-10 23:44:44 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of T = 0.0008588749434599518
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of t = 0.0008624666891005716
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of x = 0.00038243733970110683
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of y = 0.0006324748160417296
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of w = 0.0005944290174077918
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of p = 1.29688310275541e-16
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of fs = 0.000805141712895368
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004938586253314276
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of T = 0.0005041252992441763
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of t = 0.0005492249104268294
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of x = 3.213766179285433e-13
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of p = 0.0002271173105430076
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] relative error of rhob = 6.658773938951444e-05
+2026-04-10 23:44:51 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of T = 0.00052527399845924
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of t = 0.0005272254303910418
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of x = 0.0005081743057605199
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of y = 0.0009822374303317223
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of w = 0.00015186966315681698
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of p = 2.635486713077755e-17
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of fs = 0.0008209276836376708
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of rhob = 0.00012988022506737066
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of T = 3.793133448930821e-05
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of t = 3.8840721945441336e-05
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of p = 0.00012561311502766443
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] trial 7/38 | scale=0.465 | HC end | coupling_ok=True outer_iters=1 elapsed=12.46s | final_success=True
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] trial 8/38 | scale=0.47000000000000003 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i7
+2026-04-10 23:44:56 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of T = 0.0006357854052811379
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of t = 0.0006392889443063843
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of x = 0.0003538620106807274
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of y = 0.0005850660467236653
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of w = 0.0005630987076116419
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of p = 5.34632779349581e-17
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of fs = 0.0008560463611303118
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of rhob = 0.00036826075755143226
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of T = 0.0004505108808290529
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of t = 0.0004918981565628295
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of x = 6.929387990608623e-13
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of p = 0.00020802394465548808
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] relative error of rhob = 6.349630663988597e-05
+2026-04-10 23:45:04 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of T = 0.0005264163645091155
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of t = 0.0005283490065841398
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of x = 0.0004977683013474926
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of y = 0.0009617630472903631
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of w = 0.00015227347498281748
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of p = 8.784966398297323e-18
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of fs = 0.0008076136037995222
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of rhob = 0.00012781060159383517
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of T = 6.168818818373515e-05
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of t = 6.316334704710251e-05
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of p = 9.830396743503396e-05
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] trial 8/38 | scale=0.47000000000000003 | HC end | coupling_ok=True outer_iters=1 elapsed=13.44s | final_success=True
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] trial 9/38 | scale=0.47500000000000003 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i8
+2026-04-10 23:45:10 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of T = 0.0006390951576198291
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of t = 0.0006426092876990189
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of x = 0.00035581203149042865
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of y = 0.0005883506614829701
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of w = 0.0005668934913166388
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of p = 0.0
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of fs = 0.0008576078960334303
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of rhob = 0.0003697789472664127
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of T = 0.00030215338166071507
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of t = 0.0003319743917857108
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of x = 3.492479007712611e-13
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of p = 0.00015359916966623763
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] relative error of rhob = 3.8850067587844456e-05
+2026-04-10 23:45:17 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of T = 0.0005330311093410813
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of t = 0.0005350065737368656
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of x = 0.0004894959417107532
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of y = 0.0009460976116361598
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of w = 0.00015558987176832268
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of p = 2.4848238115196615e-17
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of fs = 0.0008022074070327607
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of rhob = 0.00012645642762800375
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of T = 4.606774197691088e-05
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of t = 4.712695958292684e-05
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of p = 7.29051291967754e-05
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:45:22 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:45:23 | INFO     | [conv_ref:HC] trial 9/38 | scale=0.47500000000000003 | HC end | coupling_ok=True outer_iters=1 elapsed=12.75s | final_success=True
+2026-04-10 23:45:23 | INFO     | [conv_ref:HC] trial 10/38 | scale=0.48000000000000004 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i9
+2026-04-10 23:45:23 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of T = 0.0006396700753896065
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of t = 0.0006431828027572739
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of x = 0.0003559642164215405
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of y = 0.0005886071022380814
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of w = 0.0005673578833968609
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of p = 8.260856853568263e-17
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of fs = 0.0008573082800631588
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of rhob = 0.0003698916871514425
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of T = 0.0004149485742402828
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of t = 0.0004523662704230089
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of x = 3.934542216791676e-13
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of p = 0.0001873813616997417
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] relative error of rhob = 4.5653192462437526e-05
+2026-04-10 23:45:30 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of T = 0.0007927558077496404
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of t = 0.0007950202620726862
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of x = 0.0004409218693802613
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of y = 0.0008520986384244373
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of w = 0.00018339154272953967
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of p = 8.002876445516833e-17
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of fs = 0.0009381311606867125
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of rhob = 0.00017699818654908788
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of T = 5.143886788275421e-05
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of t = 5.281201270246598e-05
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of p = 8.342061812180267e-05
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] trial 10/38 | scale=0.48000000000000004 | HC end | coupling_ok=True outer_iters=1 elapsed=12.47s | final_success=True
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] trial 11/38 | scale=0.48500000000000004 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i10
+2026-04-10 23:45:35 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of T = 0.0006514496847272249
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of t = 0.0006549976014332403
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of x = 0.0003626190563322
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of y = 0.0005998074749315804
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of w = 0.0005815588341774668
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of p = 6.867330671494425e-17
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of fs = 0.0008630679837678659
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of rhob = 0.0003754457970358889
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of T = 6.573255100334676e-05
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of t = 7.059191646464502e-05
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of x = 1.3114070421247852e-13
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of p = 0.0001485518270645598
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] relative error of rhob = 1.3932974707410102e-05
+2026-04-10 23:45:43 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of T = 0.0009401265676335192
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of t = 0.0009426566638849731
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of x = 0.00047562294204787003
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of y = 0.0009199128107769411
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of w = 0.00020239379749086543
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of p = 1.2298756487052263e-16
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of fs = 0.000928430309048713
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of rhob = 0.00023129686657738993
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of T = 2.9816172801006303e-05
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of t = 3.0528052628516586e-05
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of p = 0.00010945777737491503
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] trial 11/38 | scale=0.48500000000000004 | HC end | coupling_ok=True outer_iters=1 elapsed=12.94s | final_success=True
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] trial 12/38 | scale=0.49000000000000005 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i11
+2026-04-10 23:45:48 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:45:55 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:55 | INFO     | [conv_ref:HC] relative error of T = 0.0006211671226141638
+2026-04-10 23:45:55 | INFO     | [conv_ref:HC] relative error of t = 0.0006244977227488939
+2026-04-10 23:45:55 | INFO     | [conv_ref:HC] relative error of x = 0.0004499123229541987
+2026-04-10 23:45:55 | INFO     | [conv_ref:HC] relative error of y = 0.0007440203732914656
+2026-04-10 23:45:55 | INFO     | [conv_ref:HC] relative error of w = 0.0005638010934352183
+2026-04-10 23:45:55 | INFO     | [conv_ref:HC] relative error of p = 1.0388246841657388e-16
+2026-04-10 23:45:55 | INFO     | [conv_ref:HC] relative error of fs = 0.0008058143682342329
+2026-04-10 23:45:55 | INFO     | [conv_ref:HC] relative error of rhob = 0.00036395909897348107
+2026-04-10 23:45:55 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:45:56 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:45:56 | INFO     | [conv_ref:HC] relative error of T = 1.9840968162573555e-05
+2026-04-10 23:45:56 | INFO     | [conv_ref:HC] relative error of t = 2.302265263982379e-05
+2026-04-10 23:45:56 | INFO     | [conv_ref:HC] relative error of x = 4.149843423325277e-13
+2026-04-10 23:45:56 | INFO     | [conv_ref:HC] relative error of p = 1.917247976079736e-05
+2026-04-10 23:45:56 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:45:56 | INFO     | [conv_ref:HC] relative error of rhob = 5.244084124417062e-06
+2026-04-10 23:45:56 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of T = 0.0007855577430643599
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of t = 0.0007877347632204703
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of x = 0.0004394709764663592
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of y = 0.0008489338086883341
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of w = 0.0001820655445842092
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of p = 0.0
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of fs = 0.0009301636615874101
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of rhob = 0.00018030216219757424
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of T = 3.603080287584604e-05
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of t = 3.695193866963986e-05
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of p = 0.00012050404993158824
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:46:01 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:46:02 | INFO     | [conv_ref:HC] trial 12/38 | scale=0.49000000000000005 | HC end | coupling_ok=True outer_iters=1 elapsed=13.55s | final_success=True
+2026-04-10 23:46:02 | INFO     | [conv_ref:HC] trial 13/38 | scale=0.49500000000000005 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i12
+2026-04-10 23:46:02 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of T = 0.0006960131028561282
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of t = 0.0006996782617807231
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of x = 0.00039694662615739277
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of y = 0.000657372612483931
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of w = 0.0006041229231463065
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of p = 7.09710697189982e-17
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of fs = 0.0008705428066792446
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004039962227181186
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of T = 4.016155620338631e-05
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of t = 4.099651675538125e-05
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of p = 0.0005419081948904883
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:46:09 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:46:13 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:13 | INFO     | [conv_ref:HC] relative error of T = 0.00027758609662197715
+2026-04-10 23:46:13 | INFO     | [conv_ref:HC] relative error of t = 0.0002822534525903389
+2026-04-10 23:46:13 | INFO     | [conv_ref:HC] relative error of x = 0.0002919058450910097
+2026-04-10 23:46:13 | INFO     | [conv_ref:HC] relative error of y = 0.0005648676581941677
+2026-04-10 23:46:13 | INFO     | [conv_ref:HC] relative error of w = 0.0002331630017339864
+2026-04-10 23:46:13 | INFO     | [conv_ref:HC] relative error of p = 4.6463268264580134e-17
+2026-04-10 23:46:13 | INFO     | [conv_ref:HC] relative error of fs = 0.0009614878952763406
+2026-04-10 23:46:13 | INFO     | [conv_ref:HC] relative error of rhob = 0.0002755641812346655
+2026-04-10 23:46:13 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:46:14 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:14 | INFO     | [conv_ref:HC] relative error of T = 3.6400950296807124e-05
+2026-04-10 23:46:14 | INFO     | [conv_ref:HC] relative error of t = 3.715524716234005e-05
+2026-04-10 23:46:14 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:46:14 | INFO     | [conv_ref:HC] relative error of p = 0.0005185339097680983
+2026-04-10 23:46:14 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:46:14 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:46:14 | INFO     | [conv_ref:HC] trial 13/38 | scale=0.49500000000000005 | HC end | coupling_ok=True outer_iters=1 elapsed=12.07s | final_success=True
+2026-04-10 23:46:14 | INFO     | [conv_ref:HC] trial 14/38 | scale=0.5 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i13
+2026-04-10 23:46:14 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of T = 0.0007131907119633989
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of t = 0.000716968470819705
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of x = 0.0004221785442938636
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of y = 0.0006983607264709551
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of w = 0.0005860813142418191
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of p = 8.824911724086572e-17
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of fs = 0.0007837488354761819
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004222145576825464
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of T = 2.4239297677491425e-06
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of t = 2.499265543787267e-06
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of p = 1.949495260131516e-06
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:46:21 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of T = 0.00027360528687351757
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of t = 0.00027829394740708837
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of x = 0.0002822166728641218
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of y = 0.0005461900099437265
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of w = 0.0002305948810466158
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of p = 8.307042374284896e-17
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of fs = 0.0009557984790162707
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of rhob = 0.0002723510901328589
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of T = 2.5576040717772695e-06
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of t = 2.6360021913102002e-06
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of p = 2.1650683554117528e-06
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] trial 14/38 | scale=0.5 | HC end | coupling_ok=True outer_iters=1 elapsed=12.76s | final_success=True
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] trial 15/38 | scale=0.505 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i14
+2026-04-10 23:46:26 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of T = 0.0006635301384085488
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of t = 0.0006674871621085389
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of x = 0.0003819761449810812
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of y = 0.0006331566441922228
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of w = 0.0006073221353885584
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of p = 1.870124997852076e-16
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of fs = 0.0009192019932418046
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of rhob = 0.0003895381499029834
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of T = 4.856028618717407e-05
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of t = 5.0037424407718234e-05
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of x = 4.858434430300825e-13
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of p = 0.0007139021663187998
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] relative error of rhob = 3.1885988949643426e-10
+2026-04-10 23:46:35 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of T = 0.000189225713182223
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of t = 0.00019240172621266054
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of x = 0.0002932735247828325
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of y = 0.0005643595112193152
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of w = 0.00016381250952135216
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of p = 1.0201666348472993e-16
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of fs = 0.0008628612159096393
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of rhob = 0.00019769188464053845
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of T = 4.76587133755127e-06
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of t = 4.889649906174822e-06
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of p = 3.819860875072634e-06
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:46:40 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:46:41 | INFO     | [conv_ref:HC] trial 15/38 | scale=0.505 | HC end | coupling_ok=True outer_iters=1 elapsed=14.24s | final_success=True
+2026-04-10 23:46:41 | INFO     | [conv_ref:HC] trial 16/38 | scale=0.51 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i15
+2026-04-10 23:46:41 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of T = 0.0008665473319663987
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of t = 0.0008715736568664901
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of x = 0.0005110020721224127
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of y = 0.000848144418516259
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of w = 0.0006629205208819973
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of p = 5.2775360192771833e-17
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of fs = 0.0007879867672810371
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004858293556512425
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of T = 4.723972561196291e-06
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of t = 4.847829161711455e-06
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of p = 3.5851152630709252e-06
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:46:48 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of T = 0.00026971122472566696
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of t = 0.00027442772639020633
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of x = 0.00027088163856029736
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of y = 0.0005243368185982621
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of w = 0.00022726474633572087
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of p = 1.0896790170219839e-16
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of fs = 0.0009464827330555256
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of rhob = 0.0002677260876095986
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of T = 4.781095924094039e-06
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of t = 4.904822853605941e-06
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of p = 3.82334680130898e-06
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] trial 16/38 | scale=0.51 | HC end | coupling_ok=True outer_iters=1 elapsed=12.83s | final_success=True
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] trial 17/38 | scale=0.515 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i16
+2026-04-10 23:46:53 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of T = 0.0008820568114663405
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of t = 0.000887122819663173
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of x = 0.0005220635860070361
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of y = 0.000866810210273672
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of w = 0.0006713709977979527
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of p = 4.1399550335436654e-17
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of fs = 0.0007924909551202577
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of rhob = 0.000494835123388504
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of T = 4.602093061651082e-06
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of t = 4.724177475488763e-06
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of p = 3.506133161082619e-06
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:47:01 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of T = 0.0002895654925404677
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of t = 0.00029459167488235744
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of x = 0.00029410622663246066
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of y = 0.0005673137678973731
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of w = 0.0002531995818589082
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of p = 1.261891551131997e-16
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of fs = 0.000997856211231465
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of rhob = 0.00029419270011261353
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of T = 4.785297155931416e-06
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of t = 4.909009943365911e-06
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of p = 3.826310777809619e-06
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] trial 17/38 | scale=0.515 | HC end | coupling_ok=True outer_iters=1 elapsed=12.04s | final_success=True
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] trial 18/38 | scale=0.52 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i17
+2026-04-10 23:47:05 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of T = 0.0007559971276283604
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of t = 0.0007613660923880115
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of x = 0.0005565913625761007
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of y = 0.0009224963463831058
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of w = 0.0006070555594875309
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of p = 6.324848828761788e-17
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of fs = 0.000758522275951032
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004097720789251728
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of T = 4.683134631007061e-06
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of t = 4.8063615809650935e-06
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of p = 3.559347787958626e-06
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:47:13 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:47:14 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of T = 0.0002810421539347393
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of t = 0.00028605663313249345
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of x = 0.00028376129184346866
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of y = 0.0005482174753538374
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of w = 0.0002454590252000188
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of p = 6.94215834204873e-17
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of fs = 0.0009698804240358659
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of rhob = 0.0002940171316346671
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of T = 4.78274419033544e-06
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of t = 4.906466804402699e-06
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of p = 3.8247729906340345e-06
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] trial 18/38 | scale=0.52 | HC end | coupling_ok=True outer_iters=1 elapsed=13.21s | final_success=True
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] trial 19/38 | scale=0.525 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i18
+2026-04-10 23:47:19 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of T = 0.000804831672662007
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of t = 0.0008087112147036671
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of x = 0.0004425737150228192
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of y = 0.000733627516529031
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of w = 0.0006226938747789125
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of p = 1.4154770001088024e-16
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of fs = 0.0008138176920208411
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004720005792964975
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of T = 4.723466267264393e-06
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of t = 4.847327024290538e-06
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of p = 3.586154197423758e-06
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:47:27 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of T = 0.00028939261843206876
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of t = 0.0002945139754779226
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of x = 0.00029283944177584614
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of y = 0.0005651469719091839
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of w = 0.00024681274173945415
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of p = 1.148334634507705e-16
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of fs = 0.0009812269290347456
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of rhob = 0.0002868064635872327
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of T = 4.784069794096847e-06
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of t = 4.907787505624145e-06
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of p = 3.82580296191824e-06
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] trial 19/38 | scale=0.525 | HC end | coupling_ok=True outer_iters=1 elapsed=13.12s | final_success=True
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] trial 20/38 | scale=0.53 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i19
+2026-04-10 23:47:32 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of T = 0.0009821500155082314
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of t = 0.0009869099694111425
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of x = 0.00042335726593496146
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of y = 0.0007038275096010136
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of w = 0.0007074371342091771
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of p = 2.671941951065644e-17
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of fs = 0.0009321180525038256
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of rhob = 0.0005737208365399063
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of T = 4.254587721223803e-06
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of t = 4.371374508828489e-06
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of p = 3.2825619742295223e-06
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:47:39 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of T = 0.0002761803074253414
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of t = 0.00028113272291387976
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of x = 0.0002793271504240428
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of y = 0.0005398321893085321
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of w = 0.00024215543045172459
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of p = 2.977835884800415e-17
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of fs = 0.000956237717257212
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of rhob = 0.0002886910547966717
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of T = 4.73991245752563e-06
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of t = 4.863028716091544e-06
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of p = 3.7956643125139182e-06
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] trial 20/38 | scale=0.53 | HC end | coupling_ok=True outer_iters=1 elapsed=12.45s | final_success=True
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] trial 21/38 | scale=0.535 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i20
+2026-04-10 23:47:44 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of T = 0.0007764451099629553
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of t = 0.0007810095521253255
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of x = 0.000584384581016436
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of y = 0.0009694909225846707
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of w = 0.000664123758369964
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of p = 3.535885356202013e-17
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of fs = 0.0007628757541444233
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004191129036584449
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of T = 4.4304681083417195e-06
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of t = 4.5498356567096575e-06
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of p = 3.4086499874461e-06
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:47:52 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of T = 0.00028637844774786396
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of t = 0.00029130819216026627
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of x = 0.0002801997095279017
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of y = 0.0005416542988277882
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of w = 0.0002326173070827715
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of p = 3.72561996255482e-17
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of fs = 0.0009411834107775696
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of rhob = 0.0002670633303188188
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of T = 4.356301963213095e-06
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of t = 4.473767808315281e-06
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of p = 3.5351594365531907e-06
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] trial 21/38 | scale=0.535 | HC end | coupling_ok=True outer_iters=1 elapsed=12.91s | final_success=True
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] trial 22/38 | scale=0.54 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i21
+2026-04-10 23:47:57 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of T = 0.0009900941707729827
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of t = 0.0009949035980641775
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of x = 0.0004222385343396507
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of y = 0.0007020700129918285
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of w = 0.0007099535715682972
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of p = 1.3359576455534064e-17
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of fs = 0.0009371768315761833
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of rhob = 0.0005808008020825721
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of T = 4.234163899838362e-06
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of t = 4.3502024045460755e-06
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of p = 3.2693674012580336e-06
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:48:04 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of T = 0.00028332372840491287
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of t = 0.0002882707708766084
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of x = 0.0002845338584531205
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of y = 0.0005499719912978129
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of w = 0.00023392595432098135
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of p = 8.143584555393704e-17
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of fs = 0.0009435144455311144
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of rhob = 0.00026903856500150265
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of T = 4.3362731929825595e-06
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of t = 4.4529784329145365e-06
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of p = 3.52168978237046e-06
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] trial 22/38 | scale=0.54 | HC end | coupling_ok=True outer_iters=1 elapsed=11.84s | final_success=True
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] trial 23/38 | scale=0.545 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i22
+2026-04-10 23:48:09 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of T = 0.0007804154903638361
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of t = 0.0007850069036002248
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of x = 0.0005883687128003355
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of y = 0.0009762632620611112
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of w = 0.0006677431999407606
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of p = 9.335894039068579e-17
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of fs = 0.0007666200855089125
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of rhob = 0.00042176019911706656
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of T = 4.234420113367034e-06
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of t = 4.350186082443763e-06
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of p = 3.2701215102304892e-06
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:48:16 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of T = 0.0002789829542340002
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of t = 0.0002838090361830776
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of x = 0.00027924817609174097
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of y = 0.0005401913467293302
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of w = 0.0002282251976197994
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of p = 1.174860996767373e-16
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of fs = 0.0009226999001934568
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of rhob = 0.00025840647386841893
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of T = 4.538292283052198e-06
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of t = 4.65923964566911e-06
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of p = 3.6807299680250383e-06
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] trial 23/38 | scale=0.545 | HC end | coupling_ok=True outer_iters=1 elapsed=12.24s | final_success=True
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] trial 24/38 | scale=0.55 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i23
+2026-04-10 23:48:21 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of T = 0.0007675402086326941
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of t = 0.0007720608609027333
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of x = 0.0005748337020159498
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of y = 0.00095331015035686
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of w = 0.0006563968586681101
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of p = 3.381006379725821e-17
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of fs = 0.0007556292038230331
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of rhob = 0.00041379545831237807
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of T = 4.003170848335115e-06
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of t = 4.115241839722322e-06
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of p = 3.1197441482810485e-06
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:48:29 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of T = 0.0002525732305840026
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of t = 0.00025752965174822754
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of x = 0.00023858751508033823
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of y = 0.0004614727084869192
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of w = 0.0002412572267774992
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of p = 1.0896837801138922e-16
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of fs = 0.00094217268102598
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of rhob = 0.0003228774671334866
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of T = 4.275989557788694e-06
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of t = 4.3915174572290076e-06
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of p = 3.4805549046349355e-06
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] trial 24/38 | scale=0.55 | HC end | coupling_ok=True outer_iters=1 elapsed=12.48s | final_success=True
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] trial 25/38 | scale=0.555 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i24
+2026-04-10 23:48:34 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of T = 0.0007854631057053074
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of t = 0.0007912913375113544
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of x = 0.0005594995783575717
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of y = 0.0009303732675515019
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of w = 0.0006760714266105854
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of p = 2.927580478596779e-17
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of fs = 0.0008548730847190726
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004094475529179452
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of T = 3.648986837358518e-06
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of t = 3.758695626325322e-06
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of p = 2.907930984633065e-06
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:48:41 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of T = 0.0002523846899612936
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of t = 0.00025686313000682396
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of x = 0.00026216285317474003
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of y = 0.0005075430345366183
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of w = 0.00021759183486012057
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of p = 3.566915617883399e-17
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of fs = 0.0009494353099435614
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of rhob = 0.0002487749339530749
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of T = 4.162231717072907e-06
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of t = 4.2761040697658735e-06
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of p = 3.4038008470393385e-06
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] trial 25/38 | scale=0.555 | HC end | coupling_ok=True outer_iters=1 elapsed=12.27s | final_success=True
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] trial 26/38 | scale=0.56 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i25
+2026-04-10 23:48:46 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of T = 0.0008598645411973238
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of t = 0.0008641530952724545
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of x = 0.0004555249231234004
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of y = 0.0007570044501230914
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of w = 0.0006839929246324887
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of p = 7.6524385280257e-17
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of fs = 0.0008787926274631191
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of rhob = 0.0005084818359585084
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of T = 3.408515542383578e-06
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of t = 3.5133513909529885e-06
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of p = 2.730819580048583e-06
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:48:53 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of T = 0.0009142310427093552
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of t = 0.0009131102421702684
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of x = 0.00033932369561603525
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of y = 0.0006583873994504514
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of w = 0.00014111308017570587
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of p = 0.0007561148810001761
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of fs = 0.0007373665896140028
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of rhob = 0.0007653884711929145
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of T = 3.3517176877086387e-06
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of t = 3.4443555390577534e-06
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of p = 2.755043347077038e-06
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] trial 26/38 | scale=0.56 | HC end | coupling_ok=True outer_iters=1 elapsed=12.11s | final_success=True
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] trial 27/38 | scale=0.5650000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i26
+2026-04-10 23:48:58 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of T = 0.0008576497955836968
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of t = 0.0008621127448619547
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of x = 0.00046793089541805993
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of y = 0.0007779553429527846
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of w = 0.0006875635186322314
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of p = 0.0
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of fs = 0.0008931999905686837
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of rhob = 0.0005146832504688464
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of T = 3.4158061890312753e-06
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of t = 3.5207545334595263e-06
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of p = 2.7355386740221353e-06
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:49:06 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of T = 0.0002408815434911251
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of t = 0.00024502211172458267
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of x = 0.000267056786707803
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of y = 0.0005180493601108233
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of w = 0.00021910494092474052
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of p = 6.209037474076924e-18
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of fs = 0.0008792374431924056
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of rhob = 0.00022758608416651997
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of T = 2.571863989666478e-06
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of t = 2.643310523239687e-06
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of p = 2.1169279163566543e-06
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] trial 27/38 | scale=0.5650000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=12.69s | final_success=True
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] trial 28/38 | scale=0.5700000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i27
+2026-04-10 23:49:11 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of T = 0.0008456967143812243
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of t = 0.0008498999867490619
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of x = 0.00044411185930414636
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of y = 0.0007374291169137694
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of w = 0.0006715834704602951
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of p = 1.4637541942408498e-17
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of fs = 0.0008580454280976439
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004975641980838448
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of T = 2.794060990815703e-06
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of t = 2.879812216017366e-06
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of p = 2.236585847793577e-06
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:49:18 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of T = 0.00023411725120478256
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of t = 0.00023818313031161913
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of x = 0.0002708962142824814
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of y = 0.0005255724755104511
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of w = 0.00022226244820094652
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of p = 1.2417970050638575e-17
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of fs = 0.0008777334776084932
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of rhob = 0.0002276652376120178
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of T = 4.1613566656464745e-06
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of t = 4.2752948368803805e-06
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of p = 3.4040462352739923e-06
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] trial 28/38 | scale=0.5700000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=12.23s | final_success=True
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] trial 29/38 | scale=0.5750000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i28
+2026-04-10 23:49:23 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of T = 0.0008473800737062847
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of t = 0.0008518446960034361
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of x = 0.0004568265860562593
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of y = 0.000759378629936003
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of w = 0.0006855008429183671
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of p = 8.534832098447291e-17
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of fs = 0.0008957156041700935
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of rhob = 0.0005080890751474165
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of T = 3.4287534687216126e-06
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of t = 3.5338705864792906e-06
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of p = 2.7440067274417415e-06
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:49:30 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of T = 0.00045840400503122987
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of t = 0.00045708149914714915
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of x = 0.0001705584038214208
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of y = 0.00033116873396284705
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of w = 0.00022028804109105188
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of p = 4.344846743097553e-17
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of fs = 0.0008349125506570214
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of rhob = 0.00020587726736217285
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of T = 2.8504670808313697e-06
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of t = 2.9293294557096635e-06
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of p = 2.3411221246258757e-06
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] trial 29/38 | scale=0.5750000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=11.75s | final_success=True
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] trial 30/38 | scale=0.5800000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i29
+2026-04-10 23:49:35 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of T = 0.0006779126925551584
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of t = 0.000683426522686849
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of x = 0.000513277814634926
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of y = 0.0008515167436473549
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of w = 0.0006412861310684903
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of p = 1.0923753516846904e-16
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of fs = 0.0008217331324323064
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of rhob = 0.00035850576829551825
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of T = 0.00026220198150863407
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of t = 0.0002898104086230145
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of x = 5.677274376458052e-13
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of p = 0.0001405627921207709
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] relative error of rhob = 4.742795571585431e-05
+2026-04-10 23:49:42 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of T = 0.0006454089720764157
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of t = 0.0006484534540341025
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of x = 0.0004597211200431356
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of y = 0.0008897808996075762
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of w = 0.00018069454901402339
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of p = 1.016478032333227e-16
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of fs = 0.0007385619156204295
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of rhob = 0.00016520712510309185
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of T = 0.000520663509859947
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of t = 0.0005610888184191161
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of x = 4.508258351504969e-14
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of p = 0.00019977193447294153
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] relative error of rhob = 2.4184115276617554e-05
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] trial 30/38 | scale=0.5800000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=11.52s | final_success=True
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] trial 31/38 | scale=0.5850000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i30
+2026-04-10 23:49:46 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of T = 0.0007746728266779788
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of t = 0.0007793106596431227
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of x = 0.0005866079724600329
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of y = 0.0009741419064319995
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of w = 0.0006811212512292416
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of p = 6.62839097724858e-17
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of fs = 0.0008046647112902537
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004163664588092826
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of T = 3.3917193573564474e-06
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of t = 3.4954042868088878e-06
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of p = 2.7124552112508023e-06
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:49:53 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of T = 0.0007125708903181255
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of t = 0.0007116500430481069
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of x = 0.000304718202730216
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of y = 0.000592637862167877
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of w = 0.00022815166435176816
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of p = 0.00046679206138520014
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of fs = 0.000543627514123828
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of rhob = 0.0005270903689852355
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of T = 3.4991775042963413e-06
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of t = 3.604657017150975e-06
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of p = 2.944135129232783e-06
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] trial 31/38 | scale=0.5850000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=11.50s | final_success=True
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] trial 32/38 | scale=0.5900000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i31
+2026-04-10 23:49:58 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of T = 0.0007001395146408263
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of t = 0.0007054669579045822
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of x = 0.00042257372133896743
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of y = 0.0007021637951519657
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of w = 0.0006581481053812926
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of p = 7.121905677059867e-17
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of fs = 0.0009879353571889068
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of rhob = 0.00042894666445786095
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of T = 3.3888776425880783e-06
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of t = 3.4926412631860267e-06
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of p = 2.7124136276461884e-06
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:50:05 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of T = 0.00034979896125208505
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of t = 0.0003491053655572198
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of x = 0.00020597024227700242
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of y = 0.00040038256902168894
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of w = 0.00023084815664240225
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of p = 5.303140483877239e-17
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of fs = 0.0008089687506772514
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of rhob = 0.0002084776373849505
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of T = 3.4429253917348405e-06
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of t = 3.5468652268033533e-06
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of p = 2.8992023786632993e-06
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:50:09 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:50:10 | INFO     | [conv_ref:HC] trial 32/38 | scale=0.5900000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=11.71s | final_success=True
+2026-04-10 23:50:10 | INFO     | [conv_ref:HC] trial 33/38 | scale=0.5950000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i32
+2026-04-10 23:50:10 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of T = 0.000707816907505271
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of t = 0.0007131934184796937
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of x = 0.0004278328166650515
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of y = 0.0007110628470187154
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of w = 0.0006636272390311142
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of p = 1.0488701020971153e-16
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of fs = 0.00099344926327131
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004345464085521784
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of T = 3.393079400174755e-06
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of t = 3.4969340641129203e-06
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of p = 2.7153445922228582e-06
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:50:16 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of T = 0.0001616429120139139
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of t = 0.0001640032072470873
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of x = 0.00035695846437439516
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of y = 0.0006938628877995955
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of w = 0.0002114094412638521
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of p = 0.0
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of fs = 0.000778281681179789
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of rhob = 0.00023783330491632424
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of T = 2.5581955425182083e-05
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of t = 2.932798044506165e-05
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of x = 2.8869986760415214e-13
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of p = 2.4734482335377172e-05
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] relative error of rhob = 4.809121005718894e-06
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] trial 33/38 | scale=0.5950000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=11.62s | final_success=True
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] trial 34/38 | scale=0.6000000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i33
+2026-04-10 23:50:21 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of T = 0.0007247569815902492
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of t = 0.0007301859351242226
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of x = 0.0004336859758971603
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of y = 0.0007209809471525474
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of w = 0.0006691052283074065
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of p = 4.3916831328659587e-17
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of fs = 0.0009968931942698034
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004452645173443932
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of T = 3.385599556426082e-06
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of t = 3.4892763345997155e-06
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of p = 2.7095606787974605e-06
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:50:28 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of T = 0.00020129916945784996
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of t = 0.0002040736963848554
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of x = 0.0003633386850972335
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of y = 0.0007061292685293459
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of w = 0.0002357244234406848
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of p = 1.117471397974098e-16
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of fs = 0.0007822796993387507
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of rhob = 0.00024811625559700444
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of T = 9.099991933956825e-06
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of t = 1.0386302149883267e-05
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of x = 1.6004399468284294e-13
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of p = 6.539821467594716e-06
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] relative error of rhob = 1.4258881238242763e-06
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] trial 34/38 | scale=0.6000000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=11.09s | final_success=True
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] trial 35/38 | scale=0.6050000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i34
+2026-04-10 23:50:32 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of T = 0.0008472843701236714
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of t = 0.0008515011423843007
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of x = 0.0004585367070407575
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of y = 0.0007617042662260169
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of w = 0.0006800312540752101
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of p = 5.975733951792246e-18
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of fs = 0.0008643335670728826
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004993930064660348
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of T = 3.3952746804949497e-06
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of t = 3.499070844021497e-06
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of p = 2.7148114812538103e-06
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:50:39 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:50:40 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of T = 0.00018765644951739327
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of t = 0.00019097557862174592
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of x = 0.00022285147563972898
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of y = 0.00043314415322468137
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of w = 0.0002515399418304106
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of p = 0.0
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of fs = 0.0009019255017175842
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of rhob = 0.0003207132847169797
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of T = 7.984571279135417e-05
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of t = 8.923898996815446e-05
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of x = 4.078823458120273e-13
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of p = 5.40799463183777e-05
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] relative error of rhob = 1.185232352567073e-05
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] trial 35/38 | scale=0.6050000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=11.97s | final_success=True
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] trial 36/38 | scale=0.6100000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i35
+2026-04-10 23:50:44 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of T = 0.0006586366850908796
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of t = 0.000663575616637847
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of x = 0.00042557080186463226
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of y = 0.0007067814451018246
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of w = 0.0006418540870523026
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of p = 7.172414417360168e-17
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of fs = 0.0009569122035608508
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004010360818614131
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of T = 3.3944550246254586e-06
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of t = 3.4982888365916904e-06
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of p = 2.7162227247227328e-06
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:50:51 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of T = 0.0008359176656996648
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of t = 0.0008350287003349461
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of x = 0.0003383236241589206
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of y = 0.00065803193450618
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of w = 0.00039573749055556195
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of p = 0.0005332505720146942
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of fs = 0.0006300377431302438
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of rhob = 0.000597956331215803
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of T = 3.484241575246597e-06
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of t = 3.5889139308667938e-06
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of p = 2.9270462717374874e-06
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] trial 36/38 | scale=0.6100000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=10.77s | final_success=True
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] trial 37/38 | scale=0.6150000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i36
+2026-04-10 23:50:55 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of T = 0.0006600190922927773
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of t = 0.0006649666831017774
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of x = 0.0004275717335860068
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of y = 0.0007101736418969223
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of w = 0.0006437405398061345
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of p = 1.6905493961660882e-17
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of fs = 0.0009592861570232213
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of rhob = 0.0004021049172134684
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of T = 3.3972384702818615e-06
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of t = 3.5011273141416968e-06
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of p = 2.7181533943818075e-06
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:51:01 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of T = 0.0007726284709384293
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of t = 0.0007716657295897425
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of x = 0.00031358439074340985
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of y = 0.0006104744371613458
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of w = 0.0002957019556060892
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of p = 0.000481734819675976
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of fs = 0.000549437949099358
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of rhob = 0.0005624753633441434
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of T = 3.4801513895651e-06
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of t = 3.58483608267748e-06
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of p = 2.925213808909103e-06
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:51:05 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:51:06 | INFO     | [conv_ref:HC] trial 37/38 | scale=0.6150000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=10.52s | final_success=True
+2026-04-10 23:51:06 | INFO     | [conv_ref:HC] trial 38/38 | scale=0.6200000000000001 | HC phase | mesh_up=200 mesh_down=10 | dir=D:\Group\HyOCR\HG_test_cloned\tmp\convergence_ref_profiles_runs\convref_hc_i37
+2026-04-10 23:51:06 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of T = 0.0006895490830216524
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of t = 0.0006951560678380641
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of x = 0.000523572852598291
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of y = 0.0008690797050492267
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of w = 0.0006531730111129157
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of p = 0.0
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of fs = 0.0008346449057123125
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of rhob = 0.00036536517202974926
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of T = 0.0002934063174025676
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of t = 0.0003182254595918081
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of x = 1.3271424461220843e-14
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of p = 0.00011637296754133038
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:51:11 | INFO     | [conv_ref:HC] relative error of rhob = 7.1301943606340844e-06
+2026-04-10 23:51:12 | INFO     | [conv_ref:HC] 测试 上半部分模型 hc_4n4
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of T = 0.000204148966778687
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of t = 0.00020744440057782082
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of x = 0.00024700823656059983
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of y = 0.00048174348281311883
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of w = 0.00021832080752136557
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of p = 9.695758313970252e-17
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of fs = 0.0007418013908561164
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of rhob = 0.00020999678275868876
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] 测试 下半部分模型 hc_6
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] final relative error:
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of T = 3.45537869971499e-06
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of t = 3.559901246277738e-06
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of x = 0.0
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of p = 2.9126022439300757e-06
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of fs = 0.0
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] relative error of rhob = 0.0
+2026-04-10 23:51:16 | INFO     | [conv_ref:HC] trial 38/38 | scale=0.6200000000000001 | HC end | coupling_ok=True outer_iters=1 elapsed=10.27s | final_success=True
+
+========================================================================
+convergence_ref_profiles | session_end | wall_s=466.6
+phase=hc | trials=38 | BVP_ok=0 HC_ok=38 overall_ok=38
+summary_csv=D:\Group\HyOCR\HG_test_cloned\output\summary_0.435-0.62.csv
+========================================================================

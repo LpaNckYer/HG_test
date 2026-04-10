@@ -1116,7 +1116,7 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         """
         双循环
         """
-        logging.info("测试 下半部分模型 hc_6")
+        logging.info("测试 下半部分模型 hc_3n3")
         # from save_load import load_parameters_down
         # params = load_parameters_down("default_case_DOWN")   # config/cases/default_case_DOWN.json
         # params2 = quick_modify(params, 
@@ -1146,7 +1146,7 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             or RE_x >= HC_REL_TOL_MAIN
         ) and (count < HC_MAX_ITER_TEST_FIRST_DOWN):
             count += 1
-            print("first loop count = ", count)
+            # print("first loop count = ", count)
             # print("relative error of T = ", RE_T)
             # print("relative error of t = ", RE_t)
             # print("relative error of x = ", RE_x)
@@ -1184,15 +1184,15 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         RE_p = norm(p_new - p)/norm(p)
         RE_rhob = norm(rhob_new - rhob)/norm(rhob)
 
-        plt.plot(z_guess, fs_new, label='fs')
-        plt.legend()
-        plt.show()
-        plt.plot(z_guess, p_new, label='p')
-        plt.legend()
-        plt.show()
-        plt.plot(z_guess, rhob_new, label='rhob')
-        plt.legend()
-        plt.show()
+        # plt.plot(z_guess, fs_new, label='fs')
+        # plt.legend()
+        # plt.show()
+        # plt.plot(z_guess, p_new, label='p')
+        # plt.legend()
+        # plt.show()
+        # plt.plot(z_guess, rhob_new, label='rhob')
+        # plt.legend()
+        # plt.show()
 
         count_out = 0
         while (
@@ -1201,7 +1201,7 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             or RE_rhob >= HC_REL_TOL_MAIN
         ) and (count_out < HC_MAX_ITER_TEST_OUTER_DOWN_DEEP):
             count_out += 1
-            print("count_out = ", count_out)
+            # print("count_out = ", count_out)
             # 内层循环：wfsprhob
             count_in = 0
             while (
@@ -1211,10 +1211,10 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             ) and (count_in < HC_MAX_ITER_TEST_NESTED_INNER):
                 
                 count_in += 1
-                print("count_in = ", count_in)
-                print("relative error of fs = ", RE_fs)
-                print("relative error of p = ", RE_p)
-                print("relative error of rhob = ", RE_rhob)
+                # print("count_in = ", count_in)
+                # print("relative error of fs = ", RE_fs)
+                # print("relative error of p = ", RE_p)
+                # print("relative error of rhob = ", RE_rhob)
                 fs = fs_new
                 p = p_new
                 rhob = rhob_new
@@ -1228,10 +1228,10 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
                 RE_fs = norm(fs_new - fs)/norm(fs)
                 RE_p = norm(p_new - p)/norm(p)
                 RE_rhob = norm(rhob_new - rhob)/norm(rhob)
-            print("count_in = ", count_in)
-            print("relative error of fs = ", RE_fs)
-            print("relative error of p = ", RE_p)
-            print("relative error of rhob = ", RE_rhob)
+            # print("count_in = ", count_in)
+            # print("relative error of fs = ", RE_fs)
+            # print("relative error of p = ", RE_p)
+            # print("relative error of rhob = ", RE_rhob)
 
             # 内层循环：Ttxyfs
             T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
@@ -1251,10 +1251,10 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
                 or RE_x >= HC_REL_TOL_MAIN
             ) and (count_in < HC_MAX_ITER_TEST_NESTED_INNER):
                 count_in += 1
-                print("count_in = ", count_in)
-                print("relative error of T = ", RE_T)
-                print("relative error of t = ", RE_t)
-                print("relative error of x = ", RE_x)
+                # print("count_in = ", count_in)
+                # print("relative error of T = ", RE_T)
+                # print("relative error of t = ", RE_t)
+                # print("relative error of x = ", RE_x)
 
                 T = T_new
                 t = t_new
@@ -1269,10 +1269,10 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
                 RE_t = norm(t_new - t)/norm(t)
                 RE_x = norm(x_new - x)/norm(x)
 
-            print("count_in = ", count_in)
-            print("relative error of T = ", RE_T)
-            print("relative error of t = ", RE_t)
-            print("relative error of x = ", RE_x)
+            # print("count_in = ", count_in)
+            # print("relative error of T = ", RE_T)
+            # print("relative error of t = ", RE_t)
+            # print("relative error of x = ", RE_x)
 
             T, t, fs, x, rhob, p = HCFurnaceModel_DOWN.clip_profile_for_hc(
                 T, t, fs, x, rhob, p
@@ -1292,22 +1292,33 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
         logging.info(f"relative error of p = {RE_p}")
         logging.info(f"relative error of fs = {RE_fs}")
         logging.info(f"relative error of rhob = {RE_rhob}")
-        # 结果绘图
+        # # 结果绘图
         y_plot = [T_new, t_new, fs_new, x_new, rhob_new, p_new]
-        plt.figure(figsize=(12, 8))
+        # plt.figure(figsize=(12, 8))
         variables = ['T', 't', 'fs', 'x', 'rhob', 'p']
-        for i in range(6):
-            plt.subplot(3, 2, i+1)
-            plt.plot(z_guess, y_plot[i])
-            plt.ylabel(variables[i])
-            plt.xlabel('z')
-        plt.tight_layout()
-        plt.show()
+        # for i in range(6):
+        #     plt.subplot(3, 2, i+1)
+        #     plt.plot(z_guess, y_plot[i])
+        #     plt.ylabel(variables[i])
+        #     plt.xlabel('z')
+        # plt.tight_layout()
+        # plt.show()
 
-        # 剖面 CSV 由测试脚本写出
+        # # 剖面 CSV 由测试脚本写出
         df = pd.DataFrame(np.vstack((z_guess, y_plot)).T, columns=['z'] + variables)
         self.last_hc_profile_df = df
-        # df.to_csv('test_hc_3n3_1e-3_DOWN.csv', index=False)
+        # # df.to_csv('test_hc_3n3_1e-3_DOWN.csv', index=False)
+
+
+        re_list = (RE_T, RE_t, RE_x, RE_fs, RE_p, RE_rhob)
+        hc_max_re_final = float(max(re_list))
+        hc_converged = all(re < HC_REL_TOL_MAIN for re in re_list)
+        if not hc_converged:
+            logging.warning(
+                "test_hc_3n3 未达 HC_REL_TOL_MAIN=%s：max(RE)=%s",
+                HC_REL_TOL_MAIN,
+                hc_max_re_final,
+            )
 
         self.results = {
             "case_name": self.params.case_name,
@@ -1316,7 +1327,9 @@ class HCFurnaceModel_DOWN(FurnaceModel_DOWN):
             "fs_out": fs_new[-1],
             "x_out": x_new[0],
             "rhob_out": rhob_new[-1],    
-            "p_bottom": p_new[-1]
+            "p_bottom": p_new[-1],
+            "hc_converged": hc_converged,
+            "hc_max_re_final": hc_max_re_final,
         }
 
         return self.results

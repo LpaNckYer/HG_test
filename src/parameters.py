@@ -113,7 +113,7 @@ class FurnaceParameters:
 
 
         # 数值参数 Numerical parameters
-        self.initial_mesh = 100
+        self.initial_mesh = 200
 
 
     def Diameter_BF(self, z):

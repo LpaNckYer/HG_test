@@ -1631,7 +1631,7 @@ class HCFurnaceModel(FurnaceModel):
             or RE_rhob >= HC_REL_TOL_MAIN
         ) and (count_out < HC_MAX_ITER_TEST_OUTER_UP):
             count_out += 1
-            print("count_out = ", count_out)
+            # print("count_out = ", count_out)
             # 内层循环：wfsprhob
             count_in = 0
             while (
@@ -1731,17 +1731,17 @@ class HCFurnaceModel(FurnaceModel):
                 HC_REL_TOL_MAIN,
                 hc_max_re_final,
             )
-        # 结果绘图
+        # # 结果绘图
         y_plot = [T_new, t_new, fs_new, x_new, y_new, w_new, rhob_new, p_new]
-        plt.figure(figsize=(12, 8))
+        # plt.figure(figsize=(12, 8))
         variables = ['T', 't', 'fs', 'x', 'y', 'w', 'rhob', 'p']
-        for i in range(8):
-            plt.subplot(3, 3, i+1)
-            plt.plot(z_guess, y_plot[i])
-            plt.ylabel(variables[i])
-            plt.xlabel('z')
-        plt.tight_layout()
-        # plt.show()
+        # for i in range(8):
+        #     plt.subplot(3, 3, i+1)
+        #     plt.plot(z_guess, y_plot[i])
+        #     plt.ylabel(variables[i])
+        #     plt.xlabel('z')
+        # plt.tight_layout()
+        # # plt.show()
 
         # 剖面 CSV 由网格无关性 / 初值范围测试脚本写出
         df = pd.DataFrame(np.vstack((z_guess, y_plot)).T, columns=['z'] + variables)

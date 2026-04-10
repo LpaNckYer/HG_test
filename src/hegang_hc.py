@@ -1,5 +1,7 @@
 import logging
-from rizhi import setup_logging
+import sys
+
+from paths import ensure_dirs, logs_path
 
 from coupling_checks import require_hc_segment_converged
 from parameters import create_standard_case
@@ -8,7 +10,28 @@ from furnace_model import HCFurnaceModel
 from furnace_model_DOWN import HCFurnaceModel_DOWN
 
 
-logger = setup_logging('loop.log')
+def _setup_hc_logging() -> logging.Logger:
+    """Root 日志写入 ``logs/loop.log`` 并同时输出到 stderr。"""
+    ensure_dirs()
+    log_path = logs_path("loop.log")
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    root = logging.getLogger()
+    root.handlers.clear()
+    root.setLevel(logging.INFO)
+    fmt = logging.Formatter(
+        "%(asctime)s | %(levelname)-8s | %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    fh = logging.FileHandler(log_path, encoding="utf-8")
+    fh.setFormatter(fmt)
+    root.addHandler(fh)
+    sh = logging.StreamHandler(sys.stderr)
+    sh.setFormatter(fmt)
+    root.addHandler(sh)
+    return logging.getLogger(__name__)
+
+
+logger = _setup_hc_logging()
 
 logger.info("热量流法程序开始运行")
 
@@ -34,7 +57,7 @@ try:
     params_DOWN.p_in = p_up
     model2 = HCFurnaceModel_DOWN(params_DOWN)
     logging.info("求解下半部分模型-hc")
-    results_DOWN = model2.test_hc_6()
+    results_DOWN = model2.test_hc_3n3()
     require_hc_segment_converged(results_DOWN, segment="down")
 
     T_down = results_DOWN['T_out']
@@ -69,7 +92,7 @@ try:
         params_DOWN.p0 = p_up
         params_DOWN.p_in = p_up
         logging.info("求解下半部分模型-hc")
-        results_DOWN = model2.test_hc_6()
+        results_DOWN = model2.test_hc_3n3()
         require_hc_segment_converged(results_DOWN, segment="down")
 
         T_down = results_DOWN['T_out']

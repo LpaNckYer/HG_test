@@ -12,7 +12,7 @@ HC_RELAXATION = 0.5
 # —— test_hc_* 等多层耦合 ——
 HC_MAX_ITER_TEST_NESTED_INNER = 100   # 嵌套内层 count_in
 HC_MAX_ITER_TEST_OUTER_UP = 100       # 上半部 count_out / 全变量单循环
-HC_MAX_ITER_TEST_OUTER_DOWN_DEEP = 10000  # 下半部 test_hc_3n3 外层
+HC_MAX_ITER_TEST_OUTER_DOWN_DEEP = 100  # 下半部 test_hc_3n3 外层
 HC_MAX_ITER_TEST_MONOLITHIC = 1000    # test_hc_6 等单一大循环
 
 # 首轮 T,t,x(,y) 耦合（原下半 test 首轮为 10，上半为 100，在此分别命名）
